@@ -45,10 +45,10 @@ Build a **static website** that displays the “Common Software Engineer LLM Jou
 ### 1) Journey content display
 - **Source of truth**: The journey content comes from `docs/journey-better.md` (or an extracted JSON derived from it).
 - **Readable layout**
-  - Clear phase navigation (sticky phase list or top tabs).
+  - Clear per-phase headings with per-phase expand/collapse.
   - Each phase shows: title, focus line, bullets, “what to watch for”.
 - **Collapsible density**
-  - Ability to collapse/expand phases and sub-sections for quick scanning.
+  - Default phases collapsed; expand per phase as needed.
 - **Permalinks**
   - Each phase and major subsection has a shareable anchor link.
 

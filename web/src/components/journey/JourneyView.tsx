@@ -1,0 +1,160 @@
+"use client";
+
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Chip,
+  Container,
+  Divider,
+  Fab,
+  Stack,
+  Typography,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useEffect, useState } from "react";
+
+import type { JourneyDoc, JourneyItem } from "@/lib/journey/types";
+import { CopyLinkButton } from "@/components/journey/CopyLinkButton";
+
+function ItemsList({ items, depth = 0 }: { items: JourneyItem[]; depth?: number }) {
+  return (
+    <Stack component="ul" spacing={0.75} sx={{ pl: depth ? 3 : 2, mb: 0, mt: 0 }}>
+      {items.map((it) => (
+        <Box component="li" key={it.itemId} sx={{ listStyle: "disc" }}>
+          <Typography variant="body1" sx={{ display: "inline" }}>
+            {it.label}
+          </Typography>
+          {it.children?.length ? <ItemsList items={it.children} depth={depth + 1} /> : null}
+        </Box>
+      ))}
+    </Stack>
+  );
+}
+
+export function JourneyView({ journey }: { journey: JourneyDoc }) {
+  const { phases } = journey;
+  const [expanded, setExpanded] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(phases.map((p) => [p.phaseId, false])),
+  );
+
+  const [showTop, setShowTop] = useState(false);
+
+  useEffect(() => {
+    function onScroll() {
+      setShowTop(window.scrollY > 500);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
+      <Box
+        sx={{
+          minWidth: 0,
+          // Keep the journey content comfortably readable on wide displays.
+          // ~half-screen on desktop, full width on mobile.
+          maxWidth: { xs: "100%", md: 720 },
+          mx: "auto",
+        }}
+      >
+        <Stack spacing={1} sx={{ mb: 3 }}>
+          <Typography variant="h3" component="h1">
+            Common Software Engineer LLM Journey
+          </Typography>
+          <Typography variant="body1" sx={{ color: "text.secondary" }}>
+            Use this as a readable reference, or as a shared artifact during workshops.
+          </Typography>
+        </Stack>
+
+        <Stack spacing={2.5}>
+          {phases.map((phase) => (
+            <Accordion
+              key={phase.phaseId}
+              id={phase.phaseId}
+              expanded={!!expanded[phase.phaseId]}
+              onChange={(_, next) => setExpanded((p) => ({ ...p, [phase.phaseId]: next }))}
+              sx={{ scrollMarginTop: 96 }}
+            >
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: 0 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 900 }}>
+                    <Box component="span" sx={{ color: "text.primary" }}>
+                      {phase.title.split(":")[0]}:
+                    </Box>{" "}
+                    <Box component="span" sx={{ color: "secondary.main" }}>
+                      {phase.title.split(":").slice(1).join(":").trim()}
+                    </Box>
+                  </Typography>
+                  <CopyLinkButton anchorId={phase.phaseId} />
+                </Stack>
+              </AccordionSummary>
+
+              <AccordionDetails>
+                <Stack spacing={2}>
+                  {phase.focus ? (
+                    <Box>
+                      <Chip
+                        label="Focus"
+                        size="small"
+                        sx={{ mr: 1, bgcolor: "rgba(245,196,0,0.25)", color: "text.primary" }}
+                      />
+                      <Typography variant="body1" component="span">
+                        {phase.focus}
+                      </Typography>
+                    </Box>
+                  ) : null}
+
+                  {phase.sections.map((section) => (
+                    <Box key={`${phase.phaseId}:${section.title}`}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 800, mb: 0.5 }}>
+                        {section.title}
+                      </Typography>
+                      <ItemsList items={section.items} />
+                    </Box>
+                  ))}
+
+                  {phase.whatToWatchFor.length ? (
+                    <>
+                      <Divider />
+                      <Box>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 800, mb: 0.5 }}>
+                          What to watch for
+                        </Typography>
+                        <ItemsList
+                          items={phase.whatToWatchFor.map((label) => ({
+                            itemId: `${phase.phaseId}__watch__${label}`,
+                            label,
+                          }))}
+                        />
+                      </Box>
+                    </>
+                  ) : null}
+                </Stack>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+
+          {/* Quick self-check intentionally omitted (per current product direction). */}
+        </Stack>
+      </Box>
+
+      {showTop ? (
+        <Fab
+          color="primary"
+          aria-label="Back to top"
+          sx={{ position: "fixed", bottom: 24, right: 24 }}
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        >
+          <KeyboardArrowUpIcon />
+        </Fab>
+      ) : null}
+    </Container>
+  );
+}
+
+

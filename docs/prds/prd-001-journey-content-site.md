@@ -24,7 +24,7 @@ Deliver a **static-first** website experience that renders the journey in a **cl
 
 ## User stories
 - As a reader, I can navigate phases quickly and share links to a specific phase.
-- As a presenter, I can collapse/expand content to match my talk track.
+- As a presenter, the journey defaults to collapsed sections so I can expand only what I’m presenting.
 - As a reader, I can view the journey comfortably on mobile.
 
 ---
@@ -38,18 +38,13 @@ Deliver a **static-first** website experience that renders the journey in a **cl
   - Focus line (italic)
   - Bullets and sub-bullets
   - “What to watch for”
-  - “Quick self-check”
 
 ### Navigation
-- Sticky phase navigation (sidebar on desktop; top tabs or dropdown on mobile).
 - Anchor links for each phase (copy link).
 - “Back to top” affordance.
 
 ### Readability controls
-- Expand/collapse:
-  - Collapse all phases
-  - Expand all phases
-  - Per-phase toggle
+- Default all phases collapsed; allow per-phase expand/collapse.
 - Text should reflow cleanly for narrow screens.
 
 ### Design (Clockwork alignment)

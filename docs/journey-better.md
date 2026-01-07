@@ -87,13 +87,5 @@ _Focus: agentic tool use under guardrails (LLM iterates; you approve)._
 **What good looks like**
 - Tight diffs, clear intent, and changes that are easy to review and revert.
 
----
-
-### Quick self-check (what phase am I in?)
-- **Phase 1**: “Answer a question / research a decision.”
-- **Phase 2**: “Help me write/modify code quickly (maybe across multiple files).”
-- **Phase 3**: “Work with me inside *this repo*—bugs, tests, features, review.”
-- **Phase 4**: “Take the first pass on most of the work; I review/merge.”
-- **Phase 5**: “Iterate with tools under guardrails; I approve the patches.”
 
 

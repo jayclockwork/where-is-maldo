@@ -252,4 +252,159 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
 - **Open questions / follow-ups for Jay**:
   - Offline behavior choice for toggles (queue vs block) remains open (PRD 002).
 
+#### Step 10 — Start PRD 001 implementation (web app scaffold + journey rendering)
+- **Date/Time**: 2026-01-07
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - “Let’s do it — PRD 001”
+- **Decision(s) recorded**:
+  - Implement the frontend as a Next.js app located at `web/` (docs remain at repo root).
+- **Clarifications / assumptions**:
+  - none
+- **Plan executed** (what the assistant did):
+  - Scaffolded a Next.js + TypeScript app in `web/`.
+  - Added MUI with a Clockwork-inspired theme (high contrast, yellow hero accent, blue CTAs).
+  - Implemented a landing page (`/`) and a journey page (`/journey`) with:
+    - sticky phase navigation (desktop)
+    - expand/collapse all
+    - permalinks per phase (copy link)
+    - back-to-top button
+  - Implemented build-time parsing of `docs/journey-better.md` into structured phases/sections with stable `itemId`s.
+  - Added unit tests (Vitest + React Testing Library) for:
+    - journey parsing
+    - collapse/expand behavior
+- **Files changed**:
+  - `web/` — added (Next.js app + theme + pages + parser + tests)
+- **Commands / tools used**:
+  - `npx create-next-app`
+  - `npm install`
+  - `npm test`
+  - `npm run build`
+  - `npm run lint`
+- **Outcome**:
+  - PRD 001 has a working baseline implementation with automated unit tests and a static build.
+- **Open questions / follow-ups for Jay**:
+  - For PRD 001 polish: do you want the “Join Session” CTA to link to a placeholder page or stay disabled until PRD 002?
+
+#### Step 11 — Document how to run the web app
+- **Date/Time**: 2026-01-07
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Add “how to start the site” instructions to the README.
+- **Decision(s) recorded**:
+  - `web/README.md` is the primary runbook for local dev commands.
+- **Clarifications / assumptions**:
+  - none
+- **Plan executed** (what the assistant did):
+  - Updated `web/README.md` with repo-specific startup instructions and common commands.
+- **Files changed**:
+  - `web/README.md` — added “Start the site” + “Useful commands”
+- **Commands / tools used**:
+  - none
+- **Outcome**:
+  - New contributors can start the app quickly without guessing directory structure.
+- **Open questions / follow-ups for Jay**:
+  - none
+
+#### Step 12 — Remove “Quick self-check” from the journey experience
+- **Date/Time**: 2026-01-07
+- **Step type**: Both
+- **User guidance** (what Jay asked for):
+  - Get rid of the quick self-check content and logic.
+- **Decision(s) recorded**:
+  - The product will not surface “Quick self-check” in v1; the journey focuses on phases, sections, and “What to watch for”.
+- **Clarifications / assumptions**:
+  - none
+- **Plan executed** (what the assistant did):
+  - Removed “Quick self-check” from the journey data model, parser, and UI.
+  - Updated unit tests to match the new journey shape.
+  - Updated PRD 001 to remove the “Quick self-check” requirement.
+- **Files changed**:
+  - `web/src/lib/journey/types.ts` — removed `quickSelfCheck`
+  - `web/src/lib/journey/parseJourney.ts` — stopped parsing quick self-check
+  - `web/src/components/journey/JourneyView.tsx` — removed quick self-check rendering
+  - `web/src/lib/journey/parseJourney.test.ts` — updated expectations
+  - `web/src/components/journey/JourneyView.test.tsx` — updated sample doc shape
+  - `docs/prds/prd-001-journey-content-site.md` — removed quick self-check requirement
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+- **Outcome**:
+  - The site no longer shows quick self-check and no longer carries logic for it.
+- **Open questions / follow-ups for Jay**:
+  - none
+
+#### Step 13 — Simplify Journey page UI (no sidebar; default collapsed)
+- **Date/Time**: 2026-01-07
+- **Step type**: Both
+- **User guidance** (what Jay asked for):
+  - On the Journey page, remove the left sidebar and the expand/collapse-all buttons.
+  - Default the page to all phases collapsed.
+- **Decision(s) recorded**:
+  - The journey page will be **single-column**, with **per-phase accordions** as the only navigation.
+  - Default state is **collapsed** for all phases.
+- **Clarifications / assumptions**:
+  - Per-phase permalinks remain available via the copy-link control.
+- **Plan executed** (what the assistant did):
+  - Removed sidebar phase navigation and “Expand all / Collapse all” controls.
+  - Changed default accordion state to collapsed.
+  - Updated unit tests and updated PRD 001 + requirements to match.
+- **Files changed**:
+  - `web/src/components/journey/JourneyView.tsx` — removed sidebar + global controls; default collapsed
+  - `web/src/components/journey/JourneyView.test.tsx` — updated test expectations
+  - `docs/prds/prd-001-journey-content-site.md` — updated UX expectations
+  - `docs/requirements-journey-site.md` — updated journey display requirements
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+- **Outcome**:
+  - Journey page is simpler and starts in a collapsed state, ready for presentation-style progressive disclosure.
+- **Open questions / follow-ups for Jay**:
+  - none
+
+#### Step 14 — Journey page visual tweaks (yellow phase titles + narrower layout)
+- **Date/Time**: 2026-01-07
+- **Step type**: Both
+- **User guidance** (what Jay asked for):
+  - Make phase titles (“Research”, “Completion”, etc.) Clockwork yellow.
+  - Decrease the width of the phases (about half-screen).
+- **Decision(s) recorded**:
+  - Use the theme’s **secondary** color (Clockwork yellow) for phase titles.
+  - Constrain the journey content column on desktop for readability; keep full width on mobile.
+- **Clarifications / assumptions**:
+  - “Phase title” refers to the accordion header text for each phase.
+- **Plan executed** (what the assistant did):
+  - Updated `JourneyView` to style phase titles with `secondary.main`.
+  - Limited the journey content to a centered, narrower max-width on desktop.
+- **Files changed**:
+  - `web/src/components/journey/JourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+- **Outcome**:
+  - The journey page reads cleaner on wide screens and the phase headers match Clockwork’s yellow accent.
+- **Open questions / follow-ups for Jay**:
+  - none
+
+#### Step 15 — Phase title styling tweak (“Phase X:” black)
+- **Date/Time**: 2026-01-07
+- **Step type**: Both
+- **User guidance** (what Jay asked for):
+  - Keep the “Phase X:” text as black.
+- **Decision(s) recorded**:
+  - Split the phase header into a black prefix (“Phase X:”) and a yellow phase name to preserve hierarchy and readability.
+- **Clarifications / assumptions**:
+  - none
+- **Plan executed** (what the assistant did):
+  - Updated the journey accordion header to render “Phase X:” in `text.primary` and the phase name in `secondary.main`.
+- **Files changed**:
+  - `web/src/components/journey/JourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+- **Outcome**:
+  - Phase headers match the intended Clockwork accent usage without losing the “Phase X:” label contrast.
+- **Open questions / follow-ups for Jay**:
+  - none
+
 
