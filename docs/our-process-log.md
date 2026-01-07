@@ -171,4 +171,53 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
 - **Open questions / follow-ups for Jay**:
   - Expected audience size and whether wallboard should show individuals vs. aggregates at scale.
 
+#### Step 7 — Create PRDs to build the system
+- **Date/Time**: 2026-01-07
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Create a set of PRDs to build this system and put them under `docs/` in a subdirectory.
+  - Ensure the process log is updated.
+- **Decision(s) recorded**:
+  - Slice the build into incremental PRDs: static journey foundation → live sessions/mapping → wallboard → host/admin/export.
+- **Clarifications / assumptions**:
+  - none
+- **Plan executed** (what the assistant did):
+  - Created `docs/prds/` with an index.
+  - Wrote PRDs 001–004 covering the system in build order.
+- **Files changed**:
+  - `docs/prds/README.md` — PRD index and cross-cutting constraints
+  - `docs/prds/prd-001-journey-content-site.md` — static journey reading experience
+  - `docs/prds/prd-002-live-sessions-and-mapping.md` — live sessions + realtime “Doing” toggles
+  - `docs/prds/prd-003-presentation-wallboard.md` — presentation wallboard view
+  - `docs/prds/prd-004-host-admin-and-export.md` — host controls + export
+- **Commands / tools used**:
+  - none
+- **Outcome**:
+  - A PRD set exists to drive implementation in clear increments.
+- **Open questions / follow-ups for Jay**:
+  - Confirm whether “close session” should be reversible in v1 (PRD 004).
+
+#### Step 8 — Add `AGENTS.md` to define development approach (test-first, well-architected)
+- **Date/Time**: 2026-01-07
+- **Step type**: Both
+- **User guidance** (what Jay asked for):
+  - Create an `AGENTS.md` file to guide the project.
+  - Automated tests must be a significant aspect: robust unit tests and (where applicable) e2e tests.
+  - Prefer well-architected code following modern best practices (not fast fixes).
+- **Decision(s) recorded**:
+  - Tests (unit + applicable e2e) are part of the Definition of Done for each PR.
+  - Architecture and maintainability are prioritized over speed; changes must be reviewable and documented.
+- **Clarifications / assumptions**:
+  - none
+- **Plan executed** (what the assistant did):
+  - Added `AGENTS.md` describing engineering principles, test strategy, and workflow expectations.
+- **Files changed**:
+  - `AGENTS.md` — added
+- **Commands / tools used**:
+  - none
+- **Outcome**:
+  - The repository now has a clear “how we build” guide emphasizing automated tests and modern best practices.
+- **Open questions / follow-ups for Jay**:
+  - none
+
 
