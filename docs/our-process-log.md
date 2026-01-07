@@ -407,4 +407,207 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
 - **Open questions / follow-ups for Jay**:
   - none
 
+#### Step 16 — Close PRD 001 and begin PRD 002
+- **Date/Time**: 2026-01-07
+- **Step type**: Both
+- **User guidance** (what Jay asked for):
+  - Confirm PRD 001 is done; if so move it to `docs/prds/completed` and start PRD 002.
+- **Decision(s) recorded**:
+  - PRD 001 is considered complete (landing + journey reading experience + tests + build/lint passing).
+- **Clarifications / assumptions**:
+  - none
+- **Plan executed** (what the assistant did):
+  - Moved PRD 001 into `docs/prds/completed/`.
+  - Updated the PRD index to mark PRD 001 completed.
+  - Began PRD 002 implementation planning (sessions + realtime mapping).
+- **Files changed**:
+  - `docs/prds/completed/prd-001-journey-content-site.md` — moved
+  - `docs/prds/README.md` — updated path/status for PRD 001
+- **Commands / tools used**:
+  - `mv` (file move)
+- **Outcome**:
+  - PRD 001 is archived under completed; the repo is ready to proceed with PRD 002.
+- **Open questions / follow-ups for Jay**:
+  - none
+
+#### Step 17 — Start PRD 002 implementation (sessions + realtime mapping foundations)
+- **Date/Time**: 2026-01-07
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Start PRD 002.
+- **Decision(s) recorded**:
+  - Build PRD 002 behind a `SessionsRepository` interface so we can ship UI + tests with an in-memory adapter while wiring Supabase cleanly behind the same contract.
+- **Clarifications / assumptions**:
+  - The `/s/[code]` join route is the canonical join entrypoint.
+- **Plan executed** (what the assistant did):
+  - Added session/participant/mapping domain types and a repository interface.
+  - Implemented an `InMemorySessionsRepository` with realtime-style subscription events and tests.
+  - Added an initial join page at `/s/[code]` and routed CTAs there (UI-first; backend wiring next).
+- **Files changed**:
+  - `web/src/domain/sessions/*` — domain types + repository contract
+  - `web/src/data/sessions/*` — in-memory repository + tests
+  - `web/src/app/s/[code]/page.tsx` — join session page (UI stub)
+  - `web/src/components/SiteAppBar.tsx` and `web/src/app/page.tsx` — link “Join Session” CTAs to `/s/DEMO20`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - PRD 002 work has started with a solid, testable foundation and an initial join entrypoint.
+- **Open questions / follow-ups for Jay**:
+  - Should “avatar color” be a free-form hex input, or a small preset palette (recommended for consistency)?
+
+#### Step 18 — Avatar color palette (unique per session)
+- **Date/Time**: 2026-01-07
+- **Step type**: Both
+- **User guidance** (what Jay said):
+  - Use a small preset palette with more than 20 colors.
+  - As colors are selected by a user, they should become unavailable to others.
+- **Decision(s) recorded**:
+  - Avatar colors are chosen from a preset palette (20+ options) and are **unique per session**.
+- **Clarifications / assumptions**:
+  - “Unavailable” means users cannot select a color already claimed by an existing participant.
+- **Plan executed** (what the assistant did):
+  - Enforced uniqueness in the sessions repository.
+  - Added a color palette picker to the join page and disabled already-taken colors (with lightweight polling to reflect changes).
+  - Updated requirements/PRD text to reflect avatar color constraints.
+- **Files changed**:
+  - `web/src/ui/colors/avatarPalette.ts` — added palette
+  - `web/src/data/sessions/InMemorySessionsRepository.ts` — enforce unique `avatarColor`
+  - `web/src/app/s/[code]/page.tsx` — palette UI + join wiring
+  - `web/src/app/api/sessions/*` — create/join/by-code routes
+  - `docs/prds/prd-002-live-sessions-and-mapping.md` — avatar color requirements
+  - `docs/requirements-journey-site.md` — identity requirements updated
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Participants now choose unique colors from a shared palette, preventing collisions during presentations.
+- **Open questions / follow-ups for Jay**:
+  - none
+
+#### Step 19 — Fix “session not found” on join page (Next 16 params API)
+- **Date/Time**: 2026-01-07
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Check the browser: the session is not found.
+- **Decision(s) recorded**:
+  - Use `useParams()` in client pages for dynamic route params in Next 16 to avoid Promise-params pitfalls.
+- **Clarifications / assumptions**:
+  - none
+- **Plan executed** (what the assistant did):
+  - Updated `/s/[code]` to use `useParams()` instead of reading `params.code` directly.
+  - Verified lint, tests, and build; rechecked the join page in the browser.
+- **Files changed**:
+  - `web/src/app/s/[code]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Join page now correctly loads `DEMO20` and displays the color palette (instead of repeatedly fetching `undefined`).
+- **Open questions / follow-ups for Jay**:
+  - none
+
+#### Step 20 — Remove distracting “Updating…” indicator on join page
+- **Date/Time**: 2026-01-07
+- **Step type**: Both
+- **User guidance** (what Jay asked for):
+  - Remove the “Updating” label because it flashes and is distracting.
+- **Decision(s) recorded**:
+  - Background refresh should be visually silent unless there’s an error.
+- **Clarifications / assumptions**:
+  - none
+- **Plan executed** (what the assistant did):
+  - Removed the “Updating…” label while keeping background refresh behavior intact.
+- **Files changed**:
+  - `web/src/app/s/[code]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+- **Outcome**:
+  - The join form no longer flashes status text while you type; color availability still updates in the background.
+- **Open questions / follow-ups for Jay**:
+  - none
+
+#### Step 21 — PRD 002: add session view + Doing toggles + realtime updates (dev)
+- **Date/Time**: 2026-01-07
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - “Please keep going.”
+- **Decision(s) recorded**:
+  - Implement realtime in dev via **SSE** (`EventSource`) to exercise the live-update UX before wiring Supabase.
+- **Clarifications / assumptions**:
+  - This SSE/in-memory approach is for local development; production will use Supabase realtime per architecture.
+- **Plan executed** (what the assistant did):
+  - Added API endpoints to support session state and mapping toggles.
+  - Implemented an SSE stream endpoint to push mapping updates to all clients in a session.
+  - Built a session view that renders journey items with Doing toggles and shows live counts.
+  - Added unit tests for mapping upsert logic.
+- **Files changed**:
+  - `web/src/app/api/journey/route.ts` — serve parsed journey JSON
+  - `web/src/app/api/sessions/state/[id]/route.ts` — session state endpoint
+  - `web/src/app/api/sessions/toggle/route.ts` — toggle Doing endpoint
+  - `web/src/app/api/sessions/stream/[id]/route.ts` — SSE realtime stream
+  - `web/src/app/session/[id]/page.tsx` — session page (toggles + realtime)
+  - `web/src/components/session/SessionJourneyView.tsx` — journey rendering with toggles + counts
+  - `web/src/lib/sessions/mappings.ts` and `web/src/lib/sessions/mappings.test.ts` — pure mapping merge helper + tests
+  - `web/src/domain/sessions/repository.ts` and `web/src/data/sessions/InMemorySessionsRepository.ts` — added `getSessionById`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - After joining a session, participants can toggle “Doing” per item and other browsers see updates live.
+- **Open questions / follow-ups for Jay**:
+  - Do you want the session page to default all phases collapsed (like the journey page), or expand the current phase by default?
+
+#### Step 22 — Reduce “session not found” confusion (joinCode passthrough + recovery CTA)
+- **Date/Time**: 2026-01-07
+- **Step type**: Implementation
+- **User guidance** (what Jay reported):
+  - The session was “not found” in the browser.
+- **Decision(s) recorded**:
+  - When navigating from join → session, carry the join code along so the session page can offer a direct “back to join” recovery path.
+- **Clarifications / assumptions**:
+  - In-memory dev storage may still lose state on server restarts; we should provide a clear escape hatch.
+- **Plan executed** (what the assistant did):
+  - Appended `?code=JOINCODE` to the join → session navigation.
+  - Updated the session page error UI to include a “Back to join” CTA and an explanation of the dev limitation.
+- **Files changed**:
+  - `web/src/app/s/[code]/page.tsx`
+  - `web/src/app/session/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - If a session can’t be loaded, users get a clear route back to re-join and recreate the demo session.
+- **Open questions / follow-ups for Jay**:
+  - none
+
+#### Step 23 — Session mode defaults journey expanded
+- **Date/Time**: 2026-01-07
+- **Step type**: Decision + Implementation
+- **User guidance** (what Jay asked for):
+  - The journey should be expanded when coming to a session.
+- **Decision(s) recorded**:
+  - Session view defaults phase accordions to **expanded** (journey page remains collapsed by default).
+- **Clarifications / assumptions**:
+  - Users can still collapse phases manually during a session.
+- **Plan executed** (what the assistant did):
+  - Updated session journey accordions to default expanded.
+  - Added a regression unit test to lock the behavior.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+  - `web/src/components/session/SessionJourneyView.test.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+- **Outcome**:
+  - Entering a session shows the journey content immediately without extra clicks.
+- **Open questions / follow-ups for Jay**:
+  - none
+
 

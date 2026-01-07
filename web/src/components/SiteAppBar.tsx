@@ -33,9 +33,9 @@ export function SiteAppBar() {
             <Button
               color="primary"
               variant="contained"
-              disabled
-              aria-disabled
-              title="Join sessions is part of PRD 002"
+              component={Link}
+              href="/s/DEMO20"
+              title="Demo join link (PRD 002 wiring in progress)"
             >
               Join Session
             </Button>

@@ -38,8 +38,12 @@ Enable **live sessions** where participants can join via a code/link and toggle 
 - **Join session**
   - Participant enters join code (or uses link) and provides:
     - display name (required)
-    - avatar color (optional)
+    - avatar color (required; chosen from a preset palette; unique per session)
   - Participant is added to the session roster.
+
+### Avatar color palette (shared pool)
+- The join UI shows a preset palette with **20+ colors**.
+- Once a participant selects a color, it becomes **unavailable** to other participants in that session.
 
 ### Mapping model (single state)
 - Each journey item supports a single status: **Doing** (boolean on/off).

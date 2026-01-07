@@ -61,7 +61,7 @@ Build a **static website** that displays the “Common Software Engineer LLM Jou
 - **Identity**
   - Participants can select:
     - Display name (required)
-    - Optional avatar color/icon
+    - Avatar color (required; chosen from a preset palette; unique per session)
 
 ### 3) Live changes (real-time collaboration)
 - **Real-time sync**

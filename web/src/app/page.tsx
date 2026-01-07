@@ -23,7 +23,7 @@ export default function Home() {
               <Button component={Link} href="/journey" variant="contained" color="primary" size="large">
                 View Journey
               </Button>
-              <Button variant="outlined" color="inherit" size="large" disabled title="Live sessions are part of PRD 002">
+              <Button variant="outlined" color="inherit" size="large" component={Link} href="/s/DEMO20">
                 Join Session
               </Button>
             </Stack>
@@ -60,7 +60,7 @@ export default function Home() {
                 <Typography sx={{ color: "text.secondary", mt: 1 }}>
                   Participants join with a code and toggle what they’re doing. Updates appear live for everyone.
                 </Typography>
-                <Button sx={{ mt: 2 }} variant="text" disabled>
+                <Button sx={{ mt: 2 }} variant="text" component={Link} href="/s/DEMO20">
                   Join Session →
                 </Button>
               </CardContent>

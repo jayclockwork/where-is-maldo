@@ -99,7 +99,8 @@ export function parseJourneyMarkdown(markdown: string): JourneyDoc {
       const phaseNodes: MdastNode[] = [];
       for (let j = i + 1; j < nodes.length; j += 1) {
         const n = nodes[j];
-        if (n.type === "heading" && n.depth === 3) break;
+        const maybeHeading = n as HeadingNode;
+        if (maybeHeading.type === "heading" && maybeHeading.depth === 3) break;
         phaseNodes.push(n);
       }
 
