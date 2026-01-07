@@ -165,8 +165,8 @@ For v1 simplicity, prefer **Edge Functions for writes** and keep realtime subscr
 ---
 
 ## Open decisions to confirm
-- Expected max audience size (10 vs 50 vs 200+) → impacts rate limiting and wallboard rendering strategy.
-- Whether the wallboard should display **all participants** or only aggregates for larger audiences.
+- Target audience size is ~20 → optimize for simplicity over extreme scale.
+- Wallboard is **aggregate-only** (no individual participant roster).
 - Whether host controls need moderation (kick user) in v1.
 
 

@@ -71,6 +71,7 @@ The architecture doc recommends: **Next.js + TypeScript + MUI + Supabase**.
 - **Start from PRDs**: implement in PRD order unless Jay directs otherwise.
 - **Thin vertical slices**: ship the smallest end-to-end increment that’s useful.
 - **Explain decisions**: update docs when architecture or product decisions change.
+- **Keep the process log current**: after each user-guided step (decision or implementation), append an entry to `docs/our-process-log.md`.
 - **No speculative work**: implement what’s required and verified by tests.
 
 ### Code review checklist

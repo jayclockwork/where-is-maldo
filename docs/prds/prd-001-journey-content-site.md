@@ -92,7 +92,7 @@ Deliver a **static-first** website experience that renders the journey in a **cl
 
 ## Dependencies
 - Final confirmation of primary brand cues to mirror from `clockwork.com` (typography + color usage).
-- Agreement on whether this is a single-page journey or includes a minimal landing page.
+- Landing page is included in v1 (simple, CTA-focused).
 
 ---
 

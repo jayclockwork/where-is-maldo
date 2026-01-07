@@ -77,7 +77,7 @@ Enable **live sessions** where participants can join via a code/link and toggle 
 
 ## Success metrics
 - Median join time (link → active participant) < 15 seconds.
-- Realtime propagation within ~1 second for typical audiences (see open question on scale).
+- Realtime propagation within ~1 second for typical audiences (target audience size: ~20).
 - Participants can meaningfully self-map without instructions beyond “join + toggle what you’re doing.”
 
 ---
@@ -106,7 +106,6 @@ Enable **live sessions** where participants can join via a code/link and toggle 
 ---
 
 ## Open questions
-- Expected max audience size (10 vs 50 vs 200+)?
 - Should offline behavior allow queued toggles or block edits until reconnected?
 
 

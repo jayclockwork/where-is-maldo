@@ -220,4 +220,36 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
 - **Open questions / follow-ups for Jay**:
   - none
 
+#### Step 9 — Lock pre-coding product decisions (audience, wallboard, retention, landing)
+- **Date/Time**: 2026-01-07
+- **Step type**: Decision
+- **User guidance** (what Jay said):
+  - Audience target size is 20.
+  - Always show aggregate on the wallboard.
+  - Data is maintained until a “clear results” button is pressed.
+  - A landing page would be nice.
+  - UI/UX should feel like a modern app.
+- **Decision(s) recorded**:
+  - Design and performance target: typical session size ~20 participants.
+  - Wallboard is **aggregate-only** (no participant roster).
+  - Session data persists until the host presses **Clear results** (no auto-retention deletion policy in v1).
+  - Include a landing page (`/`) in v1 in addition to the journey page.
+- **Clarifications / assumptions**:
+  - “Modern app” implies responsive layout, clear navigation, and polished states (loading/error/empty) throughout.
+- **Plan executed** (what the assistant did):
+  - Updated requirements + PRDs + architecture notes to reflect the decisions above.
+- **Files changed**:
+  - `docs/requirements-journey-site.md` — landing page, aggregate-only wallboard, clear results retention model
+  - `docs/prds/prd-001-journey-content-site.md` — landing page confirmed
+  - `docs/prds/prd-002-live-sessions-and-mapping.md` — audience size noted; removed resolved question
+  - `docs/prds/prd-003-presentation-wallboard.md` — aggregate-only wallboard
+  - `docs/prds/prd-004-host-admin-and-export.md` — “clear results” terminology
+  - `docs/architecture.md` — open decisions updated
+- **Commands / tools used**:
+  - none
+- **Outcome**:
+  - We have enough locked decisions to start implementing PRD 001 without scope churn.
+- **Open questions / follow-ups for Jay**:
+  - Offline behavior choice for toggles (queue vs block) remains open (PRD 002).
+
 

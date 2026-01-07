@@ -38,19 +38,9 @@ Provide a **wallboard/presentation mode** that renders a big-screen friendly, li
   - participant count
   - last update indicator (optional)
 
-### Live participant roster
-- Display participant cards/rows including:
-  - display name
-  - avatar color/icon
-  - a compact indicator of current activity (see below)
-- Sorting:
-  - default: most recently active first
-  - optional: alphabetical
-
-### “Where am I active?” indicator
-Because mapping is per-item “Doing”, the wallboard should summarize:
-- **Per participant**: the phase with the highest count of “Doing” toggles (highlight that phase label)
-- **Per phase (aggregate)**: total number of “Doing” toggles across all participants in that phase
+### Aggregate-only wallboard (no individual roster)
+- The wallboard shows **aggregate-only** information (no participant list, no per-person indicators).
+- The wallboard should emphasize “where the room is” rather than “who is doing what”.
 
 ### Aggregate visualization
 Choose at least one aggregate visualization:
@@ -70,7 +60,7 @@ Choose at least one aggregate visualization:
 ## UX notes
 - Avoid tiny icons; prioritize “glanceable” shapes and labels.
 - Keep the color system accessible; color supports meaning but does not carry it alone.
-- For large audiences, prefer aggregate-first views with optional roster paging.
+- Target audience size is ~20, but we still prefer aggregate-only to keep the projection clean.
 
 ---
 
@@ -82,7 +72,6 @@ Choose at least one aggregate visualization:
 
 ## Acceptance criteria
 - Wallboard loads for a given session and subscribes to live updates.
-- Participant roster shows joined participants with visible identifiers.
 - Aggregate phase counts update as participants toggle “Doing”.
 - Fullscreen works and doesn’t break layout.
 
@@ -103,6 +92,6 @@ Choose at least one aggregate visualization:
 ---
 
 ## Open questions
-- Should we always show individuals, or switch to aggregate-only above a threshold (e.g., > 50 participants)?
+- none
 
 

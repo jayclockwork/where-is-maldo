@@ -6,7 +6,7 @@ Build a **static website** that displays the “Common Software Engineer LLM Jou
 
 ### Goals
 - **Readable journey**: Make `docs/journey-better.md` easy to read, scan, and reference on any device.
-- **Live self-mapping**: Allow multiple participants to indicate what they’ve done / are doing across the journey.
+- **Live self-mapping**: Allow multiple participants to indicate what they’re doing across the journey.
 - **Audience visibility**: Provide a “presentation view” that shows the group’s live state (who is where) at a glance.
 - **Clockwork brand alignment**: Match the look/feel of `clockwork.com` (typography, contrast, color usage, spacing, tone).
 
@@ -19,21 +19,24 @@ Build a **static website** that displays the “Common Software Engineer LLM Jou
 
 ## Users & contexts
 - **Presenter (host)**: Runs the session during a talk/workshop; wants a clean “wallboard” view.
-- **Participant**: Joins from their device; marks where they are; wants privacy controls.
+- **Participant**: Joins from their device; marks where they are.
 - **Observer**: Watches the aggregated results (in-room display or personal device).
 
 ---
 
 ## Information architecture (pages)
+- **Landing page**
+  - Brief explanation of the journey and the live session concept.
+  - Primary CTAs: “View Journey” and “Join Session”.
 - **Journey page**
   - Displays the phases and their items (from the journey doc).
-  - Supports per-item “done / doing” check-offs (when in a session).
+  - Supports per-item “Doing” toggles (when in a session).
 - **Join session page**
-  - Enter session code/link, choose display name (or anonymous), choose a color/avatar.
+  - Enter session code/link, choose display name, choose a color/avatar.
 - **Presentation view (wallboard)**
-  - Optimized for big screens; shows participants and their current mapping live.
+  - Optimized for big screens; shows **aggregate** session activity live.
 - **Session admin (host controls)**
-  - Create/close session, reset, export, moderation (optional for v1).
+  - Create/close session, clear results, export, moderation (optional for v1).
 
 ---
 
@@ -51,19 +54,14 @@ Build a **static website** that displays the “Common Software Engineer LLM Jou
 
 ### 2) Self-mapping (participant interaction)
 - **Per-item status**
-  - Each journey item supports: **Not started**, **Doing**, **Done**.
+  - Each journey item supports a single state: **Doing** (on/off).
   - Toggling updates instantly for all viewers in the same session.
 - **Per-phase summary**
-  - Automatically compute a phase summary for each participant (e.g., “mostly doing”, “mostly done”, or percent complete).
+  - Automatically compute per-phase counts of “Doing” toggles for each participant (for summary UI).
 - **Identity**
   - Participants can select:
-    - Display name (required) OR anonymous alias (allowed)
+    - Display name (required)
     - Optional avatar color/icon
-- **Privacy controls**
-  - Participant can choose what is visible:
-    - **Public**: show name + mapping
-    - **Anonymous**: show alias + mapping
-    - **Hidden**: contribute to aggregate only (no individual shown)
 
 ### 3) Live changes (real-time collaboration)
 - **Real-time sync**
@@ -76,10 +74,7 @@ Build a **static website** that displays the “Common Software Engineer LLM Jou
 
 ### 4) Presentation mode (audience-friendly view)
 - **Wallboard layout**
-  - Show participants as cards/rows with:
-    - name/alias/color
-    - current phase emphasis (e.g., highlight the phase where they have the most “Doing”)
-    - optional mini progress indicators per phase
+  - Wallboard shows **aggregate-only** information (no individual participant roster).
 - **Aggregate view**
   - Show totals per phase (e.g., count of participants with “Doing” in each phase).
   - Optional “heatmap” for items (popular items light up).
@@ -97,11 +92,11 @@ Build a **static website** that displays the “Common Software Engineer LLM Jou
 - **Session states**
   - Open / closed.
   - When closed, new joins are blocked; existing viewers can still see final state.
-- **Reset**
-  - Host can reset the session mapping (with confirmation).
+- **Clear results**
+  - Host can clear all results for the session (with confirmation).
 - **Export**
   - Export aggregate results to JSON/CSV.
-  - Export should respect privacy settings (e.g., omit hidden participant identities).
+  - Export includes session + participant + mapping data.
 
 ---
 
@@ -109,9 +104,9 @@ Build a **static website** that displays the “Common Software Engineer LLM Jou
 - **Session**
   - id, createdAt, status, title (optional), hostKey/adminToken (implementation detail)
 - **Participant**
-  - id, sessionId, displayName/alias, visibilityMode, avatarColor, joinedAt, lastSeenAt
+  - id, sessionId, displayName, avatarColor, joinedAt, lastSeenAt
 - **Mapping**
-  - participantId, itemId, status (not_started|doing|done), updatedAt
+  - participantId, itemId, isDoing (boolean), updatedAt
 - **Journey item**
   - stable `itemId` per bullet (derived from phase + text slug, or explicit IDs)
 
@@ -132,12 +127,12 @@ The website should be deployable as static assets (HTML/CSS/JS) but may use a **
 ## Security, safety, and moderation
 - **Access control**
   - A session code/link should be required to join a session.
-  - Only host can reset/close/export.
+  - Only host can clear results/close/export.
 - **Abuse prevention**
   - Basic rate limiting / debouncing on rapid toggles.
   - Optional: host “remove participant” control (v1.1 if needed).
 - **Data retention**
-  - Define default retention (e.g., auto-delete sessions after N days) and allow host to export before deletion.
+  - Session data is retained until the host presses **Clear results**.
 
 ---
 
@@ -173,8 +168,7 @@ The site should feel like a Clockwork property, not a generic dashboard.
 
 ## Open questions (to resolve with Jay)
 - Should sessions require any authentication, or is “link + name” sufficient?
-- Do we want **anonymous-by-default** during presentations?
 - Should mapping be per-bullet only, or also allow “I’m currently in Phase X” as a single quick selector?
-- What is the expected max audience size (10, 50, 200+)? This impacts the realtime approach.
+- Offline behavior: queue toggles locally or block edits until reconnected?
 
 
