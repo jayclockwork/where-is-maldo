@@ -13,10 +13,10 @@ export default function Home() {
         <Container maxWidth="lg">
           <Stack spacing={3} sx={{ maxWidth: 860 }}>
             <Typography variant="h2" component="h1" sx={{ lineHeight: 1.05 }}>
-              Map your team’s LLM journey.
+              Map your engineering team’s LLM journey.
             </Typography>
             <Typography variant="h5" sx={{ color: "rgba(0,0,0,0.75)", maxWidth: 720 }}>
-              A clear, scannable view of the common phases software engineers go through when adopting LLMs—built for
+              The common phases software engineers go through when adopting LLMs, built for
               reading and for live workshops.
             </Typography>
             <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>

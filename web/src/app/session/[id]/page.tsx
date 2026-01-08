@@ -138,9 +138,27 @@ export default function SessionPage() {
             Session
           </Typography>
           {session ? (
-            <Typography sx={{ color: "text.secondary" }}>
-              Join code: <strong>{session.joinCode}</strong>
-            </Typography>
+            <Stack direction="row" spacing={1} alignItems="center" useFlexGap flexWrap="wrap">
+              <Typography sx={{ color: "text.secondary" }}>
+                Join code: <strong>{session.joinCode}</strong>
+              </Typography>
+              <Button
+                component={Link}
+                href={`/wallboard/${sessionId}?kiosk=1`}
+                variant="outlined"
+                size="small"
+              >
+                Open wallboard
+              </Button>
+              <Button
+                component={Link}
+                href={`/wallboard-ghosts/${sessionId}?kiosk=1`}
+                variant="outlined"
+                size="small"
+              >
+                Open wallboard (ghosts)
+              </Button>
+            </Stack>
           ) : (
             <Typography sx={{ color: "text.secondary" }}>
               Session ID: <code>{sessionId}</code>
