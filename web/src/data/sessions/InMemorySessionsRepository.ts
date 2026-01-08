@@ -132,28 +132,6 @@ export class InMemorySessionsRepository implements SessionsRepository {
     };
   }
 
-  async closeSession(input: AdminActionInput): Promise<Session> {
-    this.assertAdmin(input);
-    const session = this.sessionsById.get(input.sessionId);
-    if (!session) throw new Error("Session not found");
-    if (session.status === "closed") return session;
-    const updated: Session = { ...session, status: "closed" };
-    this.sessionsById.set(input.sessionId, updated);
-    this.emit(input.sessionId, { type: "session_updated", session: updated });
-    return updated;
-  }
-
-  async reopenSession(input: AdminActionInput): Promise<Session> {
-    this.assertAdmin(input);
-    const session = this.sessionsById.get(input.sessionId);
-    if (!session) throw new Error("Session not found");
-    if (session.status === "open") return session;
-    const updated: Session = { ...session, status: "open" };
-    this.sessionsById.set(input.sessionId, updated);
-    this.emit(input.sessionId, { type: "session_updated", session: updated });
-    return updated;
-  }
-
   async clearResults(input: AdminActionInput): Promise<void> {
     this.assertAdmin(input);
     const keys = this.mappingKeysBySessionId.get(input.sessionId);

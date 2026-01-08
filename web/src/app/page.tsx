@@ -61,7 +61,7 @@ export default function Home() {
                   <Button variant="text" component={Link} href="/host">
                     Create session →
                   </Button>
-                  <Button variant="text" component={Link} href="/s/DEMO20">
+                  <Button variant="text" component={Link} href="/join">
                     Join Session →
                   </Button>
                   <Button variant="text" component={Link} href="/w/DEMO20">

@@ -6,7 +6,6 @@ To run live sessions smoothly, a presenter needs basic administrative controls (
 ### Goal
 Provide a host/admin experience that enables:
 - creating sessions,
-- closing sessions (stop new joins),
 - clearing results,
 - exporting results,
 - and basic operational safety (confirmations, guardrails).
@@ -25,7 +24,6 @@ Provide a host/admin experience that enables:
 
 ## User stories
 - As a host, I can create a session and get a join link/code.
-- As a host, I can close a session so no new participants can join.
 - As a host, I can clear results (clear mappings) with confirmation.
 - As a host, I can export results after the session.
 
@@ -48,12 +46,6 @@ Provide a host/admin experience that enables:
   - join link
   - wallboard link
   - admin link/token
-
-### Close / reopen session
-- Host can:
-  - close session (blocks new joins)
-  - optionally reopen (if you want this in v1; otherwise omit and keep one-way close)
-- UI must show current session state clearly.
 
 ### Clear results
 - Host can clear all results for the session (clear mappings).
@@ -100,7 +92,6 @@ Provide a host/admin experience that enables:
 
 ## Acceptance criteria
 - Host can create a session and retrieve join/wallboard/admin links.
-- Closing a session prevents new joins.
 - Reset clears existing mappings and updates all connected clients.
 - Export produces a valid JSON file with expected contents.
 
@@ -121,7 +112,6 @@ Provide a host/admin experience that enables:
 ---
 
 ## Open questions
-- Should “close session” be reversible in v1?
 - Do we need moderation (“remove participant”) for the first live events?
 
 

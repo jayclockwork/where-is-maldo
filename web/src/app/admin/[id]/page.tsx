@@ -87,46 +87,6 @@ export default function AdminPage() {
     };
   }, [sessionId]);
 
-  async function closeSession() {
-    if (!adminToken) return;
-    setBusy(true);
-    setError(null);
-    const res = await fetch("/api/sessions/close", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ sessionId, adminToken }),
-    });
-    if (!res.ok) {
-      const body = (await res.json().catch(() => ({}))) as { error?: string };
-      setError(body.error ?? "Failed to close session.");
-      setBusy(false);
-      return;
-    }
-    const data = (await res.json()) as { session: Session };
-    setState((prev) => (prev ? { ...prev, session: data.session } : prev));
-    setBusy(false);
-  }
-
-  async function reopenSession() {
-    if (!adminToken) return;
-    setBusy(true);
-    setError(null);
-    const res = await fetch("/api/sessions/reopen", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ sessionId, adminToken }),
-    });
-    if (!res.ok) {
-      const body = (await res.json().catch(() => ({}))) as { error?: string };
-      setError(body.error ?? "Failed to reopen session.");
-      setBusy(false);
-      return;
-    }
-    const data = (await res.json()) as { session: Session };
-    setState((prev) => (prev ? { ...prev, session: data.session } : prev));
-    setBusy(false);
-  }
-
   async function clearResults() {
     if (!adminToken) return;
     setBusy(true);
@@ -231,13 +191,6 @@ export default function AdminPage() {
                   <Divider />
 
                   <Stack direction={{ xs: "column", sm: "row" }} spacing={1} useFlexGap flexWrap="wrap">
-                    <Button
-                      variant="outlined"
-                      onClick={state.session.status === "open" ? closeSession : reopenSession}
-                      disabled={!adminToken || busy}
-                    >
-                      {state.session.status === "open" ? "Close session" : "Reopen session"}
-                    </Button>
                     <Button
                       variant="text"
                       color="error"

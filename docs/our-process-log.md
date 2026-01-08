@@ -1993,4 +1993,43 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
 - **Commands / tools used**:
   - `npm run lint`
 
+#### Step 101 — Remove “close session” from PRD 004 (clear results is enough)
+- **Date/Time**: 2026-01-08
+- **Step type**: Decision + Implementation
+- **User guidance** (what Jay decided):
+  - We don’t need a close session feature; clearing results is enough.
+- **What changed**:
+  - Removed close/reopen session from the repository interface/implementation, API routes, admin UI, and tests.
+  - Updated PRD 004 to remove close/reopen requirements and acceptance criteria.
+- **Files changed**:
+  - `web/src/domain/sessions/repository.ts`
+  - `web/src/data/sessions/InMemorySessionsRepository.ts`
+  - `web/src/app/admin/[id]/page.tsx`
+  - `web/src/app/api/sessions/clear/route.ts`
+  - `web/src/app/api/sessions/close/route.ts` (deleted)
+  - `web/src/app/api/sessions/reopen/route.ts` (deleted)
+  - `web/src/data/sessions/InMemorySessionsRepository.test.ts`
+  - `docs/prds/prd-004-host-admin-and-export.md`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 102 — Add “Join” flow that prompts for a session code
+- **Date/Time**: 2026-01-08
+- **Step type**: UX / Implementation
+- **User guidance** (what Jay asked for):
+  - “When someone clicks join a session, seems like they should need to add the join code.”
+- **What changed**:
+  - Added `/join` page that prompts for a join code and routes to `/s/[code]`.
+  - Updated global “Join Session” entry points (home + app bar) to point to `/join` instead of a hard-coded demo code.
+- **Files changed**:
+  - `web/src/app/join/page.tsx`
+  - `web/src/components/SiteAppBar.tsx`
+  - `web/src/app/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
 

@@ -35,8 +35,6 @@ export interface SessionsRepository {
   listMappings(sessionId: string): Promise<Mapping[]>;
 
   // Host/admin controls (PRD 004)
-  closeSession(input: AdminActionInput): Promise<Session>;
-  reopenSession(input: AdminActionInput): Promise<Session>;
   clearResults(input: AdminActionInput): Promise<void>;
   exportSession(input: AdminActionInput): Promise<SessionExportV1>;
 

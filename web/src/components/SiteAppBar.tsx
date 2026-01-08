@@ -39,8 +39,7 @@ export function SiteAppBar({
                 color="primary"
                 variant="contained"
                 component={Link}
-                href="/s/DEMO20"
-                title="Demo join link (PRD 002 wiring in progress)"
+                href="/join"
               >
                 Join Session
               </Button>

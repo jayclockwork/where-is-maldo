@@ -68,15 +68,6 @@ describe("InMemorySessionsRepository", () => {
     expect((await repo.listMappings(session.id)).length).toBe(0);
   });
 
-  it("closeSession blocks new joins until reopened", async () => {
-    const repo = new InMemorySessionsRepository();
-    const { session, adminToken } = await repo.createSession({ joinCode: "CLOSE01" });
-    await repo.closeSession({ sessionId: session.id, adminToken });
-    await expect(repo.joinSession({ joinCode: session.joinCode, displayName: "A" })).rejects.toThrow(/closed/i);
-    await repo.reopenSession({ sessionId: session.id, adminToken });
-    await expect(repo.joinSession({ joinCode: session.joinCode, displayName: "B" })).resolves.toBeTruthy();
-  });
-
   it("rejects admin actions with an invalid token", async () => {
     const repo = new InMemorySessionsRepository();
     const { session } = await repo.createSession({ joinCode: "BADTOK" });
