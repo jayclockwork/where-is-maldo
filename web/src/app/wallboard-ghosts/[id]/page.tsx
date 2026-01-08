@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   Alert,
@@ -10,7 +10,9 @@ import {
   Chip,
   CircularProgress,
   Container,
+  FormControlLabel,
   Stack,
+  Switch,
   Typography,
 } from "@mui/material";
 
@@ -26,10 +28,14 @@ import { PacmanGhostSvg } from "@/components/wallboard/PacmanGhostSvg";
 type ConnectionState = "connecting" | "connected" | "reconnecting";
 
 export default function WallboardGhostsPage() {
+  const router = useRouter();
+  const pathname = usePathname();
   const params = useParams<{ id: string }>();
   const sessionId = params.id;
   const searchParams = useSearchParams();
   const kiosk = searchParams.get("kiosk") === "1";
+  // Default OFF. Only show names if explicitly enabled via ?names=1.
+  const [showNames, setShowNames] = useState(searchParams.get("names") === "1");
 
   const [journey, setJourney] = useState<JourneyDoc | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -117,6 +123,19 @@ export default function WallboardGhostsPage() {
     return () => mq.removeEventListener?.("change", update);
   }, []);
 
+  useEffect(() => {
+    // Keep state in sync if URL changes externally.
+    setShowNames(searchParams.get("names") === "1");
+  }, [searchParams]);
+
+  function setNamesInUrl(nextShowNames: boolean) {
+    const sp = new URLSearchParams(searchParams.toString());
+    if (nextShowNames) sp.set("names", "1");
+    else sp.delete("names");
+    const qs = sp.toString();
+    router.replace(qs ? `${pathname}?${qs}` : pathname);
+  }
+
   async function toggleFullscreen() {
     if (typeof document === "undefined") return;
     if (!document.fullscreenElement) await document.documentElement.requestFullscreen?.();
@@ -124,6 +143,12 @@ export default function WallboardGhostsPage() {
   }
 
   const joinCode = session?.joinCode;
+
+  function shortenName(name: string) {
+    const trimmed = name.trim();
+    if (!trimmed) return "Anon";
+    return trimmed.length > 14 ? `${trimmed.slice(0, 13)}…` : trimmed;
+  }
 
   function pupilMotionForPath(path: string, durSeconds: number): { durSeconds: number; values: string; keyTimes: string } | null {
     // Parse "M x y L x y ..." into points.
@@ -168,7 +193,7 @@ export default function WallboardGhostsPage() {
           <Box sx={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 2, flexWrap: "wrap" }}>
             <Box sx={{ minWidth: 0 }}>
               <Typography variant="h4" component="h1" sx={{ fontWeight: 900 }}>
-                Wallboard (Ghosts)
+                Wallboard
               </Typography>
               <Stack direction="row" spacing={1} alignItems="center" useFlexGap flexWrap="wrap" sx={{ mt: 1 }}>
                 {joinCode ? <Chip label={`Code: ${joinCode}`} /> : null}
@@ -181,6 +206,18 @@ export default function WallboardGhostsPage() {
             </Box>
 
             <Stack direction="row" spacing={1} alignItems="center">
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={showNames}
+                    onChange={(_, checked) => {
+                      setShowNames(checked);
+                      setNamesInUrl(checked);
+                    }}
+                  />
+                }
+                label="Show names"
+              />
               <Button variant="outlined" onClick={toggleFullscreen}>
                 Fullscreen
               </Button>
@@ -211,11 +248,14 @@ export default function WallboardGhostsPage() {
               }}
             >
               {ghosts.phases.map((phase) => {
+                const participantIdToName = new Map(participants.map((p) => [p.id, p.displayName] as const));
+
                 // Render each participant's ghosts (one per section toggle in this phase).
-                const ghostElements: { key: string; color: string }[] = [];
+                const ghostElements: { key: string; color: string; name: string }[] = [];
                 for (const [participantId, n] of phase.ghostsByParticipantId.entries()) {
                   const color = ghosts.participantIdToColor.get(participantId) ?? "#8E8E93";
-                  for (let i = 0; i < n; i++) ghostElements.push({ key: `${participantId}:${i}`, color });
+                  const name = shortenName(participantIdToName.get(participantId) ?? "Anon");
+                  for (let i = 0; i < n; i++) ghostElements.push({ key: `${participantId}:${i}`, color, name });
                 }
 
                 const durationSeconds = 10;
@@ -241,16 +281,21 @@ export default function WallboardGhostsPage() {
                   >
                     <Box sx={{ mb: 1.5 }}>
                       <Typography sx={{ fontWeight: 900 }}>{phase.title}</Typography>
-                      <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                        {ghostElements.length} {ghostElements.length === 1 ? "ghost" : "ghosts"}
-                      </Typography>
+                      <Stack direction="row" justifyContent="space-between" alignItems="baseline">
+                        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                          {ghostElements.length} {ghostElements.length === 1 ? "ghost" : "ghosts"}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                          {phase.ghostsByParticipantId.size} {phase.ghostsByParticipantId.size === 1 ? "person" : "people"}
+                        </Typography>
+                      </Stack>
                     </Box>
                     <Box
                       sx={{
                         flex: "1 1 auto",
-                        borderRadius: 2,
+                        borderRadius: 0,
                         overflow: "hidden",
-                        border: "1px solid rgba(0,0,0,0.12)",
+                        border: "none",
                       }}
                     >
                       <svg
@@ -259,8 +304,21 @@ export default function WallboardGhostsPage() {
                         viewBox={`0 0 ${mazeW} ${mazeH}`}
                         preserveAspectRatio="xMidYMid meet"
                       >
-                        <rect x="0" y="0" width={mazeW} height={mazeH} fill="rgba(0,0,0,0.02)" />
-                        <path d={wallsPath} stroke="rgba(0,0,0,0.20)" strokeWidth="2" fill="none" />
+                        <defs>
+                          <filter id="ghostShadow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feDropShadow dx="0" dy="1.25" stdDeviation="1.2" floodColor="rgba(0,0,0,0.35)" />
+                          </filter>
+                        </defs>
+
+                        <rect x="0" y="0" width={mazeW} height={mazeH} fill="rgba(0,0,0,0.015)" />
+                        <path
+                          d={wallsPath}
+                          stroke="rgba(0,87,255,0.50)"
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          fill="none"
+                        />
 
                         {ghostElements.length ? (
                           ghostElements.map((g) => {
@@ -282,7 +340,24 @@ export default function WallboardGhostsPage() {
                                 {reduceMotion ? null : (
                                   <animateMotion dur={`${durationSeconds}s`} repeatCount="indefinite" path={path} />
                                 )}
-                                <PacmanGhostSvg color={g.color} size={26} pupilMotion={pupilMotion} />
+                                <g filter="url(#ghostShadow)">
+                                  <PacmanGhostSvg color={g.color} size={26} pupilMotion={pupilMotion} />
+                                </g>
+                                {showNames ? (
+                                  <text
+                                    x="0"
+                                    y="30"
+                                    textAnchor="middle"
+                                    fontSize="12"
+                                    fontWeight="700"
+                                    fill="rgba(0,0,0,0.85)"
+                                    stroke="rgba(255,255,255,0.95)"
+                                    strokeWidth="4"
+                                    paintOrder="stroke"
+                                  >
+                                    {g.name}
+                                  </text>
+                                ) : null}
                               </g>
                             );
                           })
