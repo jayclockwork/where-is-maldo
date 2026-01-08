@@ -167,7 +167,7 @@ export default function WallboardGhostsPage() {
       setLastUpdateAtMs(Date.now());
     }
 
-    const t = window.setInterval(() => void refresh(), 1000);
+    const t = window.setInterval(() => void refresh(), 5000);
     return () => {
       alive = false;
       window.clearInterval(t);

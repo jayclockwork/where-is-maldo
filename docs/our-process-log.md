@@ -2166,4 +2166,39 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
   - `npm test`
   - `npm run build`
 
+#### Step 111 — Fix production staleness by disabling caching on session GET endpoints
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Toggle counts weren’t updating without refresh; join failed a couple times before eventually working.
+- **Hypothesis**:
+  - Vercel/Next was caching GET responses for session state / join-code lookup, causing stale “session not found” and stale counts even with client polling.
+- **What changed**:
+  - Marked `GET /api/sessions/state/:id` and `GET /api/sessions/by-code/:code` as dynamic (`force-dynamic`, `revalidate = 0`).
+  - Added explicit `Cache-Control: no-store` headers to their responses.
+- **Files changed**:
+  - `web/src/app/api/sessions/state/[id]/route.ts`
+  - `web/src/app/api/sessions/by-code/[code]/route.ts`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 112 — Reduce polling fallback frequency to 5 seconds
+- **Date/Time**: 2026-01-08
+- **Step type**: Decision + Implementation
+- **User guidance** (what Jay asked for):
+  - Change polling to every 5 seconds.
+- **Decision(s) recorded**:
+  - Keep SSE as the primary live-update path; use polling strictly as a robustness fallback at a lower frequency to reduce load.
+- **What changed**:
+  - Increased the fallback refresh interval from 1s to 5s on the session page and wallboard-ghosts page.
+- **Files changed**:
+  - `web/src/app/session/[id]/page.tsx`
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
 
