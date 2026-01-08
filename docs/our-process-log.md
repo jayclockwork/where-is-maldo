@@ -1855,4 +1855,16 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
 - **Commands / tools used**:
   - `npm run lint`
 
+#### Step 92 — Remove “Wallboard” heading from the wallboard page
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Get rid of the “Wallboard” heading on the wallboard page.
+- **What changed**:
+  - Removed the `Wallboard` `<h1>` from the ghosts wallboard header while keeping the status chips and controls.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+
 

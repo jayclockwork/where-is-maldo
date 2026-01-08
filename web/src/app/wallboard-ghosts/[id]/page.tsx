@@ -236,10 +236,7 @@ export default function WallboardGhostsPage() {
         <Stack spacing={2.5}>
           <Box sx={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 2, flexWrap: "wrap" }}>
             <Box sx={{ minWidth: 0 }}>
-              <Typography variant="h4" component="h1" sx={{ fontWeight: 900 }}>
-                Wallboard
-              </Typography>
-              <Stack direction="row" spacing={1} alignItems="center" useFlexGap flexWrap="wrap" sx={{ mt: 1 }}>
+              <Stack direction="row" spacing={1} alignItems="center" useFlexGap flexWrap="wrap">
                 {joinCode ? <Chip label={`Code: ${joinCode}`} /> : null}
                 <Chip label={`Participants: ${participants.length}`} />
                 <Chip
