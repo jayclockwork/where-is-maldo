@@ -2032,4 +2032,23 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
   - `npm test`
   - `npm run build`
 
+#### Step 103 — Add Playwright E2E coverage + ignore test artifacts
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation + Quality
+- **What changed**:
+  - Added Playwright (`@playwright/test`), config, and a first E2E spec that covers the core workshop loop:
+    create session → join → toggle propagates → wallboard clear → export.
+  - Updated E2E server to run in prod-mode on a dedicated port for deterministic in-memory behavior.
+  - Added `.gitignore` entries for Playwright artifacts (`test-results/`, `playwright-report/`).
+- **Files changed**:
+  - `web/package.json`
+  - `web/playwright.config.ts`
+  - `web/e2e/workshop-flow.spec.ts`
+  - `web/src/app/s/[code]/page.tsx` (added `aria-label` for color picker buttons)
+  - `web/.gitignore`
+- **Commands / tools used**:
+  - `npm install`
+  - `npx playwright install chromium`
+  - `npm run test:e2e`
+
 

@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const port = Number(process.env.PORT ?? 3001);
+// Use a dedicated port for E2E so we don't accidentally attach to a user-running dev server.
+const port = Number(process.env.PORT ?? 3100);
 
 export default defineConfig({
   testDir: "./e2e",
@@ -14,9 +15,12 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   webServer: {
-    command: `npm run dev -- --port ${port}`,
+    // Use production mode for E2E to ensure a single, consistent in-memory repo instance.
+    // (Next dev can fan out work and cause separate module instances in some setups.)
+    command: `npm run build && npx next start -p ${port}`,
     url: `http://localhost:${port}`,
-    reuseExistingServer: !process.env.CI,
+    // Always start our own server for determinism.
+    reuseExistingServer: false,
     timeout: 120_000,
   },
   projects: [

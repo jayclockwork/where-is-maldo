@@ -53,6 +53,17 @@ test("workshop flow: create → join → toggle propagates → wallboard clear �
   // Host clears results from wallboard
   await obs.getByRole("button", { name: /clear results/i }).click();
   await obs.getByRole("button", { name: /^Clear$/ }).click();
+  // Dialog closes only on successful clear.
+  await expect(obs.getByRole("dialog")).toHaveCount(0);
+  // Verify server-side state is cleared (guards against silent auth failures).
+  await expect
+    .poll(async () => {
+      const res = await request.get(`/api/sessions/state/${encodeURIComponent(sessionId)}`, { failOnStatusCode: false });
+      if (!res.ok()) return -1;
+      const json = (await res.json()) as { mappings?: unknown[] };
+      return json.mappings?.length ?? 0;
+    })
+    .toBe(0);
 
   // Participant A should receive results_cleared and switch goes off
   await expect(basicSwitch).not.toBeChecked();
