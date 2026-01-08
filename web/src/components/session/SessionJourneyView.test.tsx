@@ -45,7 +45,7 @@ describe("<SessionJourneyView />", () => {
     );
 
     // MUI AccordionSummary renders as a button with aria-expanded.
-    expect(screen.getByRole("button", { name: /phase 1: research/i })).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("button", { name: /step 1: research/i })).toHaveAttribute("aria-expanded", "true");
 
     // Toggles should live on the section heading (not the bullet).
     expect(screen.getByRole("switch", { name: /toggle doing for basic research/i })).toBeInTheDocument();
@@ -76,7 +76,7 @@ describe("<SessionJourneyView />", () => {
       <SessionJourneyView journey={journey} mappings={mappings} myParticipantId="p1" onToggle={() => {}} />,
     );
 
-    expect(screen.getByRole("button", { name: /phase 1: research/i })).toHaveTextContent("✅");
+    expect(screen.getByRole("button", { name: /step 1: research/i })).toHaveTextContent("✅");
   });
 
   it("fires confetti when a phase transitions into complete", async () => {

@@ -39,10 +39,10 @@ describe("<JourneyView />", () => {
     renderWithTheme(<JourneyView journey={sample} />);
 
     // MUI AccordionSummary is a button; when collapsed, aria-expanded should be false.
-    expect(screen.getByRole("button", { name: /phase 1: research/i })).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByRole("button", { name: /step 1: research/i })).toHaveAttribute("aria-expanded", "false");
 
-    await user.click(screen.getByRole("button", { name: /phase 1: research/i }));
-    expect(screen.getByRole("button", { name: /phase 1: research/i })).toHaveAttribute("aria-expanded", "true");
+    await user.click(screen.getByRole("button", { name: /step 1: research/i }));
+    expect(screen.getByRole("button", { name: /step 1: research/i })).toHaveAttribute("aria-expanded", "true");
   });
 });
 

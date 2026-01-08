@@ -134,7 +134,7 @@ export default function JoinSessionPage() {
       return;
     }
     if (!selectedColor) {
-      setError("Please pick a color.");
+      setError("Please pick a ghost color.");
       return;
     }
 
@@ -181,7 +181,7 @@ export default function JoinSessionPage() {
         <Stack spacing={3}>
           <Box>
             <Typography variant="h4" component="h1" sx={{ fontWeight: 900 }}>
-              Join session
+              Join a Session
             </Typography>
             <Typography sx={{ color: "text.secondary", mt: 1 }}>
               Session: <strong>{joinCode}</strong>
@@ -209,7 +209,7 @@ export default function JoinSessionPage() {
                   />
 
                   <Box>
-                    <Typography sx={{ fontWeight: 800, mb: 1 }}>Pick a color</Typography>
+                    <Typography sx={{ fontWeight: 800, mb: 1 }}>Pick a ghost color</Typography>
                     <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
                       {visibleColors.map((hex) => {
                         const taken = usedColors.has(hex.toLowerCase());
@@ -251,17 +251,10 @@ export default function JoinSessionPage() {
                         );
                       })}
                     </Stack>
-                    <Typography variant="caption" sx={{ color: "text.secondary", display: "block", mt: 1 }}>
-                      Colors are unique per session—once someone picks one, it disappears from this list.
-                    </Typography>
                   </Box>
 
                   <Button variant="contained" color="primary" onClick={onJoin} disabled={joining}>
                     {joining ? "Joining…" : "Join"}
-                  </Button>
-
-                  <Button component={Link} href="/journey" variant="text">
-                    Back to journey →
                   </Button>
                 </Stack>
               </CardContent>

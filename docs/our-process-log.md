@@ -1867,4 +1867,23 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
 - **Commands / tools used**:
   - `npm run lint`
 
+#### Step 93 — Globally rename “Phase” → “Step” in the UI
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Globally change the use of “Phase” to “Step”.
+- **What changed**:
+  - Introduced a small display helper and updated Journey/Session/Wallboard views to render “Step …” while keeping stable IDs unchanged.
+- **Files changed**:
+  - `web/src/lib/text/phaseToStep.ts`
+  - `web/src/components/journey/JourneyView.tsx`
+  - `web/src/components/session/SessionJourneyView.tsx`
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+  - `web/src/components/journey/JourneyView.test.tsx`
+  - `web/src/components/session/SessionJourneyView.test.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
 

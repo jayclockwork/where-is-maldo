@@ -18,6 +18,7 @@ import type { JourneyDoc } from "@/lib/journey/types";
 import type { Mapping } from "@/domain/sessions/types";
 import { buildSessionJourneyModel } from "@/lib/session/sessionContentModel";
 import { launchConfetti } from "@/ui/effects/confetti";
+import { phaseTitleToStepTitle } from "@/lib/text/phaseToStep";
 
 export function SessionJourneyView({
   journey,
@@ -104,7 +105,7 @@ export function SessionJourneyView({
           >
             <Box sx={{ width: "100%" }}>
               <Typography sx={{ fontWeight: 900 }}>
-                {phase.title}
+                {phaseTitleToStepTitle(phase.title)}
                 {completedPhaseIds.has(phase.phaseId) ? (
                   <Box component="span" aria-hidden sx={{ ml: 1 }}>
                     ✅
