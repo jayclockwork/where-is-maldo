@@ -22,7 +22,7 @@ Provide a **wallboard/presentation mode** that renders a big-screen friendly, li
 ## User stories
 - As a presenter, I can open a wallboard view for a session and project it.
 - As an observer, I can understand “where the room is” in < 5 seconds.
-- As a presenter, I can toggle fullscreen and keep the view clean.
+- As a presenter, I can use kiosk mode and keep the view clean.
 
 ---
 
@@ -36,7 +36,7 @@ Provide a **wallboard/presentation mode** that renders a big-screen friendly, li
 - Shows:
   - session title/code (optional)
   - participant count
-  - last update indicator (optional)
+  - last update indicator (optional; “Updated: 12s ago”)
 
 ### Aggregate-only wallboard (no individual roster)
 - The wallboard shows **aggregate-only** information (no participant list, no per-person indicators).
@@ -52,8 +52,7 @@ Choose at least one aggregate visualization:
 - Wallboard handles reconnects gracefully (shows “reconnecting…” state).
 
 ### Fullscreen / kiosk
-- Fullscreen button.
-- Optional “kiosk mode” query param to hide UI chrome for clean projection.
+- “Kiosk mode” query param to hide UI chrome for clean projection.
 
 ---
 
@@ -73,7 +72,7 @@ Choose at least one aggregate visualization:
 ## Acceptance criteria
 - Wallboard loads for a given session and subscribes to live updates.
 - Aggregate phase counts update as participants toggle “Doing”.
-- Fullscreen works and doesn’t break layout.
+- Kiosk mode works and doesn’t break layout.
 
 ---
 
@@ -93,5 +92,4 @@ Choose at least one aggregate visualization:
 
 ## Open questions
 - none
-
 

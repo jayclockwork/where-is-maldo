@@ -1,8 +1,10 @@
 import type {
+  AdminActionInput,
   CreateSessionInput,
   JoinSessionInput,
   SessionsRepository,
   SessionEvent,
+  SessionExportV1,
   ToggleDoingInput,
   Unsubscribe,
 } from "@/domain/sessions/repository";
@@ -14,6 +16,7 @@ type Listener = (event: SessionEvent) => void;
 export class InMemorySessionsRepository implements SessionsRepository {
   private sessionsById = new Map<string, Session>();
   private sessionsByJoinCode = new Map<string, string>(); // joinCode -> sessionId
+  private adminTokenBySessionId = new Map<string, string>(); // sessionId -> adminToken
   private participantsById = new Map<string, Participant>();
   private participantsBySessionId = new Map<string, Set<string>>();
   private mappingsByKey = new Map<string, Mapping>(); // sessionId|participantId|itemId
@@ -36,7 +39,9 @@ export class InMemorySessionsRepository implements SessionsRepository {
     this.sessionsById.set(id, session);
     this.sessionsByJoinCode.set(joinCode, id);
 
-    return { session, adminToken: makeId("admin") };
+    const adminToken = makeId("admin");
+    this.adminTokenBySessionId.set(id, adminToken);
+    return { session, adminToken };
   }
 
   async getSessionById(sessionId: string): Promise<Session | null> {
@@ -127,13 +132,50 @@ export class InMemorySessionsRepository implements SessionsRepository {
     };
   }
 
-  async clearResults(sessionId: string): Promise<void> {
-    const keys = this.mappingKeysBySessionId.get(sessionId);
+  async closeSession(input: AdminActionInput): Promise<Session> {
+    this.assertAdmin(input);
+    const session = this.sessionsById.get(input.sessionId);
+    if (!session) throw new Error("Session not found");
+    if (session.status === "closed") return session;
+    const updated: Session = { ...session, status: "closed" };
+    this.sessionsById.set(input.sessionId, updated);
+    this.emit(input.sessionId, { type: "session_updated", session: updated });
+    return updated;
+  }
+
+  async reopenSession(input: AdminActionInput): Promise<Session> {
+    this.assertAdmin(input);
+    const session = this.sessionsById.get(input.sessionId);
+    if (!session) throw new Error("Session not found");
+    if (session.status === "open") return session;
+    const updated: Session = { ...session, status: "open" };
+    this.sessionsById.set(input.sessionId, updated);
+    this.emit(input.sessionId, { type: "session_updated", session: updated });
+    return updated;
+  }
+
+  async clearResults(input: AdminActionInput): Promise<void> {
+    this.assertAdmin(input);
+    const keys = this.mappingKeysBySessionId.get(input.sessionId);
     if (keys) {
       for (const key of keys) this.mappingsByKey.delete(key);
       keys.clear();
     }
-    this.emit(sessionId, { type: "results_cleared", sessionId });
+    this.emit(input.sessionId, { type: "results_cleared", sessionId: input.sessionId });
+  }
+
+  async exportSession(input: AdminActionInput): Promise<SessionExportV1> {
+    this.assertAdmin(input);
+    const session = this.sessionsById.get(input.sessionId);
+    if (!session) throw new Error("Session not found");
+    const participants = await this.listParticipants(input.sessionId);
+    const mappings = await this.listMappings(input.sessionId);
+    return { schemaVersion: 1, exportedAt: nowIso(), session, participants, mappings };
+  }
+
+  private assertAdmin(input: AdminActionInput) {
+    const expected = this.adminTokenBySessionId.get(input.sessionId);
+    if (!expected || expected !== input.adminToken) throw new Error("Unauthorized");
   }
 
   private emit(sessionId: string, event: SessionEvent) {

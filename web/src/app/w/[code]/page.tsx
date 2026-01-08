@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Alert, Box, Button, CircularProgress, Container, Stack, Typography } from "@mui/material";
 import { SiteAppBar } from "@/components/SiteAppBar";
@@ -13,6 +13,7 @@ type ByCodeResponse = {
 export default function WallboardByCodePage() {
   const params = useParams<{ code: string }>();
   const code = (params.code ?? "").toString().trim();
+  const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -39,14 +40,17 @@ export default function WallboardByCodePage() {
         return;
       }
 
-      window.location.replace(`/wallboard/${encodeURIComponent(sessionId)}?kiosk=1`);
+      const sp = new URLSearchParams(searchParams.toString());
+      if (!sp.has("kiosk")) sp.set("kiosk", "1");
+      const qs = sp.toString();
+      window.location.replace(`/wallboard/${encodeURIComponent(sessionId)}${qs ? `?${qs}` : ""}`);
     }
 
     void run();
     return () => {
       alive = false;
     };
-  }, [code]);
+  }, [code, searchParams]);
 
   return (
     <>

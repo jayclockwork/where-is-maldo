@@ -1,4 +1,4 @@
-# Common Software Engineer LLM Journey (Better Version)
+# Software Engineer LLM Journey (Better Version)
 _Merged + improved from the ChatGPT and Gemini drafts._
 
 This version uses the **ChatGPT “phases”** as the main structure (Research → Completion → Collaboration → Delegation → Constrained autonomy), while keeping the clearest framing and guardrails from the Gemini draft.
@@ -7,11 +7,11 @@ This version uses the **ChatGPT “phases”** as the main structure (Research �
 _Focus: learning fast and answering questions. The “better Google/Stack Overflow.”_
 
 - **Basic research**
-  - How to code a a statment/function
+  - How to code a a statement/function
   - How a technology works
   - How technologies compare and contrast
 - **Coding research**
-  - Find better ways to implment small sections of code
+  - Find better ways to implement small sections of code
   - Compare libraries and approaches
 - **Document research**
   - Summarize docs and concepts

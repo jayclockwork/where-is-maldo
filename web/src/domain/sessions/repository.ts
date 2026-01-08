@@ -3,6 +3,7 @@ import type { Mapping, Participant, Session } from "@/domain/sessions/types";
 export type CreateSessionInput = { title?: string; joinCode?: string };
 export type JoinSessionInput = { joinCode: string; displayName: string; avatarColor?: string };
 export type ToggleDoingInput = { sessionId: string; participantId: string; itemId: string; isDoing: boolean };
+export type AdminActionInput = { sessionId: string; adminToken: string };
 
 export type SessionEvent =
   | { type: "session_updated"; session: Session }
@@ -11,6 +12,14 @@ export type SessionEvent =
   | { type: "results_cleared"; sessionId: string };
 
 export type Unsubscribe = () => void;
+
+export type SessionExportV1 = {
+  schemaVersion: 1;
+  exportedAt: string;
+  session: Session;
+  participants: Participant[];
+  mappings: Mapping[];
+};
 
 export interface SessionsRepository {
   createSession(input: CreateSessionInput): Promise<{ session: Session; adminToken: string }>;
@@ -25,8 +34,11 @@ export interface SessionsRepository {
   listParticipants(sessionId: string): Promise<Participant[]>;
   listMappings(sessionId: string): Promise<Mapping[]>;
 
-  // Host/admin controls (v1: no auth yet; PRD 004 will harden this)
-  clearResults(sessionId: string): Promise<void>;
+  // Host/admin controls (PRD 004)
+  closeSession(input: AdminActionInput): Promise<Session>;
+  reopenSession(input: AdminActionInput): Promise<Session>;
+  clearResults(input: AdminActionInput): Promise<void>;
+  exportSession(input: AdminActionInput): Promise<SessionExportV1>;
 
   // Realtime
   subscribe(sessionId: string, onEvent: (event: SessionEvent) => void): Unsubscribe;

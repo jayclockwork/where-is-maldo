@@ -48,7 +48,7 @@ describe("InMemorySessionsRepository", () => {
 
   it("clearResults removes all mappings for a session", async () => {
     const repo = new InMemorySessionsRepository();
-    const { session } = await repo.createSession({ joinCode: "DEMO20" });
+    const { session, adminToken } = await repo.createSession({ joinCode: "DEMO20" });
     const { participant, participantSecret } = await repo.joinSession({
       joinCode: session.joinCode,
       displayName: "Jay",
@@ -64,8 +64,42 @@ describe("InMemorySessionsRepository", () => {
     });
     expect((await repo.listMappings(session.id)).length).toBe(1);
 
-    await repo.clearResults(session.id);
+    await repo.clearResults({ sessionId: session.id, adminToken });
     expect((await repo.listMappings(session.id)).length).toBe(0);
+  });
+
+  it("closeSession blocks new joins until reopened", async () => {
+    const repo = new InMemorySessionsRepository();
+    const { session, adminToken } = await repo.createSession({ joinCode: "CLOSE01" });
+    await repo.closeSession({ sessionId: session.id, adminToken });
+    await expect(repo.joinSession({ joinCode: session.joinCode, displayName: "A" })).rejects.toThrow(/closed/i);
+    await repo.reopenSession({ sessionId: session.id, adminToken });
+    await expect(repo.joinSession({ joinCode: session.joinCode, displayName: "B" })).resolves.toBeTruthy();
+  });
+
+  it("rejects admin actions with an invalid token", async () => {
+    const repo = new InMemorySessionsRepository();
+    const { session } = await repo.createSession({ joinCode: "BADTOK" });
+    await expect(repo.clearResults({ sessionId: session.id, adminToken: "nope" })).rejects.toThrow(/unauthorized/i);
+  });
+
+  it("exportSession returns schemaVersion and includes session/participants/mappings", async () => {
+    const repo = new InMemorySessionsRepository();
+    const { session, adminToken } = await repo.createSession({ joinCode: "EXP001" });
+    const { participant, participantSecret } = await repo.joinSession({ joinCode: session.joinCode, displayName: "A", avatarColor: "#123" });
+    await repo.toggleDoing({
+      sessionId: session.id,
+      participantId: participant.id,
+      participantSecret,
+      itemId: "phase-research__section__Basic research",
+      isDoing: true,
+    });
+
+    const out = await repo.exportSession({ sessionId: session.id, adminToken });
+    expect(out.schemaVersion).toBe(1);
+    expect(out.session.id).toBe(session.id);
+    expect(out.participants.length).toBe(1);
+    expect(out.mappings.length).toBe(1);
   });
 });
 

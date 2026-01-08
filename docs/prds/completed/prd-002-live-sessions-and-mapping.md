@@ -117,4 +117,3 @@ Enable **live sessions** where participants can join via a code/link and toggle 
 ## Open questions
 - None (v1 decision: block edits while disconnected; revisit queueing if needed).
 
-

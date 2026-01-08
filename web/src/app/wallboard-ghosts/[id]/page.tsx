@@ -30,6 +30,7 @@ import { computeGhostsByPhase } from "@/lib/wallboard/ghosts";
 import { buildGhostLoopPath, buildMazeSvgPaths, generateMaze } from "@/lib/wallboard/maze";
 import { PacmanGhostSvg } from "@/components/wallboard/PacmanGhostSvg";
 import { phaseTitleToStepTitle } from "@/lib/text/phaseToStep";
+import { formatRelativeTimeShort } from "@/lib/text/relativeTime";
 
 type ConnectionState = "connecting" | "connected" | "reconnecting";
 
@@ -40,6 +41,7 @@ export default function WallboardGhostsPage() {
   const sessionId = params.id;
   const searchParams = useSearchParams();
   const kiosk = searchParams.get("kiosk") === "1";
+  const tokenFromUrl = searchParams.get("token")?.trim() || null;
   // Default OFF. Only show names if explicitly enabled via ?names=1.
   const [showNames, setShowNames] = useState(searchParams.get("names") === "1");
 
@@ -52,10 +54,29 @@ export default function WallboardGhostsPage() {
   const [conn, setConn] = useState<ConnectionState>("connecting");
   const [reduceMotion, setReduceMotion] = useState(false);
   const [motionEnabled, setMotionEnabled] = useState(false);
+  const [adminToken, setAdminToken] = useState<string | null>(null);
+  const [hasParticipantIdentity, setHasParticipantIdentity] = useState(false);
   const [clearOpen, setClearOpen] = useState(false);
   const [clearing, setClearing] = useState(false);
   const [clearError, setClearError] = useState<string | null>(null);
   const motionArmedRef = useRef(false);
+  useEffect(() => {
+    const storageKey = `session:${sessionId}:adminToken`;
+    const stored = window.localStorage.getItem(storageKey);
+    const fromStorage = stored ? (JSON.parse(stored) as { adminToken?: string }).adminToken ?? stored : null;
+    const token = tokenFromUrl ?? fromStorage;
+    if (tokenFromUrl) window.localStorage.setItem(storageKey, JSON.stringify({ adminToken: tokenFromUrl }));
+    setAdminToken(token);
+  }, [sessionId, tokenFromUrl]);
+
+  useEffect(() => {
+    // Only show "View Your Page" if this browser has joined the session (participant identity stored locally).
+    const key = `session:${sessionId}:participant`;
+    setHasParticipantIdentity(!!window.localStorage.getItem(key));
+  }, [sessionId]);
+
+  const [lastUpdateAtMs, setLastUpdateAtMs] = useState<number | null>(null);
+  const [nowMs, setNowMs] = useState<number>(() => Date.now());
 
   const model = useMemo(() => (journey ? buildSessionJourneyModel(journey) : null), [journey]);
   const ghosts = useMemo(() => {
@@ -93,6 +114,7 @@ export default function WallboardGhostsPage() {
       setSession(state.session);
       setParticipants(state.participants ?? []);
       setMappings(state.mappings ?? []);
+      setLastUpdateAtMs(Date.now());
       setLoading(false);
     }
 
@@ -110,6 +132,7 @@ export default function WallboardGhostsPage() {
     es.addEventListener("mapping_updated", (evt) => {
       const data = JSON.parse((evt as MessageEvent).data) as { type: "mapping_updated"; mapping: Mapping };
       setMappings((prev) => upsertMapping(prev, data.mapping));
+      setLastUpdateAtMs(Date.now());
     });
 
     es.addEventListener("participant_joined", async () => {
@@ -119,9 +142,13 @@ export default function WallboardGhostsPage() {
       setParticipants(state.participants ?? []);
       setMappings(state.mappings ?? []);
       setSession(state.session);
+      setLastUpdateAtMs(Date.now());
     });
 
-    es.addEventListener("results_cleared", () => setMappings([]));
+    es.addEventListener("results_cleared", () => {
+      setMappings([]);
+      setLastUpdateAtMs(Date.now());
+    });
 
     return () => es.close();
   }, [sessionId]);
@@ -133,6 +160,11 @@ export default function WallboardGhostsPage() {
     update();
     mq.addEventListener?.("change", update);
     return () => mq.removeEventListener?.("change", update);
+  }, []);
+
+  useEffect(() => {
+    const t = window.setInterval(() => setNowMs(Date.now()), 1000);
+    return () => window.clearInterval(t);
   }, []);
 
   useEffect(() => {
@@ -170,10 +202,15 @@ export default function WallboardGhostsPage() {
   async function clearResults() {
     setClearing(true);
     setClearError(null);
+    if (!adminToken) {
+      setClearError("Missing admin token.");
+      setClearing(false);
+      return;
+    }
     const res = await fetch("/api/sessions/clear", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ sessionId }),
+      body: JSON.stringify({ sessionId, adminToken }),
     });
     if (!res.ok) {
       const data = (await res.json().catch(() => ({}))) as { error?: string };
@@ -244,6 +281,7 @@ export default function WallboardGhostsPage() {
                   color={conn === "connected" ? "success" : conn === "reconnecting" ? "warning" : "default"}
                   label={conn === "connected" ? "Live" : conn === "reconnecting" ? "Reconnecting…" : "Connecting…"}
                 />
+                {lastUpdateAtMs ? <Chip label={`Updated: ${formatRelativeTimeShort(nowMs - lastUpdateAtMs)}`} /> : null}
               </Stack>
             </Box>
 
@@ -260,27 +298,31 @@ export default function WallboardGhostsPage() {
                 }
                 label="Show names"
               />
-              <Button
-                variant="text"
-                color="error"
-                onClick={() => {
-                  setClearError(null);
-                  setClearOpen(true);
-                }}
-              >
-                Clear results
-              </Button>
+              {adminToken ? (
+                <Button
+                  variant="text"
+                  color="error"
+                  onClick={() => {
+                    setClearError(null);
+                    setClearOpen(true);
+                  }}
+                >
+                  Clear results
+                </Button>
+              ) : null}
               <Button component={Link} href="/" variant="text">
                 Home
               </Button>
-              <Button
-                component={Link}
-                href={`/session/${sessionId}${joinCode ? `?code=${encodeURIComponent(joinCode)}` : ""}`}
-                variant="contained"
-                color="primary"
-              >
-                View Your Page
-              </Button>
+              {hasParticipantIdentity ? (
+                <Button
+                  component={Link}
+                  href={`/session/${sessionId}${joinCode ? `?code=${encodeURIComponent(joinCode)}` : ""}`}
+                  variant="contained"
+                  color="primary"
+                >
+                  View Your Page
+                </Button>
+              ) : null}
             </Stack>
           </Box>
 

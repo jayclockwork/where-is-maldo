@@ -52,12 +52,15 @@ export default function Home() {
             <Card sx={{ flex: 1 }}>
               <CardContent>
                 <Typography variant="h6" sx={{ fontWeight: 800 }}>
-                  Run a live session (soon)
+                  Run a live session
                 </Typography>
                 <Typography sx={{ color: "text.secondary", mt: 1 }}>
-                  Participants join with a code and toggle what they’re doing. Updates appear live for everyone.
+                  Participants join with a code and indicate what they’re doing. Updates appear live for everyone.
                 </Typography>
                 <Stack direction="row" spacing={2} sx={{ mt: 2, flexWrap: "wrap" }}>
+                  <Button variant="text" component={Link} href="/host">
+                    Create session →
+                  </Button>
                   <Button variant="text" component={Link} href="/s/DEMO20">
                     Join Session →
                   </Button>

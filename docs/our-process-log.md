@@ -1886,4 +1886,111 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
   - `npm test`
   - `npm run build`
 
+#### Step 94 — Add Host “Create session” page + home entry point
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **What changed**:
+  - Added `/host` page to create a session (optional title/join code) and show shareable join + wallboard links with copy buttons.
+  - Added a “Host: Create session” entry point on the home page.
+  - Cleaned up an unused import warning in the join page.
+- **Files changed**:
+  - `web/src/app/host/page.tsx`
+  - `web/src/app/page.tsx`
+  - `web/src/app/s/[code]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+
+#### Step 95 — Fix host page “Copy” to copy full URL
+- **Date/Time**: 2026-01-08
+- **Step type**: Bugfix / Implementation
+- **User guidance** (what Jay reported):
+  - The copy link buttons on the hosting page only copy part of the URL.
+- **What changed**:
+  - Host page now builds **absolute** join/wallboard URLs using `window.location.origin`, and Copy copies the full URL.
+- **Files changed**:
+  - `web/src/app/host/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 96 — Mark PRD 002 complete + update PRD 003 for kiosk-only
+- **Date/Time**: 2026-01-08
+- **Step type**: Documentation
+- **What changed**:
+  - Moved PRD 002 into `docs/prds/completed/` and updated the PRD index to mark it completed.
+  - Updated PRD 003 to reflect the decision to remove fullscreen and rely on kiosk mode instead.
+- **Files changed**:
+  - `docs/prds/completed/prd-002-live-sessions-and-mapping.md`
+  - `docs/prds/README.md`
+  - `docs/prds/prd-003-presentation-wallboard.md`
+
+#### Step 97 — Add wallboard “Updated: …” indicator
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **What changed**:
+  - Added a wallboard chip showing relative last-update time (e.g., “Updated: 12s ago”), refreshed every second.
+  - Added a small unit-tested relative time formatter utility.
+  - Updated PRD 003 to mention the optional last update indicator explicitly.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+  - `web/src/lib/text/relativeTime.ts`
+  - `web/src/lib/text/relativeTime.test.ts`
+  - `docs/prds/prd-003-presentation-wallboard.md`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 98 — Mark PRD 003 complete
+- **Date/Time**: 2026-01-08
+- **Step type**: Documentation
+- **User guidance** (what Jay decided):
+  - “I would call PRD 003 done!”
+- **What changed**:
+  - Moved PRD 003 into `docs/prds/completed/` and updated the PRD index to mark it completed.
+- **Files changed**:
+  - `docs/prds/completed/prd-003-presentation-wallboard.md`
+  - `docs/prds/README.md`
+
+#### Step 99 — PRD 004 kickoff: admin token + control center + export + close session
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **What changed**:
+  - Added admin-token protected host actions to the repository: close/reopen session, clear results, export JSON.
+  - Added API routes for host actions: `/api/sessions/close`, `/api/sessions/reopen`, `/api/sessions/clear` (now requires adminToken), `/api/sessions/export`.
+  - Added a host **Control Center** page: `/admin/[id]` with close/reopen, type-to-confirm clear, and JSON export.
+  - Updated `/host` to surface/store the admin token and provide an admin link.
+  - Updated wallboard to only show **Clear results** when an admin token is present (from `?token=` or localStorage).
+  - Preserved query params (including `token`) through `/w/[code]` and `/wallboard/[id]` redirects.
+- **Files changed**:
+  - `web/src/domain/sessions/repository.ts`
+  - `web/src/data/sessions/InMemorySessionsRepository.ts`
+  - `web/src/app/api/sessions/clear/route.ts`
+  - `web/src/app/api/sessions/close/route.ts`
+  - `web/src/app/api/sessions/reopen/route.ts`
+  - `web/src/app/api/sessions/export/route.ts`
+  - `web/src/app/admin/[id]/page.tsx`
+  - `web/src/app/host/page.tsx`
+  - `web/src/app/w/[code]/page.tsx`
+  - `web/src/app/wallboard/[id]/page.tsx`
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+  - `web/src/data/sessions/InMemorySessionsRepository.test.ts`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 100 — Wallboard “View Your Page” only shown when participant has joined
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - On the wallboard page, the “View Your Page” button should only appear if you joined a session.
+- **What changed**:
+  - Wallboard now checks for the local participant identity (`localStorage` key `session:${sessionId}:participant`) and only shows “View Your Page” if present.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+
 
