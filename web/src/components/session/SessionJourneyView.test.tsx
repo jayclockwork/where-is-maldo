@@ -17,6 +17,10 @@ const journey: JourneyDoc = {
           title: "Basic research",
           items: [{ itemId: "phase-research__basic__syntax", label: "Syntax" }],
         },
+        {
+          title: "Coding research",
+          items: [{ itemId: "phase-research__coding__compare", label: "Compare approaches" }],
+        },
       ],
     },
   ],
@@ -24,7 +28,7 @@ const journey: JourneyDoc = {
 
 describe("<SessionJourneyView />", () => {
   it("defaults phases to expanded in session mode", () => {
-    const mappings: Mapping[] = [];
+    const mappings: Mapping[] = [{ sessionId: "phase-research", participantId: "p1", itemId: "phase-research__section__Basic research", isDoing: true }];
     renderWithTheme(
       <SessionJourneyView journey={journey} mappings={mappings} myParticipantId="p1" onToggle={() => {}} />,
     );
@@ -35,6 +39,21 @@ describe("<SessionJourneyView />", () => {
     // Toggles should live on the section heading (not the bullet).
     expect(screen.getByRole("switch", { name: /toggle doing for basic research/i })).toBeInTheDocument();
     expect(screen.queryByRole("switch", { name: /toggle doing for syntax/i })).toBeNull();
+
+    // When my toggle is on, show a checkmark after the subsection heading text.
+    expect(screen.getAllByText(/basic research/i, { selector: "p" })[0]).toHaveTextContent("✅");
+  });
+
+  it("shows a celebration emoji on the phase heading when all sections are checked for me", () => {
+    const mappings: Mapping[] = [
+      { sessionId: "phase-research", participantId: "p1", itemId: "phase-research__section__Basic research", isDoing: true },
+      { sessionId: "phase-research", participantId: "p1", itemId: "phase-research__section__Coding research", isDoing: true },
+    ];
+    renderWithTheme(
+      <SessionJourneyView journey={journey} mappings={mappings} myParticipantId="p1" onToggle={() => {}} />,
+    );
+
+    expect(screen.getByRole("button", { name: /phase 1: research/i })).toHaveTextContent("✅");
   });
 });
 

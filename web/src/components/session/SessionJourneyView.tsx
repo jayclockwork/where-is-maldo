@@ -55,6 +55,8 @@ export function SessionJourneyView({
   return (
     <Stack spacing={1.25}>
       {model.phases.map((phase) => (
+        // A phase is “complete” for me when every section heading in the phase is toggled on.
+        // (Bullets are informational and not toggle targets.)
         <Accordion key={phase.phaseId} defaultExpanded sx={{ bgcolor: "grey.50" }}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon sx={{ color: "text.primary" }} />}
@@ -70,6 +72,15 @@ export function SessionJourneyView({
             <Box sx={{ width: "100%" }}>
               <Typography sx={{ fontWeight: 900 }}>
                 {phase.title}
+                {(() => {
+                  const sectionIds = phase.rows.filter((r) => r.type === "section").map((r) => r.itemId);
+                  const allChecked = sectionIds.length > 0 && sectionIds.every((id) => myDoing.has(id));
+                  return allChecked ? (
+                    <Box component="span" aria-hidden sx={{ ml: 1 }}>
+                      ✅
+                    </Box>
+                  ) : null;
+                })()}
               </Typography>
             </Box>
           </AccordionSummary>
@@ -108,7 +119,14 @@ export function SessionJourneyView({
                             mb: isEndOfSectionGroup ? SECTION_GROUP_GAP_Y : 0,
                           }}
                         >
-                          <Typography sx={{ fontWeight: 800 }}>{row.label}</Typography>
+                          <Typography sx={{ fontWeight: 800 }}>
+                            {row.label}
+                            {mine ? (
+                              <Box component="span" aria-hidden sx={{ ml: 1 }}>
+                                ✅
+                              </Box>
+                            ) : null}
+                          </Typography>
                           <Stack direction="row" spacing={1} alignItems="center">
                             {count ? <Chip size="small" label={count} /> : null}
                             <Box component="label" sx={{ display: "inline-flex", alignItems: "center" }}>
