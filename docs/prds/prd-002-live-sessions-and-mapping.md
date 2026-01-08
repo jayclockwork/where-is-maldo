@@ -46,8 +46,9 @@ Enable **live sessions** where participants can join via a code/link and toggle 
 - Once a participant selects a color, it becomes **unavailable** to other participants in that session.
 
 ### Mapping model (single state)
-- Each journey item supports a single status: **Doing** (boolean on/off).
-- The system persists each participant’s “Doing” toggles per item.
+- Each **session-level** journey unit supports a single status: **Doing** (boolean on/off).
+- In v1 session UX, toggles live on **section headings** (e.g., “Basic research”), not on every bullet.
+- The system persists each participant’s “Doing” toggles per session unit.
 
 ### Live updates (realtime)
 - When any participant toggles “Doing”:

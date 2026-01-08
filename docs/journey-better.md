@@ -7,77 +7,72 @@ This version uses the **ChatGPT “phases”** as the main structure (Research �
 _Focus: learning fast and answering questions. The “better Google/Stack Overflow.”_
 
 - **Basic research**
-  - Replace most syntax/library searches
-  - Summarize unfamiliar docs and concepts
+  - How to code a a statment/function
+  - How a technology works
+  - How technologies compare and contrast
 - **Coding research**
-  - Find idiomatic examples and patterns (with sources)
-  - Compare libraries and approaches at a high level
-- **Document / data processing**
-  - Parse and analyze CSV/JSON/logs for quick answers
-  - Generate small scripts for one-off transformations
-- **Architecture + design exploration**
-  - Explore trade-offs, patterns, API shape, data modeling
-  - Draft ADRs and decision matrices
-- **Debugging research with evidence**
+  - Find better ways to implment small sections of code
+  - Compare libraries and approaches
+- **Document research**
+  - Summarize docs and concepts
+  - Parse and analyze CSV/JSON/etc for quick answers
+- **Debugging research**
   - Interpret logs/traces/stack traces
-  - Propose 2–3 hypotheses + concrete experiments to confirm/refute
+  - Propose 2–3 hypotheses
 - **Risk research**
-  - Security/privacy pitfalls, licensing concerns, “what could go wrong”
+  - Understand security/privacy pitfalls, licensing concerns, “what could go wrong”
 
 
-### Phase 2: Completion
+### Phase 2: Code Completion
 _Focus: speeding up implementation of small-to-medium scoped changes._
 
 - **Basic code completion**
-  - Single-line / small-block autocomplete
+  - Autocomplete single-lines / small-blocks
 - **Advanced completion**
-  - Multi-file edits that follow existing patterns and conventions
+  - Autocomplete multi-file edits that follow existing patterns and conventions
 - **Automated test writing (assisted)**
   - Generate scaffolds, fixtures, mocks, and edge cases
 - **Refactoring assistance**
-  - Small/medium refactors, codemods, dependency upgrades (with review)
+  - Perform small code and document refactors
 
 
-### Phase 3: Collaboration
+### Phase 3: Collaborative Coding
 _Focus: working *with* the codebase as a pair (repo-aware, iterative)._
 
 - **Chatting with code**
   - Repo-aware Q&A (Cursor/Cody-style): “Where is X?” “What calls this?” “How does Y work here?”
 - **Pair programming on tests**
   - Fill coverage gaps; add regression tests for bugs
-- **Pair programming on bugs**
+- **Pair programming on bug resolution**
   - Triage, isolate repro, propose fixes + verification steps
 - **Pair programming on features**
   - Draft implementation + iterate based on review feedback
 - **Code reviews**
   - Summarize diffs, spot risks, suggest improvements, call out missing tests
-- **Task decomposition + slicing**
-  - Break epics into thin vertical slices; identify spikes; define acceptance criteria
 
 
 ### Phase 4: Delegation
 _Focus: the LLM becomes the primary implementer; you stay owner/reviewer._
 
+- **Requirements collaborator**
+  - Generate outlines, user stories, non-goals, open questions
+  - Turn fuzzy asks into constraints, acceptance criteria, and phased rollout plans
+  - Generate Classic Requirements documents
+  - Generate feature-based Product Requirements Documents (PRDs)
+- **Automated Testing**
+  - Generate significant number of unit tests
+  - Generate effective end-to-end (e2e) tests (such as Playwright tests)
 - **Primary coder for new features**
   - LLM drafts implementation + tests + docs; human validates/accepts
-- **PRD creator (first draft)**
-  - Generate outlines, user stories, non-goals, open questions
-- **Requirements collaborator**
-  - Turn fuzzy asks into constraints, acceptance criteria, and phased rollout plans
 
-
-### Phase 5: Constrained autonomy
+### Phase 5: Constrained Autonomy
 _Focus: agentic tool use under guardrails (LLM iterates; you approve)._
 
+- **LLM Configuration**
+  - Building and tweaking AGENTS.md files
 - **Agentic loops**
-  - Run linters/tests, interpret failures, propose focused patches
-  - Stop on uncertainty; ask for clarification instead of guessing
-- **Guardrails**
+  - LLM runs linters/automated tests, interpret failures, propose focused patches
+  - LLM stops on uncertainty; ask for clarification instead of guessing
+- **Enhanced Guardrails**
   - Explicit scope (“only touch X files”), deterministic formatting, non-interactive commands
   - Require evidence for risky changes (tests, benchmarks, logs, diffs)
-
-**What good looks like**
-- Tight diffs, clear intent, and changes that are easy to review and revert.
-
-
-

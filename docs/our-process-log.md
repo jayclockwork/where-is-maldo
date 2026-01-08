@@ -766,4 +766,745 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
 - **Open questions / follow-ups for Jay**:
   - none
 
+#### Step 30 — Session toggles moved to section headings (not bullets)
+- **Date/Time**: 2026-01-08
+- **Step type**: Both
+- **User guidance** (what Jay asked for):
+  - Change the session layout so toggles are on the section headings (e.g., “Basic research”), not on each bullet.
+- **Decision(s) recorded**:
+  - Session “Doing” toggles operate at the **section** level in v1.
+  - Bullets remain visible for context but are non-interactive.
+- **Clarifications / assumptions**:
+  - Section itemIds use the stable format `phaseId__section__<section title>`.
+- **Plan executed** (what the assistant did):
+  - Updated the shared session content model to expose section rows as toggle targets.
+  - Updated the session rendering so only section rows show switches; bullets are read-only text.
+  - Added/updated unit tests and updated requirements/PRD 002 language to match.
+- **Files changed**:
+  - `web/src/lib/session/sessionContentModel.ts` and `.test.ts`
+  - `web/src/components/session/SessionJourneyView.tsx` and `.test.tsx`
+  - `docs/prds/prd-002-live-sessions-and-mapping.md`
+  - `docs/requirements-journey-site.md`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Session page now has a cleaner interaction model: one toggle per section heading.
+- **Open questions / follow-ups for Jay**:
+  - Do you want the “count” chip next to headings to represent “number of participants doing this section” (current), or something else?
+
+#### Step 31 — Add “Reload content” on session page for journey edits
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Edited `docs/journey-better.md` but didn’t see changes reflected on the session page.
+- **Decision(s) recorded**:
+  - Session page fetches journey content on load; provide a manual reload control to pull in doc edits during facilitation/dev.
+- **Clarifications / assumptions**:
+  - This is primarily a dev/facilitation aid; production content changes are less frequent.
+- **Plan executed** (what the assistant did):
+  - Refactored the session page loader into a reusable function and added a “Reload content” button that re-fetches `/api/journey` without the full-page loading state.
+- **Files changed**:
+  - `web/src/app/session/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - You can edit `docs/journey-better.md`, then click “Reload content” in the session to see the updates immediately.
+- **Open questions / follow-ups for Jay**:
+  - Do you want this button visible only in dev, or always available?
+
+#### Step 32 — Keep session updates simple: refresh page to pick up journey content edits
+- **Date/Time**: 2026-01-08
+- **Step type**: Decision + Implementation
+- **User guidance** (what Jay asked for):
+  - Production doesn’t need reload; dev doesn’t either. Keep this simple.
+- **Decision(s) recorded**:
+  - To see edits to `docs/journey-better.md` reflected in sessions, simply **refresh the session page**.
+  - No in-app reload control is needed.
+- **Plan executed** (what the assistant did):
+  - Removed the “Reload content” button and related state/refactor from the session page.
+- **Files changed**:
+  - `web/src/app/session/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Session UI stays minimal; journey content changes appear on a normal page refresh.
+- **Open questions / follow-ups for Jay**:
+  - none
+
+#### Step 33 — Hide taken avatar colors on join page + tighten session phase spacing
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - When a color is selected, remove it from the list for other new users (not just disabled).
+  - Tighten vertical spacing on the session phases.
+- **Plan executed** (what the assistant did):
+  - Updated the join color picker to **filter out** taken colors while keeping the user’s current selected color visible.
+  - Reduced vertical padding/spacing in the session phase accordions and rows to make the layout denser.
+- **Files changed**:
+  - `web/src/app/s/[code]/page.tsx`
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Taken colors disappear from the join palette in real time.
+  - Session phases take less vertical space without changing content/behavior.
+
+#### Step 34 — Reduce spacing between section heading and first bullet in session view
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Reduce the space between the heading (e.g. “Basic Research”) and the first bullet under it.
+- **Plan executed** (what the assistant did):
+  - Reduced the per-row vertical gap in the session rows list so the first bullet sits closer to its section heading.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Tighter spacing between section headings and their first bullet in session mode.
+
+#### Step 35 — Add breathing room above section headings in session view
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Add some space above the headings in each phase — headings are too close to the previous heading/section.
+- **Plan executed** (what the assistant did):
+  - Added a small top margin above each section heading row (except the first in a phase) so sections are visually separated, while keeping the “heading → first bullet” spacing tight.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Section headings no longer feel glued to the prior section’s bullets, without reintroducing excess space below the heading.
+
+#### Step 36 — Add explicit “section break” spacing between section groups in session view
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Increase spacing between the last bullet of one section and the next section heading (e.g., between “How technologies compare and contrast” and “Coding Research”).
+- **Plan executed** (what the assistant did):
+  - Added extra top margin specifically on **section heading rows after the first section** within a phase to create a clear visual break between section groups.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Clearer separation between section groups while keeping bullet spacing tight.
+
+#### Step 37 — Ensure spacing is added after the last item of each section group
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Add extra space after the last item of a group (not just before the next heading).
+- **Plan executed** (what the assistant did):
+  - Implemented “end-of-section-group” spacing by detecting when a row is immediately followed by a section heading, and adding extra bottom margin to that row. This guarantees spacing after the last bullet of a section.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+- **Outcome**:
+  - Consistent extra space appears after each section’s last bullet before the next section begins.
+
+#### Step 38 — Increase section-group break spacing in session view
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Make the vertical space between the last item of a group and the next group **larger** (it looked unchanged).
+- **Plan executed** (what the assistant did):
+  - Increased the “end-of-section-group” gap and centralized it as a constant for easy tuning.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Section-group breaks are now visibly larger than normal row spacing.
+
+#### Step 39 — Add spacing after each bullet item in session lists
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Add space after the list item in each of the lists under the headings (in session mode).
+- **Plan executed** (what the assistant did):
+  - Added a small, consistent bottom gap after each bullet row, while keeping the larger “end of section group” gap before the next heading.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Bulleted items are easier to scan due to additional vertical separation.
+
+#### Step 40 — Increase per-bullet spacing in session lists (make it visibly noticeable)
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Bullet spacing changes weren’t visible; keep it simple and make the “space after each list item” obvious.
+- **Plan executed** (what the assistant did):
+  - Increased the per-bullet bottom spacing value (theme spacing units) so it’s clearly noticeable.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Bullet lists have visibly more space after each item.
+
+#### Step 41 — Add spacing specifically after the last bullet in each section list
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Increase the gap after the **last item** in a subsection list (e.g., after “How technologies compare and contrast”).
+- **Plan executed** (what the assistant did):
+  - Simplified spacing: removed per-bullet spacing and applied a larger gap only at section boundaries (last bullet → next section heading) in session view.
+  - Added bottom margin after each section’s list on the Journey page (top-level lists only), so the “last item → next heading” gap is visible there too.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+  - `web/src/components/journey/JourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Clear extra spacing appears after the final bullet of each section list before the next heading.
+
+#### Step 42 — Debug: make the “last bullet → next heading” gap extremely large
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation (debugging)
+- **User guidance** (what Jay asked for):
+  - Make a really large gap after the last item in a subsection list for debugging; changes still weren’t visible.
+- **Plan executed** (what the assistant did):
+  - Increased the section-boundary spacing to an intentionally huge value in both session and journey renderers to make it unmistakable.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+  - `web/src/components/journey/JourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - If the UI still shows no gap, it indicates the user is not viewing the component/path being styled (or styles are being overridden elsewhere).
+
+#### Step 43 — Clarification: spacing change is for Session page only (revert Journey debug spacing)
+- **Date/Time**: 2026-01-08
+- **Step type**: Decision + Implementation
+- **User guidance** (what Jay clarified):
+  - The requested “gap after the last item in a subsection list” is for the **session page**, not the Journey page.
+- **Decision(s) recorded**:
+  - Keep the spacing behavior **session-only**.
+- **Plan executed** (what the assistant did):
+  - Removed the Journey page debug spacing change.
+  - Kept/adjusted the session-only “last bullet → next heading” gap to a clear, non-debug value.
+- **Files changed**:
+  - `web/src/components/journey/JourneyView.tsx`
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Journey page returns to normal spacing.
+  - Session page shows an intentional gap after the last bullet in each section list (e.g. after “How technologies compare and contrast”).
+
+#### Step 44 — Increase session subsection break spacing
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Add more vertical space between the last subsection item and the next subsection on the sessions page.
+- **Plan executed** (what the assistant did):
+  - Increased the session-only section boundary spacing constant used after the last bullet before the next subsection heading.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Larger, clearer separation between subsections on the session page.
+
+#### Step 45 — Debug: make session subsection break spacing extremely large
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation (debugging)
+- **User guidance** (what Jay asked for):
+  - Not seeing spacing changes; make the session page gap debuggingly large to confirm we’re changing the right thing.
+- **Plan executed** (what the assistant did):
+  - Set the session-only “last bullet → next subsection heading” spacing constant to an extremely large value.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - The gap should be unmistakable; if it still doesn’t appear, the viewed session UI is not using `SessionJourneyView` (or styles are overridden).
+
+#### Step 46 — Debug: force session subsection break with explicit spacer element
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation (debugging)
+- **User guidance** (what Jay asked for):
+  - No visible change on session page; confirm we’re changing the right thing.
+- **Plan executed** (what the assistant did):
+  - Replaced margin-based “end of section list” spacing with an explicit spacer element rendered after the last bullet before the next section heading.
+  - Kept the spacer height intentionally huge for debugging.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - If the gap still doesn’t show, the “end of section list” condition is not being hit for the visible content, or the session UI being viewed isn’t rendering these bullet rows.
+
+#### Step 47 — Tune session subsection gap from debug to normal (set to 4)
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - “Let’s try 4.”
+- **Plan executed** (what the assistant did):
+  - Set the session-only subsection gap (`SECTION_GROUP_GAP_Y`) to `4` while keeping the explicit spacer approach (proven to render reliably).
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - A consistent, visible (but not excessive) gap appears after the last bullet in a subsection list before the next subsection heading.
+
+#### Step 48 — Make phase headers Clockwork yellow with black text
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Change the phase heading styling (“Phase 1: Research”, etc.): Clockwork yellow background, all header text black.
+- **Plan executed** (what the assistant did):
+  - Updated phase accordion headers in both Journey and Session views to use `secondary.main` for the background and `text.primary` (black) for all header text and icons.
+- **Files changed**:
+  - `web/src/components/journey/JourneyView.tsx`
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Phase headers are now Clockwork yellow with fully black header text.
+
+#### Step 49 — Show ✅ on session subsection headings when toggled on
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - After someone clicks a subsection toggle, add a checkmark emoji after the subsection heading text.
+- **Plan executed** (what the assistant did):
+  - In session mode, when the current participant has the subsection toggled on, render a trailing **✅** next to the subsection heading text (decorative: `aria-hidden`).
+  - Updated unit test to assert the checkmark appears when the mapping is present.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+  - `web/src/components/session/SessionJourneyView.test.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Subsection headings visually reflect “I’m doing this” with a checkmark.
+
+#### Step 50 — Show 🎉 on phase heading when all subsections are checked
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Add a celebration emoji to the section heading when all of its subsections are checked.
+- **Clarification / interpretation**:
+  - Implemented on the **session page phase heading** (“Phase 1: Research”) when **all subsection (section) toggles** within that phase are ON for the current participant.
+- **Plan executed** (what the assistant did):
+  - Computed “all sections checked” per phase based on the participant’s mappings and rendered a trailing **🎉** in the phase header when complete.
+  - Added a unit test covering the completion indicator.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+  - `web/src/components/session/SessionJourneyView.test.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Phases celebrate completion with 🎉 once all subsections are toggled on.
+
+#### Step 51 — Use ✅ (not 🎉) for phase completion indicator
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Change the celebration emoji to the same checkmark emoji used on subsection items.
+- **Plan executed** (what the assistant did):
+  - Swapped the phase completion indicator from 🎉 to ✅ and updated the unit test accordingly.
+- **Files changed**:
+  - `web/src/components/session/SessionJourneyView.tsx`
+  - `web/src/components/session/SessionJourneyView.test.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Phase completion now uses ✅ for consistency with subsection indicators.
+
+#### Step 52 — Confetti when a phase becomes complete (session page)
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - “When a section is complete, we need to see confetti!”
+- **Clarification / interpretation**:
+  - Implemented confetti when a **phase** becomes complete for the current participant (all subsection toggles within the phase are checked).
+- **Plan executed** (what the assistant did):
+  - Added a lightweight, dependency-free `launchConfetti()` helper (Web Animations API) that respects `prefers-reduced-motion`.
+  - Triggered confetti on the **transition** from incomplete → complete (won’t spam on initial render).
+  - Added a unit test that mocks `launchConfetti` and asserts it fires on completion transition.
+- **Files changed**:
+  - `web/src/ui/effects/confetti.ts`
+  - `web/src/components/session/SessionJourneyView.tsx`
+  - `web/src/components/session/SessionJourneyView.test.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Completing a phase in a session now triggers confetti.
+
+#### Step 53 — Confetti burst: shoot up, then slow fall
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Make the confetti shoot up and then slowly fall down.
+- **Plan executed** (what the assistant did):
+  - Updated the confetti keyframes to include a quick upward burst followed by a longer downward drift/fall.
+  - Extended animation duration to emphasize the slow fall.
+- **Files changed**:
+  - `web/src/ui/effects/confetti.ts`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Confetti now launches upward first, then falls more slowly.
+
+#### Step 54 — Slow down confetti further
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Slow the confetti down.
+- **Plan executed** (what the assistant did):
+  - Increased the overall animation duration and added a brief “apex hang” keyframe so the upward burst transitions into a slower fall.
+- **Files changed**:
+  - `web/src/ui/effects/confetti.ts`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Confetti motion is noticeably slower and lingers longer before settling.
+
+#### Step 55 — Confetti: fall down from top (no upward burst)
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Change confetti to just slowly fall down from the top of the browser window — no shooting up.
+- **Plan executed** (what the assistant did):
+  - Updated the confetti animation to spawn pieces at the top of the viewport with gentle drift and a slow, linear fall.
+- **Files changed**:
+  - `web/src/ui/effects/confetti.ts`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Confetti now appears at the top and falls down slowly, without any upward burst.
+
+#### Step 56 — Start PRD 003: add live aggregate wallboard view
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay decided):
+  - “I’ll go with your recommendation” → proceed with **Wallboard (PRD 003)** next.
+- **Plan executed** (what the assistant did):
+  - Added a `/wallboard/[id]` page that loads session + journey data and subscribes to session SSE for live updates.
+  - Implemented aggregate-only visuals:
+    - Phase “where the room is” bars (unique participants doing something in the phase)
+    - Top active subsections list
+  - Added fullscreen button and `?kiosk=1` support.
+  - Added a small “Open wallboard” entry-point button on the session page.
+  - Added unit-tested aggregation logic in a pure module.
+- **Files changed**:
+  - `web/src/app/wallboard/[id]/page.tsx`
+  - `web/src/lib/wallboard/aggregate.ts` and `.test.ts`
+  - `web/src/app/session/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - A big-screen-friendly, aggregate-only wallboard is available and updates live as participants toggle subsections.
+
+#### Step 57 — Wallboard v2 (Ghosts): 5-pane phase view with per-participant colored ghosts
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Create a new wallboard version that divides the browser into 5 panes (one per phase).
+  - In each pane, add a Pac‑Man ghost matching the user’s selected color.
+  - Add one ghost for each item toggled on by the user.
+- **Clarifications / assumptions**:
+  - Implemented “item toggled on” as **subsection (section-heading) toggles**, since bullets are not toggle targets in session mode.
+  - The view is aggregate-only in the sense that it shows **colors only** (no names/roster).
+- **Plan executed** (what the assistant did):
+  - Added a new ghosts wallboard route with a 5-pane grid layout.
+  - Computed, per phase, how many subsection toggles each participant has ON and rendered that many colored ghosts.
+  - Added a reusable `PacmanGhost` SVG component.
+  - Added unit-tested aggregation logic.
+  - Added a session page button to open the ghosts wallboard in kiosk mode.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+  - `web/src/components/wallboard/PacmanGhost.tsx`
+  - `web/src/lib/wallboard/ghosts.ts` and `.test.ts`
+  - `web/src/app/session/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - A “ghosts” wallboard is available and updates live as participants toggle subsections, visualized as colored ghosts per phase.
+
+#### Step 58 — Make ghosts wallboard default + animate ghosts with density-based speed
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Make ghosts the default wallboard (remove/replace the other wallboard).
+  - Animate the ghosts; speed increases as more ghosts are added to a phase.
+- **Plan executed** (what the assistant did):
+  - Made `/wallboard/[id]` redirect to `/wallboard-ghosts/[id]` (so existing links keep working).
+  - Added a small speed-curve helper and unit test; higher ghost count → shorter animation duration.
+  - Updated ghosts wallboard to position ghosts absolutely within each phase pane and animate drifting; respects `prefers-reduced-motion`.
+- **Files changed**:
+  - `web/src/app/wallboard/[id]/page.tsx`
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+  - `web/src/lib/wallboard/ghostMotion.ts` and `.test.ts`
+  - `web/src/app/session/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Ghosts wallboard is the default, and ghosts drift faster as a phase gets “busier”.
+
+#### Step 59 — Add deterministic Pac‑Man‑like mazes per phase pane and constrain ghost movement to corridors
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Add a randomly generated Pac‑Man style maze to each phase pane.
+  - Make ghost movement “Pac‑Man‑like”: grid/corridor constrained, stable per session, per phase pane.
+- **Clarifications / assumptions**:
+  - Implemented **Pac‑Man‑like** (not arcade-faithful): grid corridors with turns and loops; ghosts follow corridor paths and never cross walls.
+  - Maze is **deterministic** based on `sessionId + phaseId` so all viewers see the same maze.
+- **Plan executed** (what the assistant did):
+  - Added deterministic PRNG utilities.
+  - Implemented maze generation and loop-path generation for ghost motion.
+  - Rendered maze walls as SVG paths, and moved ghosts via SVG `animateMotion` along corridor-following loop paths.
+  - Added unit tests for determinism and basic path generation.
+  - Ensured reduced-motion disables animation while still placing ghosts at a stable start point.
+- **Files changed**:
+  - `web/src/lib/random/prng.ts`
+  - `web/src/lib/wallboard/maze.ts` and `.test.ts`
+  - `web/src/components/wallboard/PacmanGhostSvg.tsx`
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Outcome**:
+  - Each phase pane now has a stable “maze” background, and ghosts move through corridors in a Pac‑Man‑like way.
+
+#### Step 60 — Make all maze ghosts move at the same speed
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Make the ghosts all move at the same speed, regardless of number of ghosts.
+- **Plan executed** (what the assistant did):
+  - Removed density-based speed scaling for maze ghost motion and set a fixed animation duration for all ghosts.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - All ghosts now move at the same speed even as phases gain more ghosts.
+
+#### Step 61 — Show ghost count per phase on ghosts wallboard
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Display the number of ghosts for each phase in the phase heading.
+- **Plan executed** (what the assistant did):
+  - Added a per-phase ghost count label (singular/plural) in the header of each phase pane on the ghosts wallboard.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Each phase pane now shows how many ghosts are currently active in that phase.
+
+#### Step 62 — Ghosts wallboard layout: vertical stack + de-emphasized ghost count
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Move the number of ghosts to the next line in the heading and de-emphasize it.
+  - Increase the size of each phase panel by switching to a 1×5 layout (one column, five rows).
+- **Plan executed** (what the assistant did):
+  - Updated the ghosts wallboard grid to a single column layout so each phase pane is larger.
+  - Moved the ghost count to a second line under the phase title and styled it as secondary text.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Wallboard is more readable at distance with larger panes and less prominent count text.
+
+#### Step 63 — Ghosts wallboard: 2-column layout, remove empty-state text, add directional eyes
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Remove the “No activity yet.” text.
+  - Switch layout to 2 columns.
+  - Make ghost eyes change based on direction like Pac‑Man.
+- **Plan executed** (what the assistant did):
+  - Removed the empty-state SVG text for panes with zero ghosts (maze still renders).
+  - Updated the grid to 2 columns on desktop (responsive).
+  - Added a simple “directional eyes” effect by animating pupil translation based on the current movement segment direction along the maze path (SMIL `animateTransform`), respecting reduced-motion.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+  - `web/src/components/wallboard/PacmanGhostSvg.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Cleaner wallboard panes, two-column layout, and Pac‑Man-like “looking direction” pupils while ghosts move.
+
+#### Step 64 — Experiment: show participant names under ghosts
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation (experiment)
+- **User guidance** (what Jay asked for):
+  - Experiment with having the name of the user underneath each of their ghosts.
+- **Plan executed** (what the assistant did):
+  - Rendered each participant’s display name as SVG text under each of their ghosts so it moves with the ghost.
+  - Added a small shortening rule for long names and a white stroke for legibility.
+  - Added a query param escape hatch: `?names=0` hides names (default is showing names).
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Ghosts can optionally display participant names under them during the wallboard view.
+
+#### Step 65 — Add wallboard toggle to show/hide names
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Add a toggle at the top of the page to show or hide names.
+- **Plan executed** (what the assistant did):
+  - Added a “Show names” switch in the ghosts wallboard header.
+  - The switch is synced with the URL query param (`?names=0` hides names) via `router.replace`, so the setting is shareable/bookmarkable.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Names can be toggled on/off from the UI without manually editing the URL.
+
+#### Step 66 — Default “Show names” to off
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Default “show names” to off.
+- **Plan executed** (what the assistant did):
+  - Changed the wallboard default to **hide names** unless explicitly enabled via `?names=1`.
+  - Updated the toggle URL sync so turning names on sets `names=1`, and turning it off removes the param.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Names are hidden by default; the UI toggle can enable them when desired.
+
+#### Step 67 — Add per-phase people count (right-justified from ghost count)
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Add the number of people right-justified from the number of ghosts.
+- **Clarification / definition**:
+  - “People” = unique participants who have at least one ghost in that phase (i.e., at least one subsection toggle ON in that phase).
+- **Plan executed** (what the assistant did):
+  - Added a second-line header row showing **ghosts (left)** and **people (right)** for each phase pane.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Each phase pane now shows both ghost count and people count with clear alignment.
+
+#### Step 68 — Visual polish: square maze frame, Pac‑Man-blue walls, improved ghost/name legibility
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Remove curved corner border around the map.
+  - Tighten maze visuals (thicker walls, rounded corners, subtle Pac‑Man blue walls).
+  - Improve ghost readability (slight drop shadow / outline, better contrast on names when enabled).
+- **Plan executed** (what the assistant did):
+  - Removed rounding from the maze container so the “map” has square corners.
+  - Updated maze wall styling to a thicker, rounded stroke in a subtle Pac‑Man-ish blue.
+  - Added a soft ghost drop shadow and strengthened the ghost outline.
+  - Improved name label contrast (heavier white stroke + darker fill + bold weight).
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+  - `web/src/components/wallboard/PacmanGhostSvg.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Wallboard maze + ghosts are more readable and feel closer to Pac‑Man aesthetics.
+
+#### Step 69 — Remove remaining thin border around maze map
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - There is still a thin grey border around the map; remove it.
+- **Plan executed** (what the assistant did):
+  - Removed the inner border on the maze “map” container that wraps the SVG.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Maze renders edge-to-edge within its panel without the extra grey outline.
+
 

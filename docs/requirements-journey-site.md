@@ -54,7 +54,8 @@ Build a **static website** that displays the “Common Software Engineer LLM Jou
 
 ### 2) Self-mapping (participant interaction)
 - **Per-item status**
-  - Each journey item supports a single state: **Doing** (on/off).
+  - Each session-level journey unit supports a single state: **Doing** (on/off).
+  - In v1 session UX, toggles live on **section headings** (e.g., “Basic research”).
   - Toggling updates instantly for all viewers in the same session.
 - **Per-phase summary**
   - Automatically compute per-phase counts of “Doing” toggles for each participant (for summary UI).
