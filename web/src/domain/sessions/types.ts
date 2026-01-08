@@ -6,6 +6,7 @@ export type Session = {
   title?: string;
   status: SessionStatus;
   createdAt: string; // ISO
+  resultsClearedAt?: string; // ISO
 };
 
 export type Participant = {

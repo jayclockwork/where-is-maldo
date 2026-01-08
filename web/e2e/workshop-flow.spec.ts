@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("workshop flow: create → join → toggle propagates → wallboard clear → export", async ({ page, browser, request }) => {
+test("workshop flow: create → join → toggle propagates → wallboard clear → export", async ({ browser, request }) => {
   // Create session (host)
   const createRes = await request.post("/api/sessions/create", { data: { title: "E2E Workshop" } });
   expect(createRes.ok()).toBeTruthy();

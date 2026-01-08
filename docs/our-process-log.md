@@ -2051,4 +2051,19 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
   - `npx playwright install chromium`
   - `npm run test:e2e`
 
+#### Step 104 — Keep unit tests clean after adding E2E
+- **Date/Time**: 2026-01-08
+- **Step type**: Quality
+- **What changed**:
+  - Updated Vitest config to only run `src/**/*.test.*` and exclude `e2e/` so unit tests don’t accidentally execute Playwright specs.
+  - Fixed an ESLint unused-var warning in the E2E spec.
+- **Files changed**:
+  - `web/vitest.config.ts`
+  - `web/e2e/workshop-flow.spec.ts`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+  - `npm run test:e2e`
+
 
