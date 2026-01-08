@@ -17,15 +17,16 @@ export function launchConfetti({
   root.style.pointerEvents = "none";
   root.style.zIndex = "9999";
 
-  const startX = window.innerWidth / 2;
-  const startY = Math.min(180, window.innerHeight * 0.25);
+  // Start at the top of the viewport and fall down slowly (no upward burst).
+  const startY = -16;
 
-  const durationMs = 1100;
+  const durationMs = 3200;
   const now = performance.now();
 
   for (let i = 0; i < count; i++) {
     const piece = document.createElement("div");
     piece.style.position = "absolute";
+    const startX = Math.random() * window.innerWidth;
     piece.style.left = `${startX}px`;
     piece.style.top = `${startY}px`;
     piece.style.width = `${6 + Math.random() * 6}px`;
@@ -34,17 +35,17 @@ export function launchConfetti({
     piece.style.background = colors[i % colors.length] ?? "#F5C400";
     piece.style.opacity = "1";
 
-    const dx = (Math.random() - 0.5) * window.innerWidth * 0.6;
-    const dy = 250 + Math.random() * 260;
+    const dx = (Math.random() - 0.5) * window.innerWidth * 0.25; // gentle horizontal drift
+    const down = window.innerHeight + 220 + Math.random() * 260;
     const rot0 = Math.random() * 180;
     const rot1 = rot0 + (Math.random() > 0.5 ? 720 : -720);
 
     const animation = piece.animate(
       [
         { transform: `translate(0px, 0px) rotate(${rot0}deg)`, opacity: 1 },
-        { transform: `translate(${dx}px, ${dy}px) rotate(${rot1}deg)`, opacity: 0 },
+        { transform: `translate(${dx}px, ${down}px) rotate(${rot1}deg)`, opacity: 0 },
       ],
-      { duration: durationMs, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)", fill: "forwards" },
+      { duration: durationMs, easing: "linear", fill: "forwards" },
     );
 
     // Ensure we don't leak nodes if the tab is backgrounded.
