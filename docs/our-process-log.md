@@ -1622,4 +1622,52 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
 - **Outcome**:
   - Wallboard shows a clear “starting” message before motion begins; navigation/hero CTAs are simplified.
 
+#### Step 76 — Fix wallboard ghost-motion start delay caused by SSE updates
+- **Date/Time**: 2026-01-08
+- **Step type**: Bugfix / Implementation
+- **User guidance** (what Jay reported):
+  - There is a long pause (~8 seconds) after ghosts appear before they start moving.
+- **Plan executed** (what the assistant did):
+  - Updated the wallboard “motion gate” so it arms **once** after initial render (instead of being delayed by repeated `ghosts` recomputation during initial SSE updates).
+  - Kept ghosts visible/static while the brief `Starting wallboard…` message shows; motion begins immediately after.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+- **Outcome**:
+  - Ghost motion starts quickly and deterministically after the wallboard renders, without multi-second delays.
+
+#### Step 77 — Remove “Starting wallboard…” message (start motion immediately)
+- **Date/Time**: 2026-01-08
+- **Step type**: Decision + Implementation
+- **User guidance** (what Jay decided):
+  - “I don't think we even need the message any more.”
+- **Plan executed** (what the assistant did):
+  - Removed the `Starting wallboard…` UI and the motion gate; ghosts now begin moving as soon as the wallboard renders (still respects `prefers-reduced-motion`).
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - The wallboard feels instant—no extra transitional messaging.
+
+#### Step 78 — Fix recurring “ghosts visible but not moving” delay by arming motion after first paint
+- **Date/Time**: 2026-01-08
+- **Step type**: Bugfix / Implementation
+- **User guidance** (what Jay reported):
+  - Removing the message reintroduced the long delay before ghosts start moving.
+- **Plan executed** (what the assistant did):
+  - Reintroduced a **tiny, invisible** “motion arming” step: the SVG mounts first with ghosts statically positioned, then `animateMotion` is enabled on the **next animation frame**.
+  - Kept it one-time (not reset by SSE churn) and still respects `prefers-reduced-motion`.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Ghost movement starts promptly and consistently without requiring any user-visible “starting” message.
+
 

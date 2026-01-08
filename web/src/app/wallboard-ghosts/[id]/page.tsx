@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -50,16 +50,18 @@ export default function WallboardGhostsPage() {
   const [error, setError] = useState<string | null>(null);
   const [conn, setConn] = useState<ConnectionState>("connecting");
   const [reduceMotion, setReduceMotion] = useState(false);
-  const [motionReady, setMotionReady] = useState(false);
+  const [motionEnabled, setMotionEnabled] = useState(false);
   const [clearOpen, setClearOpen] = useState(false);
   const [clearing, setClearing] = useState(false);
   const [clearError, setClearError] = useState<string | null>(null);
+  const motionArmedRef = useRef(false);
 
   const model = useMemo(() => (journey ? buildSessionJourneyModel(journey) : null), [journey]);
   const ghosts = useMemo(() => {
     if (!model) return null;
     return computeGhostsByPhase({ model, participants, mappings });
   }, [model, participants, mappings]);
+  const hasGhosts = !!ghosts;
 
   useEffect(() => {
     let alive = true;
@@ -133,14 +135,23 @@ export default function WallboardGhostsPage() {
   }, []);
 
   useEffect(() => {
-    // Gate motion until after we've rendered the board, so the user sees a brief "Loading/Starting" message first.
-    if (loading || error || !ghosts) {
-      setMotionReady(false);
+    // Some browsers can stall SMIL (<animateMotion>) when it's present on the initial heavy SVG mount.
+    // Arm motion on the next frame after the wallboard is ready; do not reset due to SSE updates.
+    if (loading || error || !hasGhosts) {
+      setMotionEnabled(false);
+      motionArmedRef.current = false;
       return;
     }
-    const t = window.setTimeout(() => setMotionReady(true), 650);
-    return () => window.clearTimeout(t);
-  }, [loading, error, ghosts]);
+    if (reduceMotion) {
+      setMotionEnabled(false);
+      motionArmedRef.current = true;
+      return;
+    }
+    if (motionArmedRef.current) return;
+    motionArmedRef.current = true;
+    const raf = window.requestAnimationFrame(() => setMotionEnabled(true));
+    return () => window.cancelAnimationFrame(raf);
+  }, [loading, error, hasGhosts, reduceMotion]);
 
   useEffect(() => {
     // Keep state in sync if URL changes externally.
@@ -290,20 +301,16 @@ export default function WallboardGhostsPage() {
             <Alert severity="error">{error}</Alert>
           ) : !ghosts ? (
             <Alert severity="warning">Missing journey model.</Alert>
-          ) : !motionReady ? (
-            <Stack direction="row" spacing={2} alignItems="center">
-              <CircularProgress size={20} />
-              <Typography sx={{ color: "text.secondary" }}>Starting wallboard…</Typography>
-            </Stack>
           ) : (
-            <Box
-              sx={{
-                display: "grid",
-                gap: 2,
-                gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
-                alignItems: "stretch",
-              }}
-            >
+            <>
+              <Box
+                sx={{
+                  display: "grid",
+                  gap: 2,
+                  gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
+                  alignItems: "stretch",
+                }}
+              >
               {ghosts.phases.map((phase) => {
                 const participantIdToName = new Map(participants.map((p) => [p.id, p.displayName] as const));
 
@@ -390,7 +397,7 @@ export default function WallboardGhostsPage() {
                             const m = /^M\s+([0-9.]+)\s+([0-9.]+)/.exec(path);
                             const startX = m ? Number(m[1]) : 20;
                             const startY = m ? Number(m[2]) : 20;
-                            const allowMotion = motionReady && !reduceMotion;
+                            const allowMotion = motionEnabled && !reduceMotion;
                             const pupilMotion = allowMotion ? pupilMotionForPath(path, durationSeconds) : null;
 
                             return (
@@ -428,7 +435,8 @@ export default function WallboardGhostsPage() {
                   </Box>
                 );
               })}
-            </Box>
+              </Box>
+            </>
           )}
         </Stack>
       </Container>
