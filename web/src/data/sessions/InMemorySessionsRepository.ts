@@ -127,8 +127,7 @@ export class InMemorySessionsRepository implements SessionsRepository {
     };
   }
 
-  // v1: expose clear results for host later (PRD 004). For now, we keep internal helper.
-  clearResults(sessionId: string) {
+  async clearResults(sessionId: string): Promise<void> {
     const keys = this.mappingKeysBySessionId.get(sessionId);
     if (keys) {
       for (const key of keys) this.mappingsByKey.delete(key);

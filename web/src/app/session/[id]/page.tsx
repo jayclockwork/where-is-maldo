@@ -3,7 +3,15 @@
 import { useMemo, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Alert, Box, Button, CircularProgress, Container, Stack, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useEffect } from "react";
 
 import { SiteAppBar } from "@/components/SiteAppBar";
@@ -82,6 +90,9 @@ export default function SessionPage() {
     es.addEventListener("mapping_updated", (evt) => {
       const data = JSON.parse((evt as MessageEvent).data) as { type: "mapping_updated"; mapping: Mapping };
       setMappings((prev) => upsertMapping(prev, data.mapping));
+    });
+    es.addEventListener("results_cleared", () => {
+      setMappings([]);
     });
     es.addEventListener("participant_joined", async () => {
       // refresh participants list

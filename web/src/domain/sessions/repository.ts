@@ -25,6 +25,9 @@ export interface SessionsRepository {
   listParticipants(sessionId: string): Promise<Participant[]>;
   listMappings(sessionId: string): Promise<Mapping[]>;
 
+  // Host/admin controls (v1: no auth yet; PRD 004 will harden this)
+  clearResults(sessionId: string): Promise<void>;
+
   // Realtime
   subscribe(sessionId: string, onEvent: (event: SessionEvent) => void): Unsubscribe;
 }

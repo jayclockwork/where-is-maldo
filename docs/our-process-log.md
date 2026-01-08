@@ -1523,4 +1523,63 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
 - **Outcome**:
   - Clearer separation between the toggle and fullscreen controls.
 
+#### Step 71 — Add “Clear results” (with confirmation) on session page
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Add “Clear results” on the session page (simple option #1) with a confirmation prompt.
+- **Clarifications / assumptions**:
+  - v1 is intentionally **not authenticated**; PRD 004 will add proper host/admin gating.
+- **Plan executed** (what the assistant did):
+  - Added `clearResults()` to the repository interface and implemented it in the in-memory repo (emits `results_cleared`).
+  - Added API route `POST /api/sessions/clear`.
+  - Added a session page button that opens a confirmation dialog and calls the API.
+  - Added SSE handling on the session page for `results_cleared` to clear mappings live.
+  - Added a unit test ensuring `clearResults` removes mappings.
+- **Files changed**:
+  - `web/src/domain/sessions/repository.ts`
+  - `web/src/data/sessions/InMemorySessionsRepository.ts` and `.test.ts`
+  - `web/src/app/api/sessions/clear/route.ts`
+  - `web/src/app/session/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Presenter can reset the session mappings during a live run; clients update immediately via SSE.
+
+#### Step 72 — Move “Clear results” control from session page to wallboard
+- **Date/Time**: 2026-01-08
+- **Step type**: Decision + Implementation
+- **User guidance** (what Jay changed):
+  - “On second thought, the clear results feature should be on the wallboard.”
+- **Plan executed** (what the assistant did):
+  - Removed the Clear results button + dialog from the session page UI (kept SSE handling so it still reacts to clears).
+  - Added Clear results button + confirmation dialog to the ghosts wallboard header; calls `POST /api/sessions/clear`.
+- **Files changed**:
+  - `web/src/app/session/[id]/page.tsx`
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Presenter can clear results directly from the wallboard during a presentation.
+
+#### Step 73 — Add “Home” link on wallboard
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - The wallboard page needs a way to get back to the home page.
+- **Plan executed** (what the assistant did):
+  - Added a `Home` button in the wallboard header that navigates to `/`.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Wallboard has an obvious “Home” navigation path.
+
 

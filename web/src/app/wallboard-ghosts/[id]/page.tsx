@@ -10,6 +10,11 @@ import {
   Chip,
   CircularProgress,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControlLabel,
   Stack,
   Switch,
@@ -45,6 +50,9 @@ export default function WallboardGhostsPage() {
   const [error, setError] = useState<string | null>(null);
   const [conn, setConn] = useState<ConnectionState>("connecting");
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [clearOpen, setClearOpen] = useState(false);
+  const [clearing, setClearing] = useState(false);
+  const [clearError, setClearError] = useState<string | null>(null);
 
   const model = useMemo(() => (journey ? buildSessionJourneyModel(journey) : null), [journey]);
   const ghosts = useMemo(() => {
@@ -136,6 +144,26 @@ export default function WallboardGhostsPage() {
     router.replace(qs ? `${pathname}?${qs}` : pathname);
   }
 
+  async function clearResults() {
+    setClearing(true);
+    setClearError(null);
+    const res = await fetch("/api/sessions/clear", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ sessionId }),
+    });
+    if (!res.ok) {
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      setClearError(data.error ?? "Failed to clear results.");
+      setClearing(false);
+      return;
+    }
+    setClearOpen(false);
+    setClearing(false);
+    // Optimistic local clear (SSE will also broadcast results_cleared).
+    setMappings([]);
+  }
+
   async function toggleFullscreen() {
     if (typeof document === "undefined") return;
     if (!document.fullscreenElement) await document.documentElement.requestFullscreen?.();
@@ -218,8 +246,21 @@ export default function WallboardGhostsPage() {
                 }
                 label="Show names"
               />
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => {
+                  setClearError(null);
+                  setClearOpen(true);
+                }}
+              >
+                Clear results
+              </Button>
               <Button variant="outlined" onClick={toggleFullscreen}>
                 Fullscreen
+              </Button>
+              <Button component={Link} href="/" variant="text">
+                Home
               </Button>
               {kiosk ? null : (
                 <Button component={Link} href={`/session/${sessionId}${joinCode ? `?code=${encodeURIComponent(joinCode)}` : ""}`} variant="text">
@@ -371,6 +412,28 @@ export default function WallboardGhostsPage() {
           )}
         </Stack>
       </Container>
+
+      <Dialog open={clearOpen} onClose={() => (clearing ? null : setClearOpen(false))}>
+        <DialogTitle>Clear results?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            This will clear all “Doing” mappings for everyone in this session. This cannot be undone.
+          </DialogContentText>
+          {clearError ? (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {clearError}
+            </Alert>
+          ) : null}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setClearOpen(false)} disabled={clearing}>
+            Cancel
+          </Button>
+          <Button onClick={clearResults} color="error" variant="contained" disabled={clearing}>
+            {clearing ? "Clearing…" : "Clear"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

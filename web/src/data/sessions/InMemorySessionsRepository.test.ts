@@ -45,6 +45,28 @@ describe("InMemorySessionsRepository", () => {
     expect(events).toContain("participant_joined");
     expect(events).toContain("mapping_updated");
   });
+
+  it("clearResults removes all mappings for a session", async () => {
+    const repo = new InMemorySessionsRepository();
+    const { session } = await repo.createSession({ joinCode: "DEMO20" });
+    const { participant, participantSecret } = await repo.joinSession({
+      joinCode: session.joinCode,
+      displayName: "Jay",
+      avatarColor: "#0057FF",
+    });
+
+    await repo.toggleDoing({
+      sessionId: session.id,
+      participantId: participant.id,
+      participantSecret,
+      itemId: "phase-research__section__Basic research",
+      isDoing: true,
+    });
+    expect((await repo.listMappings(session.id)).length).toBe(1);
+
+    await repo.clearResults(session.id);
+    expect((await repo.listMappings(session.id)).length).toBe(0);
+  });
 });
 
 
