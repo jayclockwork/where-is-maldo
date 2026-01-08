@@ -20,7 +20,12 @@ import { CopyLinkButton } from "@/components/journey/CopyLinkButton";
 
 function ItemsList({ items, depth = 0 }: { items: JourneyItem[]; depth?: number }) {
   return (
-    <Stack component="ul" spacing={0.75} sx={{ pl: depth ? 3 : 2, mb: 0, mt: 0 }}>
+    <Stack
+      component="ul"
+      spacing={0.75}
+      // Add space after the last item in each section list (but not after nested lists).
+      sx={{ pl: depth ? 3 : 2, mb: 0, mt: 0 }}
+    >
       {items.map((it) => (
         <Box component="li" key={it.itemId} sx={{ listStyle: "disc" }}>
           <Typography variant="body1" sx={{ display: "inline" }}>

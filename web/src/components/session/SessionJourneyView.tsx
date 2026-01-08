@@ -11,7 +11,7 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import { visuallyHidden } from "@mui/utils";
 
 import type { JourneyDoc } from "@/lib/journey/types";
@@ -29,6 +29,10 @@ export function SessionJourneyView({
   myParticipantId: string;
   onToggle: (itemId: string, isDoing: boolean) => void;
 }) {
+  // Intentional break between section groups (after the last bullet in a section list).
+  // This is the “How technologies compare and contrast” → “Coding research” gap.
+  const SECTION_GROUP_GAP_Y = 2;
+
   const counts = useMemo(() => {
     const map = new Map<string, number>();
     for (const m of mappings) {
@@ -49,13 +53,15 @@ export function SessionJourneyView({
   const model = useMemo(() => buildSessionJourneyModel(journey), [journey]);
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={1.25}>
       {model.phases.map((phase) => (
         <Accordion key={phase.phaseId} defaultExpanded sx={{ bgcolor: "grey.50" }}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             sx={{
               borderBottom: "1px solid rgba(0,0,0,0.12)",
+              py: 0.35,
+              "& .MuiAccordionSummary-content": { my: 0.25 },
               "&.Mui-expanded": { minHeight: "unset" },
             }}
           >
@@ -70,8 +76,8 @@ export function SessionJourneyView({
               </Typography>
             </Box>
           </AccordionSummary>
-          <AccordionDetails>
-            <Stack spacing={2}>
+          <AccordionDetails sx={{ py: 1.25 }}>
+            <Stack spacing={1.25}>
               {phase.focus ? (
                 <Box>
                   <Chip label="Focus" size="small" sx={{ mr: 1, bgcolor: "rgba(245,196,0,0.25)", color: "text.primary" }} />
@@ -81,57 +87,75 @@ export function SessionJourneyView({
                 </Box>
               ) : null}
 
-              <Stack spacing={1}>
-                {phase.rows.map((row) => {
-                  if (row.type === "section") {
-                    const count = counts.get(row.itemId) ?? 0;
-                    const mine = myDoing.has(row.itemId);
-                    return (
-                      <Box
-                        key={row.itemId}
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          gap: 2,
-                          py: 0.75,
-                        }}
-                      >
-                        <Typography sx={{ fontWeight: 800 }}>{row.label}</Typography>
-                        <Stack direction="row" spacing={1} alignItems="center">
-                          {count ? <Chip size="small" label={count} /> : null}
-                          <Box component="label" sx={{ display: "inline-flex", alignItems: "center" }}>
-                            <Switch checked={mine} onChange={(_, checked) => onToggle(row.itemId, checked)} />
-                            <Box component="span" sx={visuallyHidden}>
-                              Toggle doing for {row.label}
-                            </Box>
-                          </Box>
-                        </Stack>
-                      </Box>
-                    );
-                  }
+              <Stack spacing={0.25}>
+                {(() => {
+                  return phase.rows.map((row, idx) => {
+                    const nextRow = phase.rows[idx + 1];
+                    // Add breathing room AFTER the last item in a section group
+                    // (i.e., the row immediately before the next section heading).
+                    const isEndOfSectionGroup = nextRow?.type === "section";
 
-                  // Bullet rows are informational in session mode; toggles live on the section headings.
-                  return (
-                    <Box
-                      key={row.itemId}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: 2,
-                        pl: row.depth * 2,
-                        py: 0.5,
-                      }}
-                    >
-                      <Box sx={{ minWidth: 0 }}>
-                        <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                          {row.label}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  );
-                })}
+                    if (row.type === "section") {
+                      const count = counts.get(row.itemId) ?? 0;
+                      const mine = myDoing.has(row.itemId);
+
+                      return (
+                        <Box
+                          key={row.itemId}
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: 2,
+                            py: 0.5,
+                            mb: isEndOfSectionGroup ? SECTION_GROUP_GAP_Y : 0,
+                          }}
+                        >
+                          <Typography sx={{ fontWeight: 800 }}>{row.label}</Typography>
+                          <Stack direction="row" spacing={1} alignItems="center">
+                            {count ? <Chip size="small" label={count} /> : null}
+                            <Box component="label" sx={{ display: "inline-flex", alignItems: "center" }}>
+                              <Switch checked={mine} onChange={(_, checked) => onToggle(row.itemId, checked)} />
+                              <Box component="span" sx={visuallyHidden}>
+                                Toggle doing for {row.label}
+                              </Box>
+                            </Box>
+                          </Stack>
+                        </Box>
+                      );
+                    }
+
+                    // Bullet rows are informational in session mode; toggles live on the section headings.
+                    return (
+                      <Fragment key={row.itemId}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: 2,
+                            pl: row.depth * 2,
+                            py: 0.25,
+                          }}
+                        >
+                          <Box sx={{ minWidth: 0 }}>
+                            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                              {row.label}
+                            </Typography>
+                          </Box>
+                        </Box>
+                        {isEndOfSectionGroup ? (
+                          <Box
+                            aria-hidden
+                            sx={{
+                              height: (theme) => theme.spacing(SECTION_GROUP_GAP_Y),
+                            }}
+                          />
+                        ) : null}
+                      </Fragment>
+                    );
+                  });
+                })()}
               </Stack>
 
               {/* Intentionally hiding "What to watch for" in session mode as well. */}

@@ -44,6 +44,16 @@ export default function JoinSessionPage() {
     return used;
   }, [participants]);
 
+  const visibleColors = useMemo(() => {
+    const selected = selectedColor?.toLowerCase();
+    return avatarPalette.filter((hex) => {
+      const lower = hex.toLowerCase();
+      // Hide taken colors entirely for new users, but keep a user's current selection visible.
+      if (usedColors.has(lower) && lower !== selected) return false;
+      return true;
+    });
+  }, [selectedColor, usedColors]);
+
   async function load({ isInitial }: { isInitial: boolean }) {
     if (!joinCode) return;
     if (isInitial) setLoading(true);
@@ -200,11 +210,11 @@ export default function JoinSessionPage() {
                   <Box>
                     <Typography sx={{ fontWeight: 800, mb: 1 }}>Pick a color</Typography>
                     <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-                      {avatarPalette.map((hex) => {
+                      {visibleColors.map((hex) => {
                         const taken = usedColors.has(hex.toLowerCase());
                         const selected = selectedColor?.toLowerCase() === hex.toLowerCase();
                         return (
-                          <Tooltip key={hex} title={taken ? "Taken" : hex}>
+                          <Tooltip key={hex} title={hex}>
                             <Box
                               role="button"
                               aria-disabled={taken}
@@ -232,7 +242,7 @@ export default function JoinSessionPage() {
                       })}
                     </Stack>
                     <Typography variant="caption" sx={{ color: "text.secondary", display: "block", mt: 1 }}>
-                      Colors are unique per session—once someone picks one, it becomes unavailable.
+                      Colors are unique per session—once someone picks one, it disappears from this list.
                     </Typography>
                   </Box>
 
