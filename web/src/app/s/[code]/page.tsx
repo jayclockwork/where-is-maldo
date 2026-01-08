@@ -217,6 +217,7 @@ export default function JoinSessionPage() {
                           <Tooltip key={hex} title={hex}>
                             <Box
                               role="button"
+                              aria-label={`Select color ${hex}`}
                               aria-disabled={taken}
                               tabIndex={taken ? -1 : 0}
                               onClick={() => {
