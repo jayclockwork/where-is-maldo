@@ -2066,4 +2066,20 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
   - `npm run build`
   - `npm run test:e2e`
 
+#### Step 105 — Add a production debugging indicator for Supabase vs in-memory backend
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **Why**:
+  - Troubleshoot “session not found” in production by confirming whether the deployment is actually using Supabase env vars.
+- **What changed**:
+  - Added `GET /api/debug/backend` returning backend mode and Supabase host (no secrets).
+  - Updated `/host` to display a small “Backend: Supabase … / In-memory” chip.
+- **Files changed**:
+  - `web/src/app/api/debug/backend/route.ts`
+  - `web/src/app/host/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
 
