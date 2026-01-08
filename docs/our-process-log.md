@@ -1507,4 +1507,20 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
 - **Outcome**:
   - Maze renders edge-to-edge within its panel without the extra grey outline.
 
+#### Step 70 — Add spacing between “Show names” toggle and Fullscreen button
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Add some horizontal spacing between the show names toggle and the fullscreen button.
+- **Plan executed** (what the assistant did):
+  - Increased the header controls row spacing so the toggle and fullscreen button aren’t cramped.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Clearer separation between the toggle and fullscreen controls.
+
 

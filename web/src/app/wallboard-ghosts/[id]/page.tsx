@@ -205,7 +205,7 @@ export default function WallboardGhostsPage() {
               </Stack>
             </Box>
 
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack direction="row" spacing={5} alignItems="center">
               <FormControlLabel
                 control={
                   <Switch
