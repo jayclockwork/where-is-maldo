@@ -20,7 +20,8 @@ import type { Mapping, Participant, Session } from "@/domain/sessions/types";
 import { upsertMapping } from "@/lib/sessions/mappings";
 import { buildSessionJourneyModel } from "@/lib/session/sessionContentModel";
 import { computeGhostsByPhase } from "@/lib/wallboard/ghosts";
-import { PacmanGhost } from "@/components/wallboard/PacmanGhost";
+import { buildGhostLoopPath, buildMazeSvgPaths, generateMaze } from "@/lib/wallboard/maze";
+import { PacmanGhostSvg } from "@/components/wallboard/PacmanGhostSvg";
 
 type ConnectionState = "connecting" | "connected" | "reconnecting";
 
@@ -37,6 +38,7 @@ export default function WallboardGhostsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [conn, setConn] = useState<ConnectionState>("connecting");
+  const [reduceMotion, setReduceMotion] = useState(false);
 
   const model = useMemo(() => (journey ? buildSessionJourneyModel(journey) : null), [journey]);
   const ghosts = useMemo(() => {
@@ -106,6 +108,15 @@ export default function WallboardGhostsPage() {
     return () => es.close();
   }, [sessionId]);
 
+  useEffect(() => {
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mq) return;
+    const update = () => setReduceMotion(mq.matches);
+    update();
+    mq.addEventListener?.("change", update);
+    return () => mq.removeEventListener?.("change", update);
+  }, []);
+
   async function toggleFullscreen() {
     if (typeof document === "undefined") return;
     if (!document.fullscreenElement) await document.documentElement.requestFullscreen?.();
@@ -172,6 +183,14 @@ export default function WallboardGhostsPage() {
                   for (let i = 0; i < n; i++) ghostElements.push({ key: `${participantId}:${i}`, color });
                 }
 
+                const durationSeconds = 10;
+
+                // Stable maze per session+phase pane
+                const maze = generateMaze({ seed: `${sessionId}:${phase.phaseId}`, cols: 11, rows: 9 });
+                const mazeW = 520;
+                const mazeH = 360;
+                const { wallsPath } = buildMazeSvgPaths({ maze, width: mazeW, height: mazeH, padding: 14 });
+
                 return (
                   <Box
                     key={phase.phaseId}
@@ -185,21 +204,58 @@ export default function WallboardGhostsPage() {
                       minHeight: 320,
                     }}
                   >
-                    <Typography sx={{ fontWeight: 900, mb: 1.5 }}>{phase.title}</Typography>
+                    <Stack direction="row" spacing={1} alignItems="baseline" justifyContent="space-between" sx={{ mb: 1.5 }}>
+                      <Typography sx={{ fontWeight: 900 }}>{phase.title}</Typography>
+                      <Typography sx={{ fontWeight: 900, color: "text.secondary" }}>
+                        {ghostElements.length} {ghostElements.length === 1 ? "ghost" : "ghosts"}
+                      </Typography>
+                    </Stack>
                     <Box
                       sx={{
                         flex: "1 1 auto",
-                        display: "flex",
-                        flexWrap: "wrap",
-                        alignContent: "flex-start",
-                        gap: 1,
+                        borderRadius: 2,
+                        overflow: "hidden",
+                        border: "1px solid rgba(0,0,0,0.12)",
                       }}
                     >
-                      {ghostElements.length ? (
-                        ghostElements.map((g) => <PacmanGhost key={g.key} color={g.color} />)
-                      ) : (
-                        <Typography sx={{ color: "text.secondary" }}>No activity yet.</Typography>
-                      )}
+                      <svg
+                        width="100%"
+                        height="100%"
+                        viewBox={`0 0 ${mazeW} ${mazeH}`}
+                        preserveAspectRatio="xMidYMid meet"
+                      >
+                        <rect x="0" y="0" width={mazeW} height={mazeH} fill="rgba(0,0,0,0.02)" />
+                        <path d={wallsPath} stroke="rgba(0,0,0,0.20)" strokeWidth="2" fill="none" />
+
+                        {ghostElements.length ? (
+                          ghostElements.map((g) => {
+                            const path = buildGhostLoopPath({
+                              maze,
+                              seed: `${sessionId}:${phase.phaseId}:${g.key}`,
+                              width: mazeW,
+                              height: mazeH,
+                              padding: 14,
+                              steps: 22,
+                            });
+                            const m = /^M\s+([0-9.]+)\s+([0-9.]+)/.exec(path);
+                            const startX = m ? Number(m[1]) : 20;
+                            const startY = m ? Number(m[2]) : 20;
+
+                            return (
+                              <g key={g.key} transform={reduceMotion ? `translate(${startX},${startY})` : undefined}>
+                                {reduceMotion ? null : (
+                                  <animateMotion dur={`${durationSeconds}s`} repeatCount="indefinite" path={path} />
+                                )}
+                                <PacmanGhostSvg color={g.color} size={26} />
+                              </g>
+                            );
+                          })
+                        ) : (
+                          <text x="16" y="28" fill="rgba(0,0,0,0.55)" fontSize="18">
+                            No activity yet.
+                          </text>
+                        )}
+                      </svg>
                     </Box>
                   </Box>
                 );

@@ -150,14 +150,6 @@ export default function SessionPage() {
               >
                 Open wallboard
               </Button>
-              <Button
-                component={Link}
-                href={`/wallboard-ghosts/${sessionId}?kiosk=1`}
-                variant="outlined"
-                size="small"
-              >
-                Open wallboard (ghosts)
-              </Button>
             </Stack>
           ) : (
             <Typography sx={{ color: "text.secondary" }}>
