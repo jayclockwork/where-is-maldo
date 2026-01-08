@@ -23,9 +23,6 @@ export default function Home() {
               <Button component={Link} href="/journey" variant="contained" color="primary" size="large">
                 View Journey
               </Button>
-              <Button variant="outlined" color="inherit" size="large" component={Link} href="/w/DEMO20">
-                View Wallboard
-              </Button>
             </Stack>
           </Stack>
         </Container>
@@ -47,7 +44,7 @@ export default function Home() {
                   Navigate phases, collapse sections, and share deep links to specific phases.
                 </Typography>
                 <Button component={Link} href="/journey" sx={{ mt: 2 }} variant="text">
-                  Open Journey →
+                  View Journey →
                 </Button>
               </CardContent>
             </Card>

@@ -7,8 +7,10 @@ import {
   Alert,
   Box,
   Button,
+  Chip,
   CircularProgress,
   Container,
+  Divider,
   Stack,
   Typography,
 } from "@mui/material";
@@ -19,8 +21,10 @@ import type { JourneyDoc } from "@/lib/journey/types";
 import type { Mapping, Participant, Session } from "@/domain/sessions/types";
 import { SessionJourneyView } from "@/components/session/SessionJourneyView";
 import { upsertMapping } from "@/lib/sessions/mappings";
+import { PacmanGhostSvg } from "@/components/wallboard/PacmanGhostSvg";
 
 type LocalParticipant = { participantId: string; participantSecret: string; displayName: string; avatarColor?: string };
+type ConnectionState = "connecting" | "connected" | "reconnecting";
 
 export default function SessionPage() {
   const params = useParams<{ id: string }>();
@@ -40,10 +44,11 @@ export default function SessionPage() {
 
   const [journey, setJourney] = useState<JourneyDoc | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [, setParticipants] = useState<Participant[]>([]);
+  const [participants, setParticipants] = useState<Participant[]>([]);
   const [mappings, setMappings] = useState<Mapping[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [conn, setConn] = useState<ConnectionState>("connecting");
 
   useEffect(() => {
     let alive = true;
@@ -87,6 +92,8 @@ export default function SessionPage() {
 
   useEffect(() => {
     const es = new EventSource(`/api/sessions/stream/${sessionId}`);
+    es.onopen = () => setConn("connected");
+    es.onerror = () => setConn("reconnecting");
     es.addEventListener("mapping_updated", (evt) => {
       const data = JSON.parse((evt as MessageEvent).data) as { type: "mapping_updated"; mapping: Mapping };
       setMappings((prev) => upsertMapping(prev, data.mapping));
@@ -142,42 +149,55 @@ export default function SessionPage() {
 
   return (
     <>
-      <SiteAppBar />
+      <SiteAppBar
+        showJoinSession={false}
+        rightActions={
+          <Button component={Link} href={`/wallboard/${sessionId}?kiosk=1`} variant="contained" color="primary">
+            View Wallboard
+          </Button>
+        }
+      />
       <Container maxWidth="md" sx={{ py: { xs: 4, md: 6 } }}>
         <Stack spacing={2}>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 900 }}>
-            Session
-          </Typography>
-          {session ? (
-            <Stack direction="row" spacing={1} alignItems="center" useFlexGap flexWrap="wrap">
-              <Typography sx={{ color: "text.secondary" }}>
-                Join code: <strong>{session.joinCode}</strong>
+          {me ? (
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography variant="h4" component="h1" sx={{ fontWeight: 900 }}>
+                {me.displayName}
               </Typography>
-              <Button
-                component={Link}
-                href={`/wallboard/${sessionId}?kiosk=1`}
-                variant="outlined"
-                size="small"
-              >
-                Open wallboard
-              </Button>
+              {me.avatarColor ? (
+                <Box sx={{ width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden focusable="false">
+                    <g transform="translate(14 14)">
+                      <PacmanGhostSvg color={me.avatarColor} size={26} />
+                    </g>
+                  </svg>
+                </Box>
+              ) : null}
+            </Stack>
+          ) : (
+            <Typography variant="h4" component="h1" sx={{ fontWeight: 900 }}>
+              Session
+            </Typography>
+          )}
+          {session ? (
+            <Stack spacing={1.25}>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1, flexWrap: "wrap" }}>
+                <Stack direction="row" spacing={1} alignItems="center" useFlexGap flexWrap="wrap" sx={{ minWidth: 0 }}>
+                  <Typography sx={{ color: "text.secondary" }}>
+                    Join code: <strong>{session.joinCode}</strong>
+                  </Typography>
+                  <Chip
+                    color={conn === "connected" ? "success" : conn === "reconnecting" ? "warning" : "default"}
+                    label={conn === "connected" ? "Live" : conn === "reconnecting" ? "Reconnecting…" : "Connecting…"}
+                    size="small"
+                  />
+                </Stack>
+                <Chip label={`Participants: ${participants.length}`} size="small" />
+              </Box>
             </Stack>
           ) : (
             <Typography sx={{ color: "text.secondary" }}>
               Session ID: <code>{sessionId}</code>
-            </Typography>
-          )}
-
-          {me ? (
-            <Box>
-              <Typography sx={{ fontWeight: 800 }}>You</Typography>
-              <Typography sx={{ color: "text.secondary" }}>
-                {me.displayName} {me.avatarColor ? `(${me.avatarColor})` : ""}
-              </Typography>
-            </Box>
-          ) : (
-            <Typography sx={{ color: "text.secondary" }}>
-              Join a session first to set your participant identity.
             </Typography>
           )}
 
@@ -204,12 +224,23 @@ export default function SessionPage() {
               </Typography>
             </Stack>
           ) : journey && me ? (
-            <SessionJourneyView
-              journey={journey}
-              mappings={mappings}
-              myParticipantId={me.participantId}
-              onToggle={toggle}
-            />
+            <>
+              {conn === "connected" ? null : (
+                <Alert severity="warning">
+                  {conn === "reconnecting"
+                    ? "Reconnecting… toggles are disabled until we’re live again."
+                    : "Connecting… toggles are disabled until we’re live."}
+                </Alert>
+              )}
+              <Divider />
+              <SessionJourneyView
+                journey={journey}
+                mappings={mappings}
+                myParticipantId={me.participantId}
+                onToggle={toggle}
+                togglesDisabled={conn !== "connected"}
+              />
+            </>
           ) : null}
         </Stack>
       </Container>

@@ -186,12 +186,6 @@ export default function WallboardGhostsPage() {
     setMappings([]);
   }
 
-  async function toggleFullscreen() {
-    if (typeof document === "undefined") return;
-    if (!document.fullscreenElement) await document.documentElement.requestFullscreen?.();
-    else await document.exitFullscreen?.();
-  }
-
   const joinCode = session?.joinCode;
 
   function shortenName(name: string) {
@@ -269,7 +263,7 @@ export default function WallboardGhostsPage() {
                 label="Show names"
               />
               <Button
-                variant="outlined"
+                variant="text"
                 color="error"
                 onClick={() => {
                   setClearError(null);
@@ -278,17 +272,17 @@ export default function WallboardGhostsPage() {
               >
                 Clear results
               </Button>
-              <Button variant="outlined" onClick={toggleFullscreen}>
-                Fullscreen
-              </Button>
               <Button component={Link} href="/" variant="text">
                 Home
               </Button>
-              {kiosk ? null : (
-                <Button component={Link} href={`/session/${sessionId}${joinCode ? `?code=${encodeURIComponent(joinCode)}` : ""}`} variant="text">
-                  Back to session →
-                </Button>
-              )}
+              <Button
+                component={Link}
+                href={`/session/${sessionId}${joinCode ? `?code=${encodeURIComponent(joinCode)}` : ""}`}
+                variant="contained"
+                color="primary"
+              >
+                View Your Page
+              </Button>
             </Stack>
           </Box>
 

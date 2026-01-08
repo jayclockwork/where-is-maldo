@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { AppBar, Box, Button, Container, Toolbar, Typography } from "@mui/material";
 
-export function SiteAppBar() {
+export function SiteAppBar({
+  showJoinSession = true,
+  rightActions,
+}: {
+  showJoinSession?: boolean;
+  rightActions?: React.ReactNode;
+}) {
   return (
     <AppBar position="sticky">
       <Toolbar disableGutters>
@@ -27,15 +33,18 @@ export function SiteAppBar() {
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Button
-              color="primary"
-              variant="contained"
-              component={Link}
-              href="/s/DEMO20"
-              title="Demo join link (PRD 002 wiring in progress)"
-            >
-              Join Session
-            </Button>
+            {rightActions ?? null}
+            {showJoinSession ? (
+              <Button
+                color="primary"
+                variant="contained"
+                component={Link}
+                href="/s/DEMO20"
+                title="Demo join link (PRD 002 wiring in progress)"
+              >
+                Join Session
+              </Button>
+            ) : null}
           </Box>
         </Container>
       </Toolbar>

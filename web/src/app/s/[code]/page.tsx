@@ -19,6 +19,7 @@ import {
 
 import { SiteAppBar } from "@/components/SiteAppBar";
 import { avatarPalette } from "@/ui/colors/avatarPalette";
+import { PacmanGhostSvg } from "@/components/wallboard/PacmanGhostSvg";
 
 type Session = { id: string; joinCode: string; title?: string; status: "open" | "closed"; createdAt: string };
 type Participant = { id: string; sessionId: string; displayName: string; avatarColor?: string };
@@ -227,16 +228,25 @@ export default function JoinSessionPage() {
                                 if (e.key === "Enter" || e.key === " ") setSelectedColor(hex);
                               }}
                               sx={{
-                                width: 28,
-                                height: 28,
-                                borderRadius: "999px",
-                                bgcolor: hex,
-                                border: selected ? "3px solid #111" : "2px solid rgba(0,0,0,0.12)",
+                                width: 34,
+                                height: 34,
+                                borderRadius: 2,
+                                bgcolor: "rgba(0,0,0,0.03)",
+                                border: selected ? "2px solid #111" : "1px solid rgba(0,0,0,0.12)",
                                 opacity: taken ? 0.35 : 1,
                                 cursor: taken ? "not-allowed" : "pointer",
                                 outline: "none",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
                               }}
-                            />
+                            >
+                              <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden focusable="false">
+                                <g transform="translate(14 14)">
+                                  <PacmanGhostSvg color={hex} size={26} />
+                                </g>
+                              </svg>
+                            </Box>
                           </Tooltip>
                         );
                       })}

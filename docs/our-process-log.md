@@ -1670,4 +1670,189 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
 - **Outcome**:
   - Ghost movement starts promptly and consistently without requiring any user-visible “starting” message.
 
+#### Step 79 — Refine PRD 002 (offline decision + scope clarification)
+- **Date/Time**: 2026-01-08
+- **Step type**: Decision + Documentation
+- **User guidance** (what Jay asked for):
+  - “Please continue working on `docs/prds/prd-002-live-sessions-and-mapping.md`”
+- **Decision(s) recorded**:
+  - For v1, **block edits while disconnected** (disable toggles) instead of queueing offline changes.
+- **Doc updates**:
+  - Clarified PRD 002 scope vs PRD 003 (wallboard UX) and PRD 004 (host/admin controls).
+  - Updated acceptance criteria to include avatar color requirement/uniqueness and offline/reconnect UX expectations.
+  - Closed PRD 002 open question by recording the v1 offline behavior decision.
+- **Files changed**:
+  - `docs/prds/prd-002-live-sessions-and-mapping.md`
+
+#### Step 80 — Implement PRD 002 follow-ups: offline UX + presence + disabled toggles
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **What changed**:
+  - Added session **connection status** (Live / Reconnecting / Connecting) and an offline banner; **toggles disable** until Live.
+  - Added session **presence UI**: participant count + optional scrollable list of names.
+  - Added a `togglesDisabled` prop to `SessionJourneyView` and a unit test to ensure switches disable.
+- **Files changed**:
+  - `web/src/app/session/[id]/page.tsx`
+  - `web/src/components/session/SessionJourneyView.tsx`
+  - `web/src/components/session/SessionJourneyView.test.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 81 — Remove session “show names” + add wallboard → session navigation
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Remove “show names” from the session page
+  - Provide a way for a person to get back to their session from the wallboard
+- **What changed**:
+  - Removed the session name list toggle UI; kept participant count.
+  - Made the wallboard always show a **Back to session** link (including kiosk mode).
+- **Files changed**:
+  - `web/src/app/session/[id]/page.tsx`
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 82 — Use Pac‑Man ghosts for avatar color selection + display
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - On join, change the color circles to Pac‑Man ghosts
+  - On the session page, don’t show the color hex value — show the ghost
+- **What changed**:
+  - Join page color picker now renders each color as a small `PacmanGhostSvg` instead of a plain circle.
+  - Session “You” panel now shows the ghost icon next to the display name (no hex string).
+- **Files changed**:
+  - `web/src/app/s/[code]/page.tsx`
+  - `web/src/app/session/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 83 — Show the ghost after the participant name on the session page
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Put the ghost after the person’s name on the session page.
+- **What changed**:
+  - Adjusted the session “You” row layout to render **name first**, then the ghost icon.
+- **Files changed**:
+  - `web/src/app/session/[id]/page.tsx`
+
+#### Step 84 — Remove “Join Session” CTA from the session page app bar
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Remove the “Join Session” button from the session page.
+- **What changed**:
+  - Added a `showJoinSession` prop to `SiteAppBar` and disabled it on the session page.
+- **Files changed**:
+  - `web/src/components/SiteAppBar.tsx`
+  - `web/src/app/session/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 85 — Move “Open wallboard” CTA into session page top nav
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Put the session page “Open Wallboard” in the upper right nav in blue.
+- **What changed**:
+  - Added `rightActions` slot support to `SiteAppBar`.
+  - Moved “Open wallboard” into the app bar on the session page as a blue (primary) CTA and removed the duplicate in-page button.
+- **Files changed**:
+  - `web/src/components/SiteAppBar.tsx`
+  - `web/src/app/session/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 86 — Show participant name + ghost as the session page heading
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - On the session page, change the “Session” heading to be the person’s name and their ghost.
+- **What changed**:
+  - Updated the session page `<h1>` to render `{displayName} + ghost` once the participant identity loads (falls back to “Session” while loading).
+- **Files changed**:
+  - `web/src/app/session/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 87 — Remove redundant “You” panel from the session page
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - “Please get rid of this on the session page” (the “You” block showing name + ghost).
+- **What changed**:
+  - Removed the redundant “You” block from the session page body (name+ghost remains in the page heading).
+- **Files changed**:
+  - `web/src/app/session/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 88 — Right-justify the session “Participants” chip
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Right justify the session page participants chip.
+- **What changed**:
+  - Adjusted the session header row layout to push the Participants chip to the far right (while still wrapping on small screens).
+- **Files changed**:
+  - `web/src/app/session/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+
+#### Step 89 — Make wallboard “Back to session” a blue “View Your Page” button
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - On the wallboard, change “Back to session” to be a blue button that says “View Your Page”.
+- **What changed**:
+  - Updated the wallboard header navigation: replaced the text link with a primary (blue) button labeled “View Your Page” that navigates back to the session page.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 90 — Remove fullscreen mode from the wallboard
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Remove fullscreen mode (not needed).
+- **What changed**:
+  - Removed the fullscreen button/control and underlying fullscreen toggle logic from the ghosts wallboard.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 91 — Remove border from wallboard “Clear results” nav item
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Remove the border from the wallboard’s “Clear Results” nav item.
+- **What changed**:
+  - Changed the wallboard “Clear results” button style from outlined to text (borderless) while keeping error styling and the confirmation dialog.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+
 

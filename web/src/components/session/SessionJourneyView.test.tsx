@@ -109,6 +109,20 @@ describe("<SessionJourneyView />", () => {
 
     await waitFor(() => expect(launchConfetti).toHaveBeenCalledTimes(1));
   });
+
+  it("disables toggles when togglesDisabled is true", () => {
+    renderWithTheme(
+      <SessionJourneyView
+        journey={journey}
+        mappings={[]}
+        myParticipantId="p1"
+        onToggle={() => {}}
+        togglesDisabled
+      />,
+    );
+
+    expect(screen.getByRole("switch", { name: /toggle doing for basic research/i })).toBeDisabled();
+  });
 });
 
 

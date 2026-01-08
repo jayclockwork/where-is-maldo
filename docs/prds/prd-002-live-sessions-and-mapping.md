@@ -10,6 +10,8 @@ Enable **live sessions** where participants can join via a code/link and toggle 
 - “Done” state (explicitly out of scope)
 - Privacy controls / anonymous modes (explicitly out of scope)
 - Complex authentication (participant auth beyond session join is not required for v1)
+- Host admin controls (close session, export, etc.) — **PRD 004**
+- Wallboard presentation UX — **PRD 003** (this PRD focuses on correctness/data + participant session UX)
 
 ---
 
@@ -67,8 +69,8 @@ Enable **live sessions** where participants can join via a code/link and toggle 
 - A participant can only update their own mapping.
 - If the same participant is active on multiple devices, last write wins.
 - If realtime connection drops:
-  - UI indicates offline state
-  - changes queue locally or are blocked (choose one; define in implementation)
+  - UI indicates offline/reconnecting state
+  - **Decision for v1**: block edits while disconnected (disable toggles) rather than queueing
   - state re-syncs on reconnect
 
 ---
@@ -90,8 +92,10 @@ Enable **live sessions** where participants can join via a code/link and toggle 
 ## Acceptance criteria
 - Host can create a session and share a join code/link.
 - Participant can join with display name.
+- Participant must pick an avatar color; selected colors are unavailable to others in that session.
 - Participant can toggle “Doing” on any item and see it reflected on refresh.
 - A second participant (or observer) sees the toggle change live.
+- If realtime connection is down, the UI indicates it and toggles are disabled until reconnected.
 - No “Done” option exists anywhere in the UI or data model.
 
 ---
@@ -111,6 +115,6 @@ Enable **live sessions** where participants can join via a code/link and toggle 
 ---
 
 ## Open questions
-- Should offline behavior allow queued toggles or block edits until reconnected?
+- None (v1 decision: block edits while disconnected; revisit queueing if needed).
 
 

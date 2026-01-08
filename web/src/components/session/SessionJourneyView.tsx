@@ -24,11 +24,13 @@ export function SessionJourneyView({
   mappings,
   myParticipantId,
   onToggle,
+  togglesDisabled = false,
 }: {
   journey: JourneyDoc;
   mappings: Mapping[];
   myParticipantId: string;
   onToggle: (itemId: string, isDoing: boolean) => void;
+  togglesDisabled?: boolean;
 }) {
   // Intentional break between section groups (after the last bullet in a section list).
   // This is the “How technologies compare and contrast” → “Coding research” gap.
@@ -157,7 +159,11 @@ export function SessionJourneyView({
                           <Stack direction="row" spacing={1} alignItems="center">
                             {count ? <Chip size="small" label={count} /> : null}
                             <Box component="label" sx={{ display: "inline-flex", alignItems: "center" }}>
-                              <Switch checked={mine} onChange={(_, checked) => onToggle(row.itemId, checked)} />
+                              <Switch
+                                checked={mine}
+                                disabled={togglesDisabled}
+                                onChange={(_, checked) => onToggle(row.itemId, checked)}
+                              />
                               <Box component="span" sx={visuallyHidden}>
                                 Toggle doing for {row.label}
                               </Box>
