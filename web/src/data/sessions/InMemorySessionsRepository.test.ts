@@ -46,7 +46,7 @@ describe("InMemorySessionsRepository", () => {
     expect(events).toContain("mapping_updated");
   });
 
-  it("clearResults removes all mappings for a session", async () => {
+  it("clearResults removes all mappings and participants for a session", async () => {
     const repo = new InMemorySessionsRepository();
     const { session, adminToken } = await repo.createSession({ joinCode: "DEMO20" });
     const { participant, participantSecret } = await repo.joinSession({
@@ -63,9 +63,14 @@ describe("InMemorySessionsRepository", () => {
       isDoing: true,
     });
     expect((await repo.listMappings(session.id)).length).toBe(1);
+    expect((await repo.listParticipants(session.id)).length).toBe(1);
 
     await repo.clearResults({ sessionId: session.id, adminToken });
     expect((await repo.listMappings(session.id)).length).toBe(0);
+    expect((await repo.listParticipants(session.id)).length).toBe(0);
+
+    // Colors should be available again after reset.
+    await expect(repo.joinSession({ joinCode: session.joinCode, displayName: "A", avatarColor: "#0057FF" })).resolves.toBeTruthy();
   });
 
   it("rejects admin actions with an invalid token", async () => {

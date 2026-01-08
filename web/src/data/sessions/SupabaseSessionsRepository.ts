@@ -225,6 +225,11 @@ export class SupabaseSessionsRepository implements SessionsRepository {
     const { error: delErr } = await supabase.from("mappings").delete().eq("session_id", input.sessionId);
     if (delErr) throw new Error(delErr.message);
 
+    // Also clear participants so avatar colors become available again after a reset.
+    // (We delete mappings first so this works even if FK cascade is not configured as expected.)
+    const { error: delParticipantsErr } = await supabase.from("participants").delete().eq("session_id", input.sessionId);
+    if (delParticipantsErr) throw new Error(delParticipantsErr.message);
+
     // Update session to broadcast a "results cleared" signal via realtime.
     const { error: updErr } = await supabase
       .from("sessions")

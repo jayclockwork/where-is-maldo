@@ -2098,4 +2098,72 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
   - `npm test`
   - `npm run build`
 
+#### Step 107 — Force Join Session code input to uppercase
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - “Join Session input should be forced to uppercase on the join page.”
+- **What changed**:
+  - Updated `/join` so typing/pasting immediately uppercases the input value and visually renders uppercase.
+  - Added unit tests to lock in the behavior and ensure navigation uses the normalized code.
+- **Files changed**:
+  - `web/src/app/join/page.tsx`
+  - `web/src/app/join/page.test.tsx`
+- **Commands / tools used**:
+  - `npm test`
+
+#### Step 108 — Make “Clear results” reset participants (free avatar colors) + prompt cleared users to re-join
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - After a clear results, join page still showed some colors unavailable; “system is not clearing the participants.”
+- **Decision(s) recorded**:
+  - Treat “Clear results” as a **session reset**: clear both **mappings** and **participants** so workshops can restart cleanly and colors are freed.
+- **What changed**:
+  - Updated both repositories to delete participants during `clearResults`.
+  - Added a session-page guard that detects when the current participant was cleared and shows a “re-join” prompt (and clears local participant storage).
+  - Extended unit tests to cover participants being cleared and color reuse after reset.
+- **Files changed**:
+  - `web/src/data/sessions/InMemorySessionsRepository.ts`
+  - `web/src/data/sessions/SupabaseSessionsRepository.ts`
+  - `web/src/data/sessions/InMemorySessionsRepository.test.ts`
+  - `web/src/app/session/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 109 — Remove “Join Session” from the Join page app bar
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Remove the “Join Session” button from the join session page.
+- **What changed**:
+  - Hid the app bar “Join Session” action on `/join` (since the user is already in the join flow).
+  - Added a unit test asserting the button is not rendered.
+- **Files changed**:
+  - `web/src/app/join/page.tsx`
+  - `web/src/app/join/page.test.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 110 — Remove DEMO20 fallback on session error screen
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - “Demo20 still keeps appearing.”
+- **What changed**:
+  - Removed the hardcoded `/s/DEMO20` fallback from the session error UI; when no join code is available, the CTA now returns to `/join`.
+  - Hid the “in-memory dev setup…” note in production (only shows in development).
+  - Added a unit test to prevent DEMO20 from reappearing.
+- **Files changed**:
+  - `web/src/app/session/[id]/page.tsx`
+  - `web/src/app/session/[id]/page.error-ui.test.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
 

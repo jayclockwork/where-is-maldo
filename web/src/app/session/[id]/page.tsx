@@ -50,6 +50,21 @@ export default function SessionPage() {
   const [error, setError] = useState<string | null>(null);
   const [conn, setConn] = useState<ConnectionState>("connecting");
 
+  const meIsStillParticipant = useMemo(() => {
+    if (!me) return false;
+    return participants.some((p) => p.id === me.participantId);
+  }, [me, participants]);
+
+  const participantWasCleared = useMemo(() => {
+    if (loading) return false;
+    if (error) return false;
+    if (!session) return false;
+    if (!me) return false;
+    // Avoid a false positive during the initial load (participants can briefly be empty before state arrives).
+    if (participants.length === 0) return false;
+    return !meIsStillParticipant;
+  }, [error, loading, me, meIsStillParticipant, participants.length, session]);
+
   useEffect(() => {
     let alive = true;
     async function load() {
@@ -132,6 +147,11 @@ export default function SessionPage() {
       window.clearInterval(t);
     };
   }, [sessionId]);
+
+  useEffect(() => {
+    if (!participantWasCleared) return;
+    window.localStorage.removeItem(storageKey);
+  }, [participantWasCleared, storageKey]);
 
   async function toggle(itemId: string, isDoing: boolean) {
     if (!me) return;
@@ -234,14 +254,29 @@ export default function SessionPage() {
                   Back to join ({joinCode})
                 </Button>
               ) : (
-                <Button component={Link} href="/s/DEMO20" variant="contained" color="primary">
-                  Back to join (DEMO20)
+                <Button component={Link} href="/join" variant="contained" color="primary">
+                  Back to join
                 </Button>
               )}
-              <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                Note: the current dev setup uses an in-memory store, so sessions can disappear if the dev server reloads.
-                Re-join to recreate the demo session.
-              </Typography>
+              {process.env.NODE_ENV === "development" ? (
+                <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                  Note: the current dev setup uses an in-memory store, so sessions can disappear if the dev server reloads.
+                  Re-join to recreate the demo session.
+                </Typography>
+              ) : null}
+            </Stack>
+          ) : participantWasCleared ? (
+            <Stack spacing={2}>
+              <Alert severity="warning">This session was reset. Please re-join to continue.</Alert>
+              {joinCode ? (
+                <Button component={Link} href={`/s/${joinCode}`} variant="contained" color="primary">
+                  Re-join ({joinCode})
+                </Button>
+              ) : (
+                <Button component={Link} href="/join" variant="contained" color="primary">
+                  Re-join
+                </Button>
+              )}
             </Stack>
           ) : journey && me ? (
             <>

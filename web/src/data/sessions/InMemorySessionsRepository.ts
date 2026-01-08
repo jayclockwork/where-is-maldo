@@ -139,6 +139,17 @@ export class InMemorySessionsRepository implements SessionsRepository {
       for (const key of keys) this.mappingsByKey.delete(key);
       keys.clear();
     }
+
+    // Also clear participants so avatar colors become available again after a reset.
+    const participantIds = this.participantsBySessionId.get(input.sessionId);
+    if (participantIds) {
+      for (const id of participantIds) {
+        this.participantsById.delete(id);
+        this.participantSecrets.delete(id);
+      }
+      participantIds.clear();
+      this.participantsBySessionId.delete(input.sessionId);
+    }
     this.emit(input.sessionId, { type: "results_cleared", sessionId: input.sessionId });
   }
 

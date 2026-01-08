@@ -30,7 +30,7 @@ export default function JoinCodePage() {
 
   return (
     <>
-      <SiteAppBar />
+      <SiteAppBar showJoinSession={false} />
       <Container maxWidth="sm" sx={{ py: { xs: 4, md: 6 } }}>
         <Stack spacing={3}>
           <Box>
@@ -48,11 +48,11 @@ export default function JoinCodePage() {
             label="Session code"
             placeholder="e.g., DEMO20"
             value={code}
-            onChange={(e) => setCode(e.target.value)}
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
             onKeyDown={(e) => {
               if (e.key === "Enter") submit();
             }}
-            inputProps={{ autoCapitalize: "characters" }}
+            inputProps={{ autoCapitalize: "characters", style: { textTransform: "uppercase" } }}
             fullWidth
           />
 
