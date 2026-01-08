@@ -85,21 +85,18 @@ export function JourneyView({ journey }: { journey: JourneyDoc }) {
                 sx={{ scrollMarginTop: 96, bgcolor: "grey.50" }}
             >
                 <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
+                  expandIcon={<ExpandMoreIcon sx={{ color: "text.primary" }} />}
                   sx={{
                     borderBottom: "1px solid rgba(0,0,0,0.12)",
+                    bgcolor: "secondary.main",
+                    color: "text.primary",
                     "&.Mui-expanded": { minHeight: "unset" },
                   }}
                 >
                 <Box sx={{ width: "100%", minWidth: 0 }}>
                   <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1 }}>
                     <Typography variant="h6" sx={{ fontWeight: 900 }}>
-                      <Box component="span" sx={{ color: "text.primary" }}>
-                        {phase.title.split(":")[0]}:
-                      </Box>{" "}
-                      <Box component="span" sx={{ color: "secondary.main" }}>
-                        {phase.title.split(":").slice(1).join(":").trim()}
-                      </Box>
+                      {phase.title}
                     </Typography>
                     <CopyLinkButton anchorId={phase.phaseId} />
                   </Box>

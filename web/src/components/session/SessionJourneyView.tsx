@@ -57,22 +57,19 @@ export function SessionJourneyView({
       {model.phases.map((phase) => (
         <Accordion key={phase.phaseId} defaultExpanded sx={{ bgcolor: "grey.50" }}>
           <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
+            expandIcon={<ExpandMoreIcon sx={{ color: "text.primary" }} />}
             sx={{
               borderBottom: "1px solid rgba(0,0,0,0.12)",
+              bgcolor: "secondary.main",
               py: 0.35,
+              color: "text.primary",
               "& .MuiAccordionSummary-content": { my: 0.25 },
               "&.Mui-expanded": { minHeight: "unset" },
             }}
           >
             <Box sx={{ width: "100%" }}>
               <Typography sx={{ fontWeight: 900 }}>
-                <Box component="span" sx={{ color: "text.primary" }}>
-                  {phase.title.split(":")[0]}:
-                </Box>{" "}
-                <Box component="span" sx={{ color: "secondary.main" }}>
-                  {phase.title.split(":").slice(1).join(":").trim()}
-                </Box>
+                {phase.title}
               </Typography>
             </Box>
           </AccordionSummary>
