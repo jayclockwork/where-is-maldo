@@ -27,9 +27,6 @@ export function SiteAppBar() {
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Button component={Link} href="/journey" color="inherit" variant="text">
-              Journey
-            </Button>
             <Button
               color="primary"
               variant="contained"

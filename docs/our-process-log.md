@@ -1582,4 +1582,44 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
 - **Outcome**:
   - Wallboard has an obvious “Home” navigation path.
 
+#### Step 74 — Add “View Wallboard” entry point on the home page
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - “Would you add a view wallboard to the home page?”
+- **Plan executed** (what the assistant did):
+  - Added a `View Wallboard` CTA on the landing page that links to `/w/DEMO20`.
+  - Added `/w/[code]` which resolves a join code → session id via `/api/sessions/by-code/[code]` and redirects to `/wallboard/[id]?kiosk=1`.
+- **Files changed**:
+  - `web/src/app/page.tsx`
+  - `web/src/app/w/[code]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - From the home page, you can open a wallboard directly (by join code) without first navigating into a session.
+
+#### Step 75 — Wallboard loading message + simplify top nav + hero CTA cleanup
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Add a “loading” message while the wallboard appears and before the ghosts start moving
+  - Remove the upper right “Journey” nav item
+  - Remove the “Join Session” button from the hero
+- **Plan executed** (what the assistant did):
+  - Added a brief `Starting wallboard…` state on the ghosts wallboard; ghosts render static until the message clears, then motion starts.
+  - Removed the `Journey` nav item from `SiteAppBar`.
+  - Removed the `Join Session` button from the landing page hero CTA row.
+- **Files changed**:
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+  - `web/src/components/SiteAppBar.tsx`
+  - `web/src/app/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Wallboard shows a clear “starting” message before motion begins; navigation/hero CTAs are simplified.
+
 

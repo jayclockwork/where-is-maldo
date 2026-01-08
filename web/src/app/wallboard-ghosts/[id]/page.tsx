@@ -50,6 +50,7 @@ export default function WallboardGhostsPage() {
   const [error, setError] = useState<string | null>(null);
   const [conn, setConn] = useState<ConnectionState>("connecting");
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [motionReady, setMotionReady] = useState(false);
   const [clearOpen, setClearOpen] = useState(false);
   const [clearing, setClearing] = useState(false);
   const [clearError, setClearError] = useState<string | null>(null);
@@ -130,6 +131,16 @@ export default function WallboardGhostsPage() {
     mq.addEventListener?.("change", update);
     return () => mq.removeEventListener?.("change", update);
   }, []);
+
+  useEffect(() => {
+    // Gate motion until after we've rendered the board, so the user sees a brief "Loading/Starting" message first.
+    if (loading || error || !ghosts) {
+      setMotionReady(false);
+      return;
+    }
+    const t = window.setTimeout(() => setMotionReady(true), 650);
+    return () => window.clearTimeout(t);
+  }, [loading, error, ghosts]);
 
   useEffect(() => {
     // Keep state in sync if URL changes externally.
@@ -279,6 +290,11 @@ export default function WallboardGhostsPage() {
             <Alert severity="error">{error}</Alert>
           ) : !ghosts ? (
             <Alert severity="warning">Missing journey model.</Alert>
+          ) : !motionReady ? (
+            <Stack direction="row" spacing={2} alignItems="center">
+              <CircularProgress size={20} />
+              <Typography sx={{ color: "text.secondary" }}>Starting wallboard…</Typography>
+            </Stack>
           ) : (
             <Box
               sx={{
@@ -374,13 +390,17 @@ export default function WallboardGhostsPage() {
                             const m = /^M\s+([0-9.]+)\s+([0-9.]+)/.exec(path);
                             const startX = m ? Number(m[1]) : 20;
                             const startY = m ? Number(m[2]) : 20;
-                            const pupilMotion = reduceMotion ? null : pupilMotionForPath(path, durationSeconds);
+                            const allowMotion = motionReady && !reduceMotion;
+                            const pupilMotion = allowMotion ? pupilMotionForPath(path, durationSeconds) : null;
 
                             return (
-                              <g key={g.key} transform={reduceMotion ? `translate(${startX},${startY})` : undefined}>
-                                {reduceMotion ? null : (
+                              <g
+                                key={g.key}
+                                transform={!allowMotion ? `translate(${startX},${startY})` : undefined}
+                              >
+                                {allowMotion ? (
                                   <animateMotion dur={`${durationSeconds}s`} repeatCount="indefinite" path={path} />
-                                )}
+                                ) : null}
                                 <g filter="url(#ghostShadow)">
                                   <PacmanGhostSvg color={g.color} size={26} pupilMotion={pupilMotion} />
                                 </g>

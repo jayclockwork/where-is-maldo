@@ -23,8 +23,8 @@ export default function Home() {
               <Button component={Link} href="/journey" variant="contained" color="primary" size="large">
                 View Journey
               </Button>
-              <Button variant="outlined" color="inherit" size="large" component={Link} href="/s/DEMO20">
-                Join Session
+              <Button variant="outlined" color="inherit" size="large" component={Link} href="/w/DEMO20">
+                View Wallboard
               </Button>
             </Stack>
           </Stack>
@@ -60,9 +60,14 @@ export default function Home() {
                 <Typography sx={{ color: "text.secondary", mt: 1 }}>
                   Participants join with a code and toggle what they’re doing. Updates appear live for everyone.
                 </Typography>
-                <Button sx={{ mt: 2 }} variant="text" component={Link} href="/s/DEMO20">
-                  Join Session →
-                </Button>
+                <Stack direction="row" spacing={2} sx={{ mt: 2, flexWrap: "wrap" }}>
+                  <Button variant="text" component={Link} href="/s/DEMO20">
+                    Join Session →
+                  </Button>
+                  <Button variant="text" component={Link} href="/w/DEMO20">
+                    View Wallboard →
+                  </Button>
+                </Stack>
               </CardContent>
             </Card>
           </Stack>
