@@ -125,6 +125,41 @@ export default function WallboardGhostsPage() {
 
   const joinCode = session?.joinCode;
 
+  function pupilMotionForPath(path: string, durSeconds: number): { durSeconds: number; values: string; keyTimes: string } | null {
+    // Parse "M x y L x y ..." into points.
+    const nums = path
+      .replace(/[ML]/g, " ")
+      .trim()
+      .split(/\s+/)
+      .map((t) => Number(t))
+      .filter((n) => Number.isFinite(n));
+    const pts: { x: number; y: number }[] = [];
+    for (let i = 0; i + 1 < nums.length; i += 2) pts.push({ x: nums[i]!, y: nums[i + 1]! });
+    if (pts.length < 2) return null;
+
+    const offsets: { dx: number; dy: number }[] = [];
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = pts[i]!;
+      const b = pts[i + 1]!;
+      const vx = b.x - a.x;
+      const vy = b.y - a.y;
+      // Our paths are grid-ish; pick dominant axis.
+      const ax = Math.abs(vx);
+      const ay = Math.abs(vy);
+      let dx = 0;
+      let dy = 0;
+      if (ax >= ay) dx = vx === 0 ? 0 : vx > 0 ? 1.4 : -1.4;
+      else dy = vy === 0 ? 0 : vy > 0 ? 1.4 : -1.4;
+      offsets.push({ dx, dy });
+    }
+    // Repeat first direction to align with loop.
+    offsets.push(offsets[0]!);
+
+    const values = offsets.map((o) => `${o.dx} ${o.dy}`).join(";");
+    const keyTimes = offsets.map((_, i) => (i / (offsets.length - 1)).toFixed(4)).join(";");
+    return { durSeconds, values, keyTimes };
+  }
+
   return (
     <>
       {kiosk ? null : <SiteAppBar />}
@@ -171,7 +206,7 @@ export default function WallboardGhostsPage() {
               sx={{
                 display: "grid",
                 gap: 2,
-                gridTemplateColumns: { xs: "1fr", md: "repeat(5, minmax(0, 1fr))" },
+                gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
                 alignItems: "stretch",
               }}
             >
@@ -201,15 +236,15 @@ export default function WallboardGhostsPage() {
                       p: 2,
                       display: "flex",
                       flexDirection: "column",
-                      minHeight: 320,
+                      minHeight: 360,
                     }}
                   >
-                    <Stack direction="row" spacing={1} alignItems="baseline" justifyContent="space-between" sx={{ mb: 1.5 }}>
+                    <Box sx={{ mb: 1.5 }}>
                       <Typography sx={{ fontWeight: 900 }}>{phase.title}</Typography>
-                      <Typography sx={{ fontWeight: 900, color: "text.secondary" }}>
+                      <Typography variant="body2" sx={{ color: "text.secondary" }}>
                         {ghostElements.length} {ghostElements.length === 1 ? "ghost" : "ghosts"}
                       </Typography>
-                    </Stack>
+                    </Box>
                     <Box
                       sx={{
                         flex: "1 1 auto",
@@ -240,21 +275,18 @@ export default function WallboardGhostsPage() {
                             const m = /^M\s+([0-9.]+)\s+([0-9.]+)/.exec(path);
                             const startX = m ? Number(m[1]) : 20;
                             const startY = m ? Number(m[2]) : 20;
+                            const pupilMotion = reduceMotion ? null : pupilMotionForPath(path, durationSeconds);
 
                             return (
                               <g key={g.key} transform={reduceMotion ? `translate(${startX},${startY})` : undefined}>
                                 {reduceMotion ? null : (
                                   <animateMotion dur={`${durationSeconds}s`} repeatCount="indefinite" path={path} />
                                 )}
-                                <PacmanGhostSvg color={g.color} size={26} />
+                                <PacmanGhostSvg color={g.color} size={26} pupilMotion={pupilMotion} />
                               </g>
                             );
                           })
-                        ) : (
-                          <text x="16" y="28" fill="rgba(0,0,0,0.55)" fontSize="18">
-                            No activity yet.
-                          </text>
-                        )}
+                        ) : null}
                       </svg>
                     </Box>
                   </Box>

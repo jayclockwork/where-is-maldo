@@ -1,9 +1,11 @@
 export function PacmanGhostSvg({
   color,
   size = 26,
+  pupilMotion,
 }: {
   color: string;
   size?: number;
+  pupilMotion?: { durSeconds: number; values: string; keyTimes: string } | null;
 }) {
   // Drawn in a 64x64 coordinate space and scaled; centered on the motion point.
   const s = size / 64;
@@ -17,8 +19,21 @@ export function PacmanGhostSvg({
       />
       <circle cx="26" cy="30" r="5" fill="#fff" />
       <circle cx="38" cy="30" r="5" fill="#fff" />
-      <circle cx="28" cy="30" r="2.2" fill="#111" />
-      <circle cx="40" cy="30" r="2.2" fill="#111" />
+      <g>
+        {pupilMotion ? (
+          <animateTransform
+            attributeName="transform"
+            type="translate"
+            dur={`${pupilMotion.durSeconds}s`}
+            repeatCount="indefinite"
+            calcMode="discrete"
+            values={pupilMotion.values}
+            keyTimes={pupilMotion.keyTimes}
+          />
+        ) : null}
+        <circle cx="28" cy="30" r="2.2" fill="#111" />
+        <circle cx="40" cy="30" r="2.2" fill="#111" />
+      </g>
     </g>
   );
 }
