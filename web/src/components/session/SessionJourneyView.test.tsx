@@ -1,10 +1,13 @@
-import { describe, expect, it } from "vitest";
-import { screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { screen, waitFor } from "@testing-library/react";
 
 import { renderWithTheme } from "@/test/renderWithTheme";
 import { SessionJourneyView } from "@/components/session/SessionJourneyView";
 import type { JourneyDoc } from "@/lib/journey/types";
 import type { Mapping } from "@/domain/sessions/types";
+
+vi.mock("@/ui/effects/confetti", () => ({ launchConfetti: vi.fn() }));
+import { launchConfetti } from "@/ui/effects/confetti";
 
 const journey: JourneyDoc = {
   phases: [
@@ -74,6 +77,37 @@ describe("<SessionJourneyView />", () => {
     );
 
     expect(screen.getByRole("button", { name: /phase 1: research/i })).toHaveTextContent("✅");
+  });
+
+  it("fires confetti when a phase transitions into complete", async () => {
+    const incomplete: Mapping[] = [
+      {
+        sessionId: "phase-research",
+        participantId: "p1",
+        itemId: "phase-research__section__Basic research",
+        isDoing: true,
+        updatedAt: new Date().toISOString(),
+      },
+    ];
+
+    const complete: Mapping[] = [
+      ...incomplete,
+      {
+        sessionId: "phase-research",
+        participantId: "p1",
+        itemId: "phase-research__section__Coding research",
+        isDoing: true,
+        updatedAt: new Date().toISOString(),
+      },
+    ];
+
+    const { rerender } = renderWithTheme(
+      <SessionJourneyView journey={journey} mappings={incomplete} myParticipantId="p1" onToggle={() => {}} />,
+    );
+
+    rerender(<SessionJourneyView journey={journey} mappings={complete} myParticipantId="p1" onToggle={() => {}} />);
+
+    await waitFor(() => expect(launchConfetti).toHaveBeenCalledTimes(1));
   });
 });
 

@@ -11,12 +11,13 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
-import { Fragment, useMemo } from "react";
+import { Fragment, useEffect, useMemo, useRef } from "react";
 import { visuallyHidden } from "@mui/utils";
 
 import type { JourneyDoc } from "@/lib/journey/types";
 import type { Mapping } from "@/domain/sessions/types";
 import { buildSessionJourneyModel } from "@/lib/session/sessionContentModel";
+import { launchConfetti } from "@/ui/effects/confetti";
 
 export function SessionJourneyView({
   journey,
@@ -52,6 +53,36 @@ export function SessionJourneyView({
 
   const model = useMemo(() => buildSessionJourneyModel(journey), [journey]);
 
+  const completedPhaseIds = useMemo(() => {
+    const out = new Set<string>();
+    for (const phase of model.phases) {
+      const sectionIds = phase.rows.filter((r) => r.type === "section").map((r) => r.itemId);
+      if (!sectionIds.length) continue;
+      const allChecked = sectionIds.every((id) => myDoing.has(id));
+      if (allChecked) out.add(phase.phaseId);
+    }
+    return out;
+  }, [model.phases, myDoing]);
+
+  const didMountRef = useRef(false);
+  const prevCompletedRef = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      prevCompletedRef.current = completedPhaseIds;
+      return;
+    }
+
+    // Fire once per phase when it transitions into "complete" for me.
+    for (const phaseId of completedPhaseIds) {
+      if (!prevCompletedRef.current.has(phaseId)) {
+        launchConfetti();
+      }
+    }
+    prevCompletedRef.current = completedPhaseIds;
+  }, [completedPhaseIds]);
+
   return (
     <Stack spacing={1.25}>
       {model.phases.map((phase) => (
@@ -72,15 +103,11 @@ export function SessionJourneyView({
             <Box sx={{ width: "100%" }}>
               <Typography sx={{ fontWeight: 900 }}>
                 {phase.title}
-                {(() => {
-                  const sectionIds = phase.rows.filter((r) => r.type === "section").map((r) => r.itemId);
-                  const allChecked = sectionIds.length > 0 && sectionIds.every((id) => myDoing.has(id));
-                  return allChecked ? (
-                    <Box component="span" aria-hidden sx={{ ml: 1 }}>
-                      ✅
-                    </Box>
-                  ) : null;
-                })()}
+                {completedPhaseIds.has(phase.phaseId) ? (
+                  <Box component="span" aria-hidden sx={{ ml: 1 }}>
+                    ✅
+                  </Box>
+                ) : null}
               </Typography>
             </Box>
           </AccordionSummary>
