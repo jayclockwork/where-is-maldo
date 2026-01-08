@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useMemo } from "react";
+import { visuallyHidden } from "@mui/utils";
 
 import type { JourneyDoc } from "@/lib/journey/types";
 import type { Mapping } from "@/domain/sessions/types";
@@ -83,15 +84,34 @@ export function SessionJourneyView({
               <Stack spacing={1}>
                 {phase.rows.map((row) => {
                   if (row.type === "section") {
+                    const count = counts.get(row.itemId) ?? 0;
+                    const mine = myDoing.has(row.itemId);
                     return (
-                      <Box key={row.id} sx={{ py: 0.5 }}>
+                      <Box
+                        key={row.itemId}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: 2,
+                          py: 0.75,
+                        }}
+                      >
                         <Typography sx={{ fontWeight: 800 }}>{row.label}</Typography>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          {count ? <Chip size="small" label={count} /> : null}
+                          <Box component="label" sx={{ display: "inline-flex", alignItems: "center" }}>
+                            <Switch checked={mine} onChange={(_, checked) => onToggle(row.itemId, checked)} />
+                            <Box component="span" sx={visuallyHidden}>
+                              Toggle doing for {row.label}
+                            </Box>
+                          </Box>
+                        </Stack>
                       </Box>
                     );
                   }
 
-                  const count = counts.get(row.itemId) ?? 0;
-                  const mine = myDoing.has(row.itemId);
+                  // Bullet rows are informational in session mode; toggles live on the section headings.
                   return (
                     <Box
                       key={row.itemId}
@@ -105,16 +125,10 @@ export function SessionJourneyView({
                       }}
                     >
                       <Box sx={{ minWidth: 0 }}>
-                        <Typography>{row.label}</Typography>
+                        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                          {row.label}
+                        </Typography>
                       </Box>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        {count ? <Chip size="small" label={count} /> : null}
-                        <Switch
-                          checked={mine}
-                          onChange={(_, checked) => onToggle(row.itemId, checked)}
-                          inputProps={{ "aria-label": `Toggle doing for ${row.label}` }}
-                        />
-                      </Stack>
                     </Box>
                   );
                 })}

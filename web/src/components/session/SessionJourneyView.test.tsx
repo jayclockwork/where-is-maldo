@@ -31,6 +31,10 @@ describe("<SessionJourneyView />", () => {
 
     // MUI AccordionSummary renders as a button with aria-expanded.
     expect(screen.getByRole("button", { name: /phase 1: research/i })).toHaveAttribute("aria-expanded", "true");
+
+    // Toggles should live on the section heading (not the bullet).
+    expect(screen.getByRole("switch", { name: /toggle doing for basic research/i })).toBeInTheDocument();
+    expect(screen.queryByRole("switch", { name: /toggle doing for syntax/i })).toBeNull();
   });
 });
 

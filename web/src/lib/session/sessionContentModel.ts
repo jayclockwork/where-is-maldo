@@ -1,7 +1,7 @@
 import type { JourneyDoc, JourneyItem, JourneyPhase } from "@/lib/journey/types";
 
 export type SessionRow =
-  | { type: "section"; id: string; label: string }
+  | { type: "section"; itemId: string; label: string }
   | { type: "item"; itemId: string; label: string; depth: number };
 
 export type SessionPhaseModel = {
@@ -27,8 +27,10 @@ function flatten(items: JourneyItem[], depth: number): SessionRow[] {
 function phaseRows(phase: JourneyPhase): SessionRow[] {
   const out: SessionRow[] = [];
   for (const section of phase.sections) {
-    const sectionId = `${phase.phaseId}__section__${section.title}`;
-    out.push({ type: "section", id: sectionId, label: section.title });
+    // Section headings are the toggle targets in session mode.
+    // Keep itemId stable: do not change this format without a migration plan.
+    const sectionItemId = `${phase.phaseId}__section__${section.title}`;
+    out.push({ type: "section", itemId: sectionItemId, label: section.title });
     out.push(...flatten(section.items, 1));
   }
   return out;
