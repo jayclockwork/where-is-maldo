@@ -28,7 +28,15 @@ const journey: JourneyDoc = {
 
 describe("<SessionJourneyView />", () => {
   it("defaults phases to expanded in session mode", () => {
-    const mappings: Mapping[] = [{ sessionId: "phase-research", participantId: "p1", itemId: "phase-research__section__Basic research", isDoing: true }];
+    const mappings: Mapping[] = [
+      {
+        sessionId: "phase-research",
+        participantId: "p1",
+        itemId: "phase-research__section__Basic research",
+        isDoing: true,
+        updatedAt: new Date().toISOString(),
+      },
+    ];
     renderWithTheme(
       <SessionJourneyView journey={journey} mappings={mappings} myParticipantId="p1" onToggle={() => {}} />,
     );
@@ -46,8 +54,20 @@ describe("<SessionJourneyView />", () => {
 
   it("shows a celebration emoji on the phase heading when all sections are checked for me", () => {
     const mappings: Mapping[] = [
-      { sessionId: "phase-research", participantId: "p1", itemId: "phase-research__section__Basic research", isDoing: true },
-      { sessionId: "phase-research", participantId: "p1", itemId: "phase-research__section__Coding research", isDoing: true },
+      {
+        sessionId: "phase-research",
+        participantId: "p1",
+        itemId: "phase-research__section__Basic research",
+        isDoing: true,
+        updatedAt: new Date().toISOString(),
+      },
+      {
+        sessionId: "phase-research",
+        participantId: "p1",
+        itemId: "phase-research__section__Coding research",
+        isDoing: true,
+        updatedAt: new Date().toISOString(),
+      },
     ];
     renderWithTheme(
       <SessionJourneyView journey={journey} mappings={mappings} myParticipantId="p1" onToggle={() => {}} />,
