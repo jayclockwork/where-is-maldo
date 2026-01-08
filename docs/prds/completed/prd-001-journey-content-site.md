@@ -37,7 +37,6 @@ Deliver a **static-first** website experience that renders the journey in a **cl
   - Phase title
   - Focus line (italic)
   - Bullets and sub-bullets
-  - “What to watch for”
 
 ### Navigation
 - Anchor links for each phase (copy link).

@@ -610,4 +610,160 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
 - **Open questions / follow-ups for Jay**:
   - none
 
+#### Step 24 — Centralize session journey content model for reuse
+- **Date/Time**: 2026-01-07
+- **Step type**: Both
+- **User guidance** (what Jay asked for):
+  - Manage the content of phases shown on the session page in one place; reuse on another page.
+- **Decision(s) recorded**:
+  - Create a shared “session content model” module that transforms `JourneyDoc` into a reusable phase/row structure.
+- **Clarifications / assumptions**:
+  - “One place” means a pure transformation layer (no UI) that multiple pages/components can consume.
+- **Plan executed** (what the assistant did):
+  - Added a shared model builder that produces phase rows (section headers + flattened items with depth).
+  - Refactored `SessionJourneyView` to render from that model (no embedded content shaping logic).
+  - Added unit tests for the model builder.
+- **Files changed**:
+  - `web/src/lib/session/sessionContentModel.ts` — shared transformation
+  - `web/src/lib/session/sessionContentModel.test.ts` — unit tests
+  - `web/src/components/session/SessionJourneyView.tsx` — now consumes shared model
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Session journey content shaping is centralized and can be reused by other pages without duplicating logic.
+- **Open questions / follow-ups for Jay**:
+  - For the “other page”, should we reuse the exact same rows, or apply a filtered view (e.g., hide section headers or show only items)?
+
+#### Step 25 — Phase cards use a light grey background
+- **Date/Time**: 2026-01-07
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Change the background of the phase cards to be a light grey.
+- **Decision(s) recorded**:
+  - Use a subtle neutral background (`grey.50`) for phase accordions/cards to separate them from the page background without losing contrast.
+- **Clarifications / assumptions**:
+  - “Phase cards” refers to the per-phase accordion containers on both the Journey and Session views.
+- **Plan executed** (what the assistant did):
+  - Updated the accordion styling to use a light grey background in both views.
+- **Files changed**:
+  - `web/src/components/journey/JourneyView.tsx`
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+- **Outcome**:
+  - Phase cards now have a light grey background for clearer visual grouping.
+- **Open questions / follow-ups for Jay**:
+  - none
+
+#### Step 26 — Journey page: hide “What to watch for” + add divider under phase title
+- **Date/Time**: 2026-01-07
+- **Step type**: Both
+- **User guidance** (what Jay asked for):
+  - Remove “what to watch out for” from the journey page.
+  - Put a line divider under the phase title.
+- **Decision(s) recorded**:
+  - The Journey page focuses on the core phase content; “What to watch for” is not shown there.
+  - Phase headers use a subtle divider line for clearer visual structure.
+- **Clarifications / assumptions**:
+  - “Journey page” refers to `/journey` (not the session view).
+- **Plan executed** (what the assistant did):
+  - Removed rendering of “What to watch for” from `JourneyView`.
+  - Added a thin divider line under the phase title within the accordion header.
+  - Updated requirements text to match the Journey page display.
+- **Files changed**:
+  - `web/src/components/journey/JourneyView.tsx`
+  - `docs/requirements-journey-site.md`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+- **Outcome**:
+  - Journey page is cleaner and more presentation-friendly, with clearer phase header structure.
+- **Open questions / follow-ups for Jay**:
+  - Should we also hide “What to watch for” in the **session** view, or keep it there?
+
+#### Step 27 — Remove “What to watch for” everywhere + add phase divider in session view
+- **Date/Time**: 2026-01-07
+- **Step type**: Both
+- **User guidance** (what Jay asked for):
+  - Remove “What to watch for” from all places.
+  - Add the phase dividing line to the session page.
+- **Decision(s) recorded**:
+  - “What to watch for” is removed from the source journey content and no longer modeled or rendered anywhere.
+  - Phase headers in session mode use the same divider treatment as the journey view.
+- **Clarifications / assumptions**:
+  - “All places” includes the journey markdown source, parsing/types, and both Journey and Session UIs.
+- **Plan executed** (what the assistant did):
+  - Removed “What to watch for” from `docs/journey-better.md`.
+  - Removed `whatToWatchFor` from journey types, parsing, and the reusable session content model.
+  - Removed any remaining rendering and updated unit tests.
+  - Added a divider line under phase titles in the session accordion headers.
+- **Files changed**:
+  - `docs/journey-better.md`
+  - `web/src/lib/journey/types.ts`
+  - `web/src/lib/journey/parseJourney.ts`
+  - `web/src/lib/session/sessionContentModel.ts`
+  - `web/src/components/session/SessionJourneyView.tsx`
+  - `web/src/components/journey/JourneyView.test.tsx`
+  - `web/src/components/session/SessionJourneyView.test.tsx`
+  - `web/src/lib/session/sessionContentModel.test.ts`
+  - `docs/prds/completed/prd-001-journey-content-site.md`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - The product no longer includes “What to watch for” content anywhere, and session phase headers match the updated visual style.
+- **Open questions / follow-ups for Jay**:
+  - none
+
+#### Step 28 — Replace phase divider styling with a simple horizontal rule
+- **Date/Time**: 2026-01-07
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - The divider looks terrible; change it to just a horizontal line.
+- **Decision(s) recorded**:
+  - Use a subtle `border-bottom` on the accordion header instead of a custom box element.
+- **Clarifications / assumptions**:
+  - Apply consistently to both Journey and Session phase headers.
+- **Plan executed** (what the assistant did):
+  - Removed the custom divider box under the title.
+  - Added a single `borderBottom` line on `AccordionSummary`.
+- **Files changed**:
+  - `web/src/components/journey/JourneyView.tsx`
+  - `web/src/components/session/SessionJourneyView.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+- **Outcome**:
+  - Phase headers now use a clean horizontal rule divider.
+- **Open questions / follow-ups for Jay**:
+  - none
+
+#### Step 29 — Join page uses realtime events (no polling) for color availability
+- **Date/Time**: 2026-01-07
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - “Great! Please continue”
+- **Decision(s) recorded**:
+  - Prefer realtime event subscriptions over polling for join/presence UX to avoid UI instability while typing.
+- **Clarifications / assumptions**:
+  - Realtime mechanism is SSE for dev; Supabase realtime will replace this later.
+- **Plan executed** (what the assistant did):
+  - Removed periodic polling on the join page.
+  - Subscribed to session SSE stream and merged `participant_joined` events into local participant state.
+  - Added a guard that clears your selected color if it becomes taken and shows a brief inline message.
+- **Files changed**:
+  - `web/src/app/s/[code]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+- **Outcome**:
+  - Color availability updates live without refresh behavior that disrupts typing.
+- **Open questions / follow-ups for Jay**:
+  - none
+
 

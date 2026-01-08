@@ -8,7 +8,6 @@ import {
   Box,
   Chip,
   Container,
-  Divider,
   Fab,
   Stack,
   Typography,
@@ -78,20 +77,28 @@ export function JourneyView({ journey }: { journey: JourneyDoc }) {
               id={phase.phaseId}
               expanded={!!expanded[phase.phaseId]}
               onChange={(_, next) => setExpanded((p) => ({ ...p, [phase.phaseId]: next }))}
-              sx={{ scrollMarginTop: 96 }}
+                sx={{ scrollMarginTop: 96, bgcolor: "grey.50" }}
             >
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: 0 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 900 }}>
-                    <Box component="span" sx={{ color: "text.primary" }}>
-                      {phase.title.split(":")[0]}:
-                    </Box>{" "}
-                    <Box component="span" sx={{ color: "secondary.main" }}>
-                      {phase.title.split(":").slice(1).join(":").trim()}
-                    </Box>
-                  </Typography>
-                  <CopyLinkButton anchorId={phase.phaseId} />
-                </Stack>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  sx={{
+                    borderBottom: "1px solid rgba(0,0,0,0.12)",
+                    "&.Mui-expanded": { minHeight: "unset" },
+                  }}
+                >
+                <Box sx={{ width: "100%", minWidth: 0 }}>
+                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 900 }}>
+                      <Box component="span" sx={{ color: "text.primary" }}>
+                        {phase.title.split(":")[0]}:
+                      </Box>{" "}
+                      <Box component="span" sx={{ color: "secondary.main" }}>
+                        {phase.title.split(":").slice(1).join(":").trim()}
+                      </Box>
+                    </Typography>
+                    <CopyLinkButton anchorId={phase.phaseId} />
+                  </Box>
+                </Box>
               </AccordionSummary>
 
               <AccordionDetails>
@@ -118,22 +125,7 @@ export function JourneyView({ journey }: { journey: JourneyDoc }) {
                     </Box>
                   ))}
 
-                  {phase.whatToWatchFor.length ? (
-                    <>
-                      <Divider />
-                      <Box>
-                        <Typography variant="subtitle1" sx={{ fontWeight: 800, mb: 0.5 }}>
-                          What to watch for
-                        </Typography>
-                        <ItemsList
-                          items={phase.whatToWatchFor.map((label) => ({
-                            itemId: `${phase.phaseId}__watch__${label}`,
-                            label,
-                          }))}
-                        />
-                      </Box>
-                    </>
-                  ) : null}
+                    {/* Intentionally hiding "What to watch for" on the Journey page UI. */}
                 </Stack>
               </AccordionDetails>
             </Accordion>

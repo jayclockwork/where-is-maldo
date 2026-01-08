@@ -18,7 +18,6 @@ const sample: JourneyDoc = {
           items: [{ itemId: "phase-research__basic__syntax", label: "Syntax" }],
         },
       ],
-      whatToWatchFor: ["Hallucinations"],
     },
     {
       phaseId: "phase-collaboration",
@@ -30,7 +29,6 @@ const sample: JourneyDoc = {
           items: [{ itemId: "phase-collaboration__chat__repo", label: "Repo Q&A" }],
         },
       ],
-      whatToWatchFor: [],
     },
   ],
 };

@@ -24,8 +24,6 @@ _Focus: learning fast and answering questions. The “better Google/Stack Overfl
 - **Risk research**
   - Security/privacy pitfalls, licensing concerns, “what could go wrong”
 
-**What to watch for**
-- Hallucinated APIs or outdated details; verify against real docs.
 
 ### Phase 2: Completion
 _Focus: speeding up implementation of small-to-medium scoped changes._
@@ -39,8 +37,6 @@ _Focus: speeding up implementation of small-to-medium scoped changes._
 - **Refactoring assistance**
   - Small/medium refactors, codemods, dependency upgrades (with review)
 
-**What to watch for**
-- “Looks right” code that subtly violates local conventions or misses edge cases—insist on tests and small diffs.
 
 ### Phase 3: Collaboration
 _Focus: working *with* the codebase as a pair (repo-aware, iterative)._
@@ -58,8 +54,6 @@ _Focus: working *with* the codebase as a pair (repo-aware, iterative)._
 - **Task decomposition + slicing**
   - Break epics into thin vertical slices; identify spikes; define acceptance criteria
 
-**What to watch for**
-- Overconfident root-cause claims. Prefer evidence, reproducible steps, and incremental fixes.
 
 ### Phase 4: Delegation
 _Focus: the LLM becomes the primary implementer; you stay owner/reviewer._
@@ -71,8 +65,6 @@ _Focus: the LLM becomes the primary implementer; you stay owner/reviewer._
 - **Requirements collaborator**
   - Turn fuzzy asks into constraints, acceptance criteria, and phased rollout plans
 
-**What to watch for**
-- Ensure the human still owns correctness, product intent, and risk decisions.
 
 ### Phase 5: Constrained autonomy
 _Focus: agentic tool use under guardrails (LLM iterates; you approve)._

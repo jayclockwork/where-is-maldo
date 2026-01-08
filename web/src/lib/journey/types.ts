@@ -14,7 +14,6 @@ export type JourneyPhase = {
   title: string;
   focus?: string;
   sections: JourneySection[];
-  whatToWatchFor: string[];
 };
 
 export type JourneyDoc = {

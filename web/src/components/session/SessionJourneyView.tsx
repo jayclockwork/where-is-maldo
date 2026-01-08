@@ -7,35 +7,15 @@ import {
   AccordionSummary,
   Box,
   Chip,
-  Divider,
   Stack,
   Switch,
   Typography,
 } from "@mui/material";
 import { useMemo } from "react";
 
-import type { JourneyDoc, JourneyItem, JourneyPhase } from "@/lib/journey/types";
+import type { JourneyDoc } from "@/lib/journey/types";
 import type { Mapping } from "@/domain/sessions/types";
-
-type FlatItem = { itemId: string; label: string; depth: number };
-
-function flatten(items: JourneyItem[], depth: number): FlatItem[] {
-  const out: FlatItem[] = [];
-  for (const it of items) {
-    out.push({ itemId: it.itemId, label: it.label, depth });
-    if (it.children?.length) out.push(...flatten(it.children, depth + 1));
-  }
-  return out;
-}
-
-function phaseFlatItems(phase: JourneyPhase): FlatItem[] {
-  const out: FlatItem[] = [];
-  for (const section of phase.sections) {
-    out.push({ itemId: `${phase.phaseId}__section__${section.title}`, label: section.title, depth: 0 });
-    out.push(...flatten(section.items, 1));
-  }
-  return out;
-}
+import { buildSessionJourneyModel } from "@/lib/session/sessionContentModel";
 
 export function SessionJourneyView({
   journey,
@@ -65,19 +45,29 @@ export function SessionJourneyView({
     return set;
   }, [mappings, myParticipantId]);
 
+  const model = useMemo(() => buildSessionJourneyModel(journey), [journey]);
+
   return (
     <Stack spacing={2}>
-      {journey.phases.map((phase) => (
-        <Accordion key={phase.phaseId} defaultExpanded>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography sx={{ fontWeight: 900 }}>
-              <Box component="span" sx={{ color: "text.primary" }}>
-                {phase.title.split(":")[0]}:
-              </Box>{" "}
-              <Box component="span" sx={{ color: "secondary.main" }}>
-                {phase.title.split(":").slice(1).join(":").trim()}
-              </Box>
-            </Typography>
+      {model.phases.map((phase) => (
+        <Accordion key={phase.phaseId} defaultExpanded sx={{ bgcolor: "grey.50" }}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            sx={{
+              borderBottom: "1px solid rgba(0,0,0,0.12)",
+              "&.Mui-expanded": { minHeight: "unset" },
+            }}
+          >
+            <Box sx={{ width: "100%" }}>
+              <Typography sx={{ fontWeight: 900 }}>
+                <Box component="span" sx={{ color: "text.primary" }}>
+                  {phase.title.split(":")[0]}:
+                </Box>{" "}
+                <Box component="span" sx={{ color: "secondary.main" }}>
+                  {phase.title.split(":").slice(1).join(":").trim()}
+                </Box>
+              </Typography>
+            </Box>
           </AccordionSummary>
           <AccordionDetails>
             <Stack spacing={2}>
@@ -91,57 +81,46 @@ export function SessionJourneyView({
               ) : null}
 
               <Stack spacing={1}>
-                {phaseFlatItems(phase).map((it) => {
-                  const isSection = it.itemId.includes("__section__");
-                  const count = counts.get(it.itemId) ?? 0;
-                  const mine = myDoing.has(it.itemId);
+                {phase.rows.map((row) => {
+                  if (row.type === "section") {
+                    return (
+                      <Box key={row.id} sx={{ py: 0.5 }}>
+                        <Typography sx={{ fontWeight: 800 }}>{row.label}</Typography>
+                      </Box>
+                    );
+                  }
+
+                  const count = counts.get(row.itemId) ?? 0;
+                  const mine = myDoing.has(row.itemId);
                   return (
                     <Box
-                      key={it.itemId}
+                      key={row.itemId}
                       sx={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
                         gap: 2,
-                        pl: it.depth * 2,
+                        pl: row.depth * 2,
                         py: 0.5,
                       }}
                     >
                       <Box sx={{ minWidth: 0 }}>
-                        <Typography sx={{ fontWeight: isSection ? 800 : 400 }}>{it.label}</Typography>
+                        <Typography>{row.label}</Typography>
                       </Box>
-                      {isSection ? null : (
-                        <Stack direction="row" spacing={1} alignItems="center">
-                          {count ? <Chip size="small" label={count} /> : null}
-                          <Switch
-                            checked={mine}
-                            onChange={(_, checked) => onToggle(it.itemId, checked)}
-                            inputProps={{ "aria-label": `Toggle doing for ${it.label}` }}
-                          />
-                        </Stack>
-                      )}
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        {count ? <Chip size="small" label={count} /> : null}
+                        <Switch
+                          checked={mine}
+                          onChange={(_, checked) => onToggle(row.itemId, checked)}
+                          inputProps={{ "aria-label": `Toggle doing for ${row.label}` }}
+                        />
+                      </Stack>
                     </Box>
                   );
                 })}
               </Stack>
 
-              {phase.whatToWatchFor.length ? (
-                <>
-                  <Divider />
-                  <Box>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 800, mb: 0.5 }}>
-                      What to watch for
-                    </Typography>
-                    <Stack component="ul" spacing={0.75} sx={{ pl: 2, mb: 0, mt: 0 }}>
-                      {phase.whatToWatchFor.map((w) => (
-                        <Box component="li" key={`${phase.phaseId}__watch__${w}`} sx={{ listStyle: "disc" }}>
-                          <Typography variant="body2">{w}</Typography>
-                        </Box>
-                      ))}
-                    </Stack>
-                  </Box>
-                </>
-              ) : null}
+              {/* Intentionally hiding "What to watch for" in session mode as well. */}
             </Stack>
           </AccordionDetails>
         </Accordion>

@@ -18,7 +18,6 @@ const journey: JourneyDoc = {
           items: [{ itemId: "phase-research__basic__syntax", label: "Syntax" }],
         },
       ],
-      whatToWatchFor: [],
     },
   ],
 };

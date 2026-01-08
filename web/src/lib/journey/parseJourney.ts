@@ -37,10 +37,9 @@ function extractListItems(listNode: MdastNode, phaseId: string, prefixPath: stri
     });
 }
 
-function parsePhaseContent(phaseId: string, phaseNodes: MdastNode[]): Pick<JourneyPhase, "focus" | "sections" | "whatToWatchFor"> {
+function parsePhaseContent(phaseId: string, phaseNodes: MdastNode[]): Pick<JourneyPhase, "focus" | "sections"> {
   let focus: string | undefined;
   const sections: JourneySection[] = [];
-  let whatToWatchFor: string[] = [];
 
   for (let i = 0; i < phaseNodes.length; i += 1) {
     const node = phaseNodes[i];
@@ -52,7 +51,7 @@ function parsePhaseContent(phaseId: string, phaseNodes: MdastNode[]): Pick<Journ
       }
     }
 
-    // Phase sections are represented by the first top-level list (until "What to watch for").
+    // Phase sections are represented by the first top-level list.
     if (node.type === "list" && sections.length === 0) {
       const sectionItems = extractListItems(node, phaseId);
       // Each top-level bullet is a section; its children become section items.
@@ -64,18 +63,9 @@ function parsePhaseContent(phaseId: string, phaseNodes: MdastNode[]): Pick<Journ
       }
     }
 
-    if (node.type === "paragraph") {
-      const text = mdastToText(node).trim().toLowerCase();
-      if (text === "what to watch for") {
-        const next = phaseNodes[i + 1];
-        if (next?.type === "list") {
-          whatToWatchFor = extractListItems(next, phaseId).map((x) => x.label);
-        }
-      }
-    }
   }
 
-  return { focus, sections, whatToWatchFor };
+  return { focus, sections };
 }
 
 export function parseJourneyMarkdown(markdown: string): JourneyDoc {
@@ -104,8 +94,8 @@ export function parseJourneyMarkdown(markdown: string): JourneyDoc {
         phaseNodes.push(n);
       }
 
-      const { focus, sections, whatToWatchFor } = parsePhaseContent(phaseId, phaseNodes);
-      phases.push({ phaseId, title, focus, sections, whatToWatchFor });
+      const { focus, sections } = parsePhaseContent(phaseId, phaseNodes);
+      phases.push({ phaseId, title, focus, sections });
       continue;
     }
   }

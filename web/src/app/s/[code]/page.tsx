@@ -31,11 +31,12 @@ export default function JoinSessionPage() {
   const [session, setSession] = useState<Session | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState(true);
-  const [, setRefreshing] = useState(false); // keep internal state to avoid re-showing initial loader during polling
+  const [, setRefreshing] = useState(false); // used by load() for background refresh paths (join error recovery)
   const [displayName, setDisplayName] = useState("");
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [joining, setJoining] = useState(false);
+  const [colorTakenMessage, setColorTakenMessage] = useState<string | null>(null);
 
   const usedColors = useMemo(() => {
     const used = new Set<string>();
@@ -86,17 +87,35 @@ export default function JoinSessionPage() {
       await load({ isInitial: true });
     })();
 
-    const t = window.setInterval(() => {
-      // Background refresh: do not flip the whole page into a loading state (keeps typing stable).
-      void load({ isInitial: false });
-    }, 5000);
-
     return () => {
       alive = false;
-      window.clearInterval(t);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [joinCode]);
+
+  // Realtime updates for taken colors/presence: subscribe to session events and merge participant joins locally.
+  useEffect(() => {
+    if (!session?.id) return;
+    const es = new EventSource(`/api/sessions/stream/${session.id}`);
+    es.addEventListener("participant_joined", (evt) => {
+      const data = JSON.parse((evt as MessageEvent).data) as { type: "participant_joined"; participant: Participant };
+      setParticipants((prev) => {
+        if (prev.some((p) => p.id === data.participant.id)) return prev;
+        return [...prev, data.participant];
+      });
+    });
+    return () => es.close();
+  }, [session?.id]);
+
+  // If someone else takes the color you selected (or it becomes unavailable), clear it and nudge the user.
+  useEffect(() => {
+    if (!selectedColor) return;
+    if (!usedColors.has(selectedColor.toLowerCase())) return;
+    setSelectedColor(null);
+    setColorTakenMessage("That color was just taken—please pick another.");
+    const t = window.setTimeout(() => setColorTakenMessage(null), 2500);
+    return () => window.clearTimeout(t);
+  }, [selectedColor, usedColors]);
 
   async function onJoin() {
     if (!displayName.trim()) {
@@ -168,6 +187,7 @@ export default function JoinSessionPage() {
               <CardContent>
                 <Stack spacing={2}>
                   {error ? <Alert severity="error">{error}</Alert> : null}
+                  {colorTakenMessage ? <Alert severity="info">{colorTakenMessage}</Alert> : null}
 
                   <TextField
                     label="Display name"
