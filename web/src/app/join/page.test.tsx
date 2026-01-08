@@ -18,6 +18,13 @@ describe("/join page", () => {
     expect((input as HTMLInputElement).value).toBe("CWTEST");
   });
 
+  it("strips non-alphanumeric characters from the session code input", () => {
+    renderWithTheme(<JoinCodePage />);
+    const input = screen.getByLabelText("Session code");
+    fireEvent.change(input, { target: { value: " cw-test! " } });
+    expect((input as HTMLInputElement).value).toBe("CWTEST");
+  });
+
   it('does not show the app bar "Join Session" button', () => {
     renderWithTheme(<JoinCodePage />);
     expect(screen.queryByRole("link", { name: /join session/i })).toBeNull();

@@ -8,7 +8,8 @@ import { Alert, Box, Button, Container, Stack, TextField, Typography } from "@mu
 import { SiteAppBar } from "@/components/SiteAppBar";
 
 function normalizeCode(raw: string): string {
-  return raw.trim().toUpperCase();
+  // Join codes are meant to be short, human-typed tokens. Enforce a strict, predictable format.
+  return raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
 }
 
 export default function JoinCodePage() {
@@ -47,8 +48,8 @@ export default function JoinCodePage() {
           <TextField
             label="Session code"
             placeholder="e.g., DEMO20"
-            value={code}
-            onChange={(e) => setCode(e.target.value.toUpperCase())}
+            value={normalized}
+            onChange={(e) => setCode(normalizeCode(e.target.value))}
             onKeyDown={(e) => {
               if (e.key === "Enter") submit();
             }}

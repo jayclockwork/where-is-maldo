@@ -19,9 +19,18 @@ import {
 import { SiteAppBar } from "@/components/SiteAppBar";
 import { avatarPalette } from "@/ui/colors/avatarPalette";
 import { PacmanGhostSvg } from "@/components/wallboard/PacmanGhostSvg";
+import { retryAsync } from "@/lib/net/retryAsync";
 
 type Session = { id: string; joinCode: string; title?: string; status: "open" | "closed"; createdAt: string };
 type Participant = { id: string; sessionId: string; displayName: string; avatarColor?: string };
+
+class HttpError extends Error {
+  status: number;
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
+}
 
 export default function JoinSessionPage() {
   const router = useRouter();
@@ -54,27 +63,37 @@ export default function JoinSessionPage() {
     });
   }, [selectedColor, usedColors]);
 
+  async function fetchSessionByCode(): Promise<{ session: Session; participants: Participant[] }> {
+    const res = await fetch(`/api/sessions/by-code/${joinCode}`, { cache: "no-store" });
+    if (!res.ok) {
+      const body = (await res.json().catch(() => ({}))) as { error?: string };
+      throw new HttpError(res.status, body.error ?? "Session lookup failed");
+    }
+    return (await res.json()) as { session: Session; participants: Participant[] };
+  }
+
   async function load({ isInitial }: { isInitial: boolean }) {
     if (!joinCode) return;
     if (isInitial) setLoading(true);
     else setRefreshing(true);
 
-    const res = await fetch(`/api/sessions/by-code/${joinCode}`, { cache: "no-store" });
-    if (!res.ok) {
+    try {
+      const data = await retryAsync(fetchSessionByCode, {
+        retries: isInitial ? 6 : 0,
+        delayMs: (i) => [0, 250, 500, 750, 1000, 1500, 2000][i] ?? 2000,
+        shouldRetry: (e) => e instanceof HttpError && e.status === 404,
+      });
+      setSession(data.session);
+      setParticipants(data.participants ?? []);
+    } catch {
       if (isInitial) {
         setSession(null);
         setParticipants([]);
-        setLoading(false);
-      } else {
-        setRefreshing(false);
       }
-      return;
+    } finally {
+      if (isInitial) setLoading(false);
+      else setRefreshing(false);
     }
-    const data = (await res.json()) as { session: Session; participants: Participant[] };
-    setSession(data.session);
-    setParticipants(data.participants ?? []);
-    if (isInitial) setLoading(false);
-    else setRefreshing(false);
   }
 
   async function ensureDemoSessionIfNeeded() {
@@ -139,25 +158,37 @@ export default function JoinSessionPage() {
 
     setJoining(true);
     setError(null);
-    const res = await fetch("/api/sessions/join", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ joinCode, displayName, avatarColor: selectedColor }),
-    });
+    async function attemptJoin() {
+      const res = await fetch("/api/sessions/join", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ joinCode, displayName, avatarColor: selectedColor }),
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new HttpError(res.status, data.error ?? "Join failed.");
+      }
+      return (await res.json()) as {
+        session: Session;
+        participant: { id: string; displayName: string; avatarColor?: string };
+        participantSecret: string;
+      };
+    }
 
-    if (!res.ok) {
-      const data = (await res.json().catch(() => ({}))) as { error?: string };
-      setError(data.error ?? "Join failed.");
+    let data: Awaited<ReturnType<typeof attemptJoin>> | null = null;
+    try {
+      data = await retryAsync(attemptJoin, {
+        retries: 4,
+        delayMs: (i) => [0, 250, 500, 1000, 1500][i] ?? 1500,
+        shouldRetry: (e) => e instanceof HttpError && e.status === 404,
+      });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Join failed.";
+      setError(msg);
       setJoining(false);
       await load({ isInitial: false });
       return;
     }
-
-    const data = (await res.json()) as {
-      session: Session;
-      participant: { id: string; displayName: string; avatarColor?: string };
-      participantSecret: string;
-    };
 
     const key = `session:${data.session.id}:participant`;
     window.localStorage.setItem(
@@ -175,7 +206,7 @@ export default function JoinSessionPage() {
 
   return (
     <>
-      <SiteAppBar />
+      <SiteAppBar showJoinSession={false} />
       <Container maxWidth="sm" sx={{ py: { xs: 4, md: 6 } }}>
         <Stack spacing={3}>
           <Box>

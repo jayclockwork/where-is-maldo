@@ -13,12 +13,15 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
   if (!session)
     return NextResponse.json(
       { error: "Session not found" },
-      { status: 404, headers: { "Cache-Control": "no-store" } },
+      { status: 404, headers: { "Cache-Control": "no-store, no-cache, must-revalidate" } },
     );
 
   const participants = await repo.listParticipants(id);
   const mappings = await repo.listMappings(id);
-  return NextResponse.json({ session, participants, mappings }, { headers: { "Cache-Control": "no-store" } });
+  return NextResponse.json(
+    { session, participants, mappings },
+    { headers: { "Cache-Control": "no-store, no-cache, must-revalidate" } },
+  );
 }
 
 

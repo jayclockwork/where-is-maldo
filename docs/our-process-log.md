@@ -2201,4 +2201,42 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
   - `npm test`
   - `npm run build`
 
+#### Step 113 — Make join more reliable (auto-retry) and strictly enforce uppercase join codes in the UI
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Join required many refreshes to work, and join-code input wasn’t forced to only show uppercase.
+- **What changed**:
+  - `/join` now renders the join-code field from a normalized value and strips non-alphanumeric characters (so it can’t display lowercase/punctuation).
+  - Added a small `retryAsync` helper and used it on `/s/[code]` to automatically retry “session not found” during initial session lookup and join POST (removes the need to manually refresh).
+  - Strengthened `Cache-Control` headers for session GET endpoints to reduce stale edge/browser caching.
+- **Files changed**:
+  - `web/src/app/join/page.tsx`
+  - `web/src/app/join/page.test.tsx`
+  - `web/src/app/s/[code]/page.tsx`
+  - `web/src/lib/net/retryAsync.ts`
+  - `web/src/lib/net/retryAsync.test.ts`
+  - `web/src/app/api/sessions/by-code/[code]/route.ts`
+  - `web/src/app/api/sessions/state/[id]/route.ts`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 114 — Hide “Join Session” in the join flow app bars
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - The join button was not removed from the join page.
+- **What changed**:
+  - Hid the `SiteAppBar` “Join Session” action on the `/s/[code]` join-flow page (the page where you enter name + pick a color).
+  - Added a unit test asserting the button is not rendered there.
+- **Files changed**:
+  - `web/src/app/s/[code]/page.tsx`
+  - `web/src/app/s/[code]/page.appbar.test.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
 
