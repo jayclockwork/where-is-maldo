@@ -113,6 +113,26 @@ export default function SessionPage() {
     return () => es.close();
   }, [sessionId]);
 
+  // Robustness fallback: background refresh to avoid relying solely on SSE (which can be flaky on some hosts).
+  useEffect(() => {
+    let alive = true;
+    async function refresh() {
+      const res = await fetch(`/api/sessions/state/${sessionId}`, { cache: "no-store" });
+      if (!alive) return;
+      if (!res.ok) return;
+      const state = (await res.json()) as { session: Session; participants: Participant[]; mappings: Mapping[] };
+      setSession(state.session);
+      setParticipants(state.participants ?? []);
+      setMappings(state.mappings ?? []);
+    }
+
+    const t = window.setInterval(() => void refresh(), 1000);
+    return () => {
+      alive = false;
+      window.clearInterval(t);
+    };
+  }, [sessionId]);
+
   async function toggle(itemId: string, isDoing: boolean) {
     if (!me) return;
     // Optimistic update

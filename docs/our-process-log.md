@@ -2082,4 +2082,20 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
   - `npm test`
   - `npm run build`
 
+#### Step 106 — Add polling fallback for “live” updates when streaming is flaky in production
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **Why**:
+  - In production, one browser’s toggles were not updating the other browser until a manual page refresh, indicating the streaming channel (SSE) was not reliably propagating events.
+- **What changed**:
+  - Added a lightweight background refresh (every 1s) to fetch `/api/sessions/state/:id` and update `participants` + `mappings` so pages stay up to date even if SSE is dropped/throttled.
+  - Kept SSE as the fast-path; polling acts as a robustness safety net.
+- **Files changed**:
+  - `web/src/app/session/[id]/page.tsx`
+  - `web/src/app/wallboard-ghosts/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
 
