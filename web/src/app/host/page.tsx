@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   Alert,
@@ -8,7 +8,6 @@ import {
   Button,
   Card,
   CardContent,
-  Chip,
   Container,
   Divider,
   Stack,
@@ -29,7 +28,6 @@ export default function HostPage() {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [created, setCreated] = useState<{ sessionId: string; joinCode: string; adminToken: string } | null>(null);
-  const [backendInfo, setBackendInfo] = useState<{ backend: string; supabaseHost: string | null } | null>(null);
 
   const origin = typeof window === "undefined" ? "" : window.location.origin;
 
@@ -55,20 +53,6 @@ export default function HostPage() {
       // ignore; user can still select/copy manually
     }
   }
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      const res = await fetch("/api/debug/backend", { cache: "no-store" });
-      if (!alive) return;
-      if (!res.ok) return;
-      const data = (await res.json()) as { backend: string; supabaseHost: string | null };
-      setBackendInfo(data);
-    })();
-    return () => {
-      alive = false;
-    };
-  }, []);
 
   async function onCreate() {
     setCreating(true);
@@ -109,21 +93,6 @@ export default function HostPage() {
             <Typography sx={{ color: "text.secondary", mt: 1 }}>
               Create a live session and share the join + wallboard links.
             </Typography>
-            <Box sx={{ mt: 1 }}>
-              {backendInfo ? (
-                <Chip
-                  size="small"
-                  color={backendInfo.backend === "supabase" ? "success" : "warning"}
-                  label={
-                    backendInfo.backend === "supabase"
-                      ? `Backend: Supabase (${backendInfo.supabaseHost ?? "unknown"})`
-                      : "Backend: In-memory"
-                  }
-                />
-              ) : (
-                <Chip size="small" label="Backend: checking…" />
-              )}
-            </Box>
           </Box>
 
           <Card>
