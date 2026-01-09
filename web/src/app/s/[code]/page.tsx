@@ -200,6 +200,7 @@ export default function JoinSessionPage() {
         avatarColor: data.participant.avatarColor,
       }),
     );
+    window.localStorage.setItem("lastJoinCode", joinCode);
 
     router.push(`/session/${data.session.id}?code=${encodeURIComponent(joinCode)}`);
   }

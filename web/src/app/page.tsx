@@ -1,10 +1,30 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Box, Button, Card, CardContent, Container, Stack, Typography } from "@mui/material";
 import { SiteAppBar } from "@/components/SiteAppBar";
 
+function readLastJoinCode(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const code = window.localStorage.getItem("lastJoinCode");
+    return code ? code.toUpperCase() : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function Home() {
+  const [lastJoinCode, setLastJoinCode] = useState<string | null>(() => readLastJoinCode());
+
+  // Keep in sync across tabs/windows; avoids setState directly in the effect body (lint rule).
+  useEffect(() => {
+    const handler = () => setLastJoinCode(readLastJoinCode());
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, []);
+
   return (
     <>
       <SiteAppBar />
@@ -63,9 +83,11 @@ export default function Home() {
                   <Button variant="text" component={Link} href="/join">
                     Join Session →
                   </Button>
-                  <Button variant="text" component={Link} href="/w/DEMO20">
-                    View Wallboard →
-                  </Button>
+                  {lastJoinCode ? (
+                    <Button variant="text" component={Link} href={`/w/${encodeURIComponent(lastJoinCode)}`}>
+                      View Wallboard →
+                    </Button>
+                  ) : null}
                 </Stack>
               </CardContent>
             </Card>

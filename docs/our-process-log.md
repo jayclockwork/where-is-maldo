@@ -2303,4 +2303,22 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
   - `npm test`
   - `npm run build`
 
+#### Step 119 — Show “View Wallboard” on Home only after a prior session join
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - “View Wallboard” should only appear on the home page if the user has joined a session previously.
+- **What changed**:
+  - Persist `lastJoinCode` in `localStorage` after a successful join.
+  - Home page now conditionally renders “View Wallboard” only when `lastJoinCode` exists, linking to `/w/{lastJoinCode}`.
+  - Added unit tests covering the gating behavior.
+- **Files changed**:
+  - `web/src/app/s/[code]/page.tsx`
+  - `web/src/app/page.tsx`
+  - `web/src/app/page.test.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
 
