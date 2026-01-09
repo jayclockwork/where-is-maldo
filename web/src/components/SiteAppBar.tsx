@@ -28,7 +28,7 @@ export function SiteAppBar({
               Journey Mapping
             </Typography>
             <Typography variant="body2" sx={{ color: "text.secondary", display: { xs: "none", sm: "block" } }}>
-              LLM Adoption
+              LLM Adoption Levels
             </Typography>
           </Box>
 
