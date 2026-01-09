@@ -72,7 +72,7 @@ export function JourneyView({ journey }: { journey: JourneyDoc }) {
             Levels of LLM Adoption
           </Typography>
           <Typography variant="body1" sx={{ color: "text.secondary" }}>
-            Use this as a loose guide for evaluating your own LLM addoption journey.
+            Use this as a loose guide for evaluating your own software engineering team's LLM addoption journey.
           </Typography>
         </Stack>
 
