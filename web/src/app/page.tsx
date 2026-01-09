@@ -16,8 +16,7 @@ export default function Home() {
               Map your engineering team’s LLM journey.
             </Typography>
             <Typography variant="h5" sx={{ color: "rgba(0,0,0,0.75)", maxWidth: 720 }}>
-              The common phases software engineers go through when adopting LLMs, built for
-              reading and for live workshops.
+              The levels of LLM addoption software engineers go through when learning to use LLMs effectively.
             </Typography>
             <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
               <Button component={Link} href="/journey" variant="contained" color="primary" size="large">
