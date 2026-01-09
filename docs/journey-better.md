@@ -77,7 +77,6 @@ _Focus: the aha moment — you learn to direct an agent effectively._
 
 - **Grounding and context management**
   - Give repo-specific context: conventions, file locations, patterns to follow
-  - Provide minimal reproducible examples for bugs
   - Teach it your working agreements (style, naming, commit hygiene, review expectations)
 
 - **Evidence-driven trust**
