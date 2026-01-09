@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Journey Mapping",
-  description: "A journey mapping site for common software engineer LLM adoption phases.",
+  description: "An LLM addoption journey mapping site.",
 };
 
 export default function RootLayout({
