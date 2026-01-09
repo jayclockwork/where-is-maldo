@@ -2289,4 +2289,18 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
   - `npm test`
   - `npm run build`
 
+#### Step 118 — Remove backend debug chip from Host page UI
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Remove the debug message “Backend: Supabase ( … )” from the host page.
+- **What changed**:
+  - Removed the backend indicator chip + its `/api/debug/backend` fetch from the `/host` UI (debug endpoint remains available if needed).
+- **Files changed**:
+  - `web/src/app/host/page.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
 
