@@ -1,9 +1,6 @@
-# Software Engineer LLM Journey (Better Version)
-_Merged + improved from the ChatGPT and Gemini drafts._
+# Software Engineering LLM Levels
 
-This version uses the **ChatGPT “phases”** as the main structure (Research → Completion → Collaboration → Delegation → Constrained autonomy), while keeping the clearest framing and guardrails from the Gemini draft.
-
-### Phase 1: Research
+### Level 1: Research
 _Focus: learning fast and answering questions. The “better Google/Stack Overflow.”_
 
 - **Basic research**
@@ -23,7 +20,7 @@ _Focus: learning fast and answering questions. The “better Google/Stack Overfl
   - Understand security/privacy pitfalls, licensing concerns, “what could go wrong”
 
 
-### Phase 2: Code Completion
+### Level 2: Code Completion
 _Focus: speeding up implementation of small-to-medium scoped changes._
 
 - **Basic code completion**
@@ -36,7 +33,7 @@ _Focus: speeding up implementation of small-to-medium scoped changes._
   - Perform small code and document refactors
 
 
-### Phase 3: Collaborative Coding
+### Level 3: Collaborative Coding
 _Focus: working *with* the codebase as a pair (repo-aware, iterative)._
 
 - **Chatting with code**
@@ -51,7 +48,7 @@ _Focus: working *with* the codebase as a pair (repo-aware, iterative)._
   - Summarize diffs, spot risks, suggest improvements, call out missing tests
 
 
-### Phase 4: Delegation
+### Level 4: Delegation
 _Focus: the LLM becomes the primary implementer; you stay owner/reviewer._
 
 - **Requirements collaborator**
@@ -65,7 +62,30 @@ _Focus: the LLM becomes the primary implementer; you stay owner/reviewer._
 - **Primary coder for new features**
   - LLM drafts implementation + tests + docs; human validates/accepts
 
-### Phase 5: Constrained Autonomy
+### Level 5: Agentic Thinking
+_Focus: the aha moment — you learn to direct an agent effectively._
+
+- **Intent and constraints as a spec**
+  - State goal, non-goals, constraints, and definition of done
+  - Provide “what good looks like” examples (inputs/outputs, acceptance checks)
+  - Name what must not change (APIs, behavior, performance budgets, accessibility expectations)
+
+- **Decomposition and sequencing**
+  - Break work into small, verifiable steps
+  - Ask for a plan first (milestones, risks, unknowns, test plan)
+  - Choose a safe order: scaffolding → tests → implementation → cleanup
+
+- **Grounding and context management**
+  - Give repo-specific context: conventions, file locations, patterns to follow
+  - Provide minimal reproducible examples for bugs
+  - Teach it your working agreements (style, naming, commit hygiene, review expectations)
+
+- **Evidence-driven trust**
+  - Require citations to code locations, diffs, and commands to run
+  - Require tests for behavior changes and a clear verification checklist
+  - Ask for edge cases, failure modes, and rollback considerations
+
+### Level 6: Constrained Autonomy
 _Focus: agentic tool use under guardrails (LLM iterates; you approve)._
 
 - **LLM Configuration**
@@ -76,3 +96,16 @@ _Focus: agentic tool use under guardrails (LLM iterates; you approve)._
 - **Enhanced Guardrails**
   - Explicit scope (“only touch X files”), deterministic formatting, non-interactive commands
   - Require evidence for risky changes (tests, benchmarks, logs, diffs)
+
+### Level 7: Multi-Agent Autonomy
+_Focus: multiple agents coordinate on a larger goal with defined roles; humans supervise outcomes._
+
+- **Role-based agent teams**
+  - Define agents such as Planner, Implementer, Reviewer, Verifier
+- **Parallelization with boundaries**
+  - Agents work on independent slices (tests, refactors, docs) in parallel
+  - Strict ownership of files/modules to avoid conflicts
+- **Orchestration and governance**
+  - Shared definition of done, shared guardrails, shared tool permissions
+  - Central change log: what changed, why, evidence, and remaining risks
+  - Human approval gates at milestones (design, pre-merge, release)

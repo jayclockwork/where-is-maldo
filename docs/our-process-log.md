@@ -2239,4 +2239,54 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
   - `npm test`
   - `npm run build`
 
+#### Step 115 — Serve “View Journey” content from `docs/journey-better.md` everywhere (including `/api/journey`)
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Make the “View Journey” page also get its content from `journey-better.md`.
+- **What changed**:
+  - Confirmed `/journey` already loads via `loadJourney()` from `../docs/journey-better.md`.
+  - Made `GET /api/journey` `force-static` so it is generated at build time from `docs/journey-better.md` (avoids runtime filesystem issues in production and keeps sessions aligned with the View Journey page).
+- **Files changed**:
+  - `web/src/app/api/journey/route.ts`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 116 — Rename displayed “Step N” headings to “Level N”
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Change occurrences of “Step N” to “Level N”.
+- **What changed**:
+  - Updated the phase-title display transformer so headings render as “Level N: …” instead of “Step N: …”.
+  - Updated unit tests that asserted against the heading text.
+- **Files changed**:
+  - `web/src/lib/text/phaseToStep.ts`
+  - `web/src/components/journey/JourneyView.test.tsx`
+  - `web/src/components/session/SessionJourneyView.test.tsx`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
+#### Step 117 — Make journey parsing resilient to “Level” headings (and less brittle overall)
+- **Date/Time**: 2026-01-08
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Updated `docs/journey-better.md` to use “Level”, which broke parsing; requested a less brittle approach to managing journey content.
+- **What changed**:
+  - Updated the markdown parser to recognize headings with **Phase/Step/Level** (e.g. `### Level 1: Research`) instead of only `Phase`.
+  - Relaxed heading depth to accept both `##` and `###` for top-level levels.
+  - Added a clear error when no levels are found (avoid silently rendering an empty journey).
+  - Added unit coverage for the heading variants.
+- **Files changed**:
+  - `web/src/lib/journey/parseJourney.ts`
+  - `web/src/lib/journey/parseJourney.test.ts`
+- **Commands / tools used**:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build`
+
 

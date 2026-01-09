@@ -18,7 +18,7 @@ describe("parseJourneyMarkdown", () => {
 
   it("generates stable itemIds that include the phaseId", () => {
     const markdown = `
-### Phase 1: Research
+### Level 1: Research
 _Focus: learning._
 
 - **Basic research**
@@ -31,6 +31,22 @@ _Focus: learning._
 
     expect(firstItem.itemId.startsWith(phase.phaseId)).toBe(true);
     expect(firstItem.itemId).toContain("__");
+  });
+
+  it("accepts Step/Phase/Level heading variants", () => {
+    const markdown = `
+## Step 1: Research
+_Focus: learning._
+
+- **Basic research**
+  - Syntax and libraries
+
+### Phase 2: Code Completion
+_Focus: shipping._
+`;
+
+    const doc = parseJourneyMarkdown(markdown);
+    expect(doc.phases.map((p) => p.title)).toEqual(expect.arrayContaining(["Step 1: Research", "Phase 2: Code Completion"]));
   });
 });
 
