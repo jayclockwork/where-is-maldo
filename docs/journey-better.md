@@ -80,7 +80,6 @@ _Focus: the aha moment — you learn to direct an agent effectively._
   - Teach it your working agreements (style, naming, commit hygiene, review expectations)
 
 - **Evidence-driven trust**
-  - Require citations to code locations, diffs, and commands to run
   - Require tests for behavior changes and a clear verification checklist
   - Ask for edge cases, failure modes, and rollback considerations
 
