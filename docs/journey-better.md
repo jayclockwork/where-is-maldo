@@ -4,7 +4,7 @@
 _Focus: learning fast and answering questions. The “better Google/Stack Overflow.”_
 
 - **Basic research**
-  - How to code a a statement/function
+  - How to code a statement/function
   - How a technology works
   - How technologies compare and contrast
 - **Coding research**
