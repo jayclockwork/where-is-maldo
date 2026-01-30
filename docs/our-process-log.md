@@ -2334,3 +2334,22 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
   - `docs/supabase/migration-2026-01-30-enable-rls.sql`
 
 
+#### Step 121 — Add “Individual view” page to see where a participant is on the journey map
+- **Date/Time**: 2026-01-30
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - “I need a new feature - I page where I can see where an individual is on the journey map. I should be able to select the individual and the output should be clear and easy to read.”
+- **What changed**:
+  - Added a new Control Center page that lets the host select a participant and see:
+    - “Current focus” (latest updated “Doing” section)
+    - “Doing by level” (per-level chips, optionally showing all sections)
+  - Wired the page to the existing session SSE stream for live updates.
+  - Added a pure helper + unit tests for deriving a participant’s current focus from mappings.
+- **Files changed**:
+  - `web/src/app/admin/[id]/individual/page.tsx`
+  - `web/src/app/admin/[id]/page.tsx`
+  - `web/src/lib/session/participantProgress.ts`
+  - `web/src/lib/session/participantProgress.test.ts`
+- **Commands / tools used**:
+  - `npm test`
+

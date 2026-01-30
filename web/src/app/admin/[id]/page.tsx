@@ -132,6 +132,9 @@ export default function AdminPage() {
   const joinHref = joinCode ? `/s/${encodeURIComponent(joinCode)}` : null;
   const wallboardHref = joinCode ? `/w/${encodeURIComponent(joinCode)}` : null;
   const wallboardHostHref = joinCode && adminToken ? `/w/${encodeURIComponent(joinCode)}?token=${encodeURIComponent(adminToken)}` : null;
+  const individualHref = adminToken
+    ? `/admin/${encodeURIComponent(sessionId)}/individual?token=${encodeURIComponent(adminToken)}`
+    : `/admin/${encodeURIComponent(sessionId)}/individual`;
 
   return (
     <>
@@ -186,6 +189,9 @@ export default function AdminPage() {
                         Open wallboard (host)
                       </Button>
                     ) : null}
+                    <Button component={Link} href={individualHref} variant="outlined">
+                      Individual view
+                    </Button>
                   </Stack>
 
                   <Divider />
