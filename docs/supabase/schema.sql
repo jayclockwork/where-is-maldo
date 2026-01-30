@@ -42,6 +42,8 @@ create table if not exists public.mappings (
 
 create index if not exists mappings_session_idx on public.mappings (session_id);
 
--- Recommended: if you plan to expose Supabase directly to browsers later,
--- turn on RLS and write policies. For now, the app uses server-side routes with service role.
+-- RLS is enabled to prevent public exposure. Add policies before exposing via anon/auth.
+alter table public.sessions enable row level security;
+alter table public.participants enable row level security;
+alter table public.mappings enable row level security;
 

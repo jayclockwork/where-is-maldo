@@ -2321,4 +2321,16 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
   - `npm test`
   - `npm run build`
 
+#### Step 120 — Enable RLS on public tables + add migration
+- **Date/Time**: 2026-01-30
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - Update the SQL and create a migration to address Supabase RLS warnings.
+- **What changed**:
+  - Enabled RLS on `public.sessions`, `public.participants`, and `public.mappings` in the schema.
+  - Added a migration file to apply the same RLS changes in existing environments.
+- **Files changed**:
+  - `docs/supabase/schema.sql`
+  - `docs/supabase/migration-2026-01-30-enable-rls.sql`
+
 
