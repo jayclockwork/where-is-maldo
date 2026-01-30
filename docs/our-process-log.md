@@ -2353,3 +2353,47 @@ _This document is intentionally **not** a pre-planned roadmap. It records only t
 - **Commands / tools used**:
   - `npm test`
 
+#### Step 122 — Add adoption-by-level chart for all participants (Control Center)
+- **Date/Time**: 2026-01-30
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - “Can you also give me a summary view of all participants adoption by level in some sort of chart?”
+- **What changed**:
+  - Added an “Adoption by level” card to the Control Center that charts:
+    - % of participants with **any** “Doing” in each level
+    - % of participants who **completed** each level (all section headings checked)
+  - Added a small pure aggregation helper + unit test for the adoption counts.
+- **Files changed**:
+  - `web/src/app/admin/[id]/page.tsx`
+  - `web/src/lib/session/levelAdoption.ts`
+  - `web/src/lib/session/levelAdoption.test.ts`
+- **Commands / tools used**:
+  - `npm test`
+
+#### Step 123 — Replace per-level bars with a single stacked adoption chart spanning all levels
+- **Date/Time**: 2026-01-30
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - “Please find a way to have just one chart showing adoption progress in a meaningful way — all the levels on one chart.”
+- **What changed**:
+  - Updated the Control Center adoption visualization to use **one stacked bar per level** (all contained in a single chart card):
+    - Completed (green)
+    - In progress (blue)
+    - Not started (background)
+- **Files changed**:
+  - `web/src/app/admin/[id]/page.tsx`
+- **Commands / tools used**:
+  - `npm test`
+
+#### Step 124 — Remove relative-time text from “Doing by level” chips
+- **Date/Time**: 2026-01-30
+- **Step type**: Implementation
+- **User guidance** (what Jay asked for):
+  - “Please remove the "hours ago" text in the pills”
+- **What changed**:
+  - “Doing by level” chips in the Individual View now show only the section label (no appended relative timestamp).
+- **Files changed**:
+  - `web/src/app/admin/[id]/individual/page.tsx`
+- **Commands / tools used**:
+  - `npm test`
+

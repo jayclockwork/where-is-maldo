@@ -24,6 +24,8 @@ import {
 
 import { SiteAppBar } from "@/components/SiteAppBar";
 import type { Mapping, Participant, Session } from "@/domain/sessions/types";
+import type { JourneyDoc } from "@/lib/journey/types";
+import { computeAdoptionByLevel } from "@/lib/session/levelAdoption";
 
 type SessionState = { session: Session; participants: Participant[]; mappings: Mapping[] };
 
@@ -52,6 +54,7 @@ export default function AdminPage() {
   }, [storageKey, tokenFromUrl]);
 
   const [state, setState] = useState<SessionState | null>(null);
+  const [journey, setJourney] = useState<JourneyDoc | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -70,15 +73,23 @@ export default function AdminPage() {
     async function load() {
       setLoading(true);
       setError(null);
-      const res = await fetch(`/api/sessions/state/${sessionId}`, { cache: "no-store" });
+      const [journeyRes, stateRes] = await Promise.all([
+        fetch("/api/journey", { cache: "no-store" }),
+        fetch(`/api/sessions/state/${sessionId}`, { cache: "no-store" }),
+      ]);
+
       if (!alive) return;
-      if (!res.ok) {
-        const body = (await res.json().catch(() => ({}))) as { error?: string };
+
+      if (journeyRes.ok) setJourney((await journeyRes.json()) as JourneyDoc);
+      else setJourney(null);
+
+      if (!stateRes.ok) {
+        const body = (await stateRes.json().catch(() => ({}))) as { error?: string };
         setError(body.error ?? "Session not found.");
         setLoading(false);
         return;
       }
-      setState((await res.json()) as SessionState);
+      setState((await stateRes.json()) as SessionState);
       setLoading(false);
     }
     void load();
@@ -86,6 +97,11 @@ export default function AdminPage() {
       alive = false;
     };
   }, [sessionId]);
+
+  const adoption = useMemo(() => {
+    if (!journey || !state) return null;
+    return computeAdoptionByLevel({ journey, participants: state.participants, mappings: state.mappings });
+  }, [journey, state]);
 
   async function clearResults() {
     if (!adminToken) return;
@@ -161,57 +177,146 @@ export default function AdminPage() {
           {loading ? (
             <Alert severity="info">Loading session…</Alert>
           ) : state ? (
-            <Card>
-              <CardContent>
-                <Stack spacing={2}>
-                  <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" alignItems="center">
-                    <Chip label={`Code: ${state.session.joinCode}`} />
-                    <Chip label={`Status: ${state.session.status}`} />
-                    <Chip label={`Participants: ${state.participants.length}`} />
-                    <Chip label={`Mappings: ${state.mappings.length}`} />
-                  </Stack>
+            <Stack spacing={2.5}>
+              <Card>
+                <CardContent>
+                  <Stack spacing={2}>
+                    <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap" alignItems="center">
+                      <Chip label={`Code: ${state.session.joinCode}`} />
+                      <Chip label={`Status: ${state.session.status}`} />
+                      <Chip label={`Participants: ${state.participants.length}`} />
+                      <Chip label={`Mappings: ${state.mappings.length}`} />
+                    </Stack>
 
-                  <Divider />
+                    <Divider />
 
-                  <Stack direction={{ xs: "column", sm: "row" }} spacing={1} useFlexGap flexWrap="wrap">
-                    {joinHref ? (
-                      <Button component={Link} href={joinHref} variant="outlined">
-                        Open join page
+                    <Stack direction={{ xs: "column", sm: "row" }} spacing={1} useFlexGap flexWrap="wrap">
+                      {joinHref ? (
+                        <Button component={Link} href={joinHref} variant="outlined">
+                          Open join page
+                        </Button>
+                      ) : null}
+                      {wallboardHref ? (
+                        <Button component={Link} href={wallboardHref} variant="outlined">
+                          Open wallboard (audience)
+                        </Button>
+                      ) : null}
+                      {wallboardHostHref ? (
+                        <Button component={Link} href={wallboardHostHref} variant="outlined">
+                          Open wallboard (host)
+                        </Button>
+                      ) : null}
+                      <Button component={Link} href={individualHref} variant="outlined">
+                        Individual view
                       </Button>
-                    ) : null}
-                    {wallboardHref ? (
-                      <Button component={Link} href={wallboardHref} variant="outlined">
-                        Open wallboard (audience)
-                      </Button>
-                    ) : null}
-                    {wallboardHostHref ? (
-                      <Button component={Link} href={wallboardHostHref} variant="outlined">
-                        Open wallboard (host)
-                      </Button>
-                    ) : null}
-                    <Button component={Link} href={individualHref} variant="outlined">
-                      Individual view
-                    </Button>
-                  </Stack>
+                    </Stack>
 
-                  <Divider />
+                    <Divider />
 
-                  <Stack direction={{ xs: "column", sm: "row" }} spacing={1} useFlexGap flexWrap="wrap">
-                    <Button
-                      variant="text"
-                      color="error"
-                      onClick={() => setClearOpen(true)}
-                      disabled={!adminToken || busy}
-                    >
-                      Clear results…
-                    </Button>
-                    <Button variant="outlined" onClick={exportResults} disabled={!adminToken || busy}>
-                      Export JSON
-                    </Button>
+                    <Stack direction={{ xs: "column", sm: "row" }} spacing={1} useFlexGap flexWrap="wrap">
+                      <Button
+                        variant="text"
+                        color="error"
+                        onClick={() => setClearOpen(true)}
+                        disabled={!adminToken || busy}
+                      >
+                        Clear results…
+                      </Button>
+                      <Button variant="outlined" onClick={exportResults} disabled={!adminToken || busy}>
+                        Export JSON
+                      </Button>
+                    </Stack>
                   </Stack>
-                </Stack>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent>
+                  <Stack spacing={2}>
+                    <Box>
+                      <Typography variant="h6" sx={{ fontWeight: 900 }}>
+                        Adoption by level
+                      </Typography>
+                      <Typography sx={{ color: "text.secondary", mt: 0.5 }}>
+                        Each bar shows the number of people who: <strong>Completed</strong> (green) + <strong>In progress</strong> (checked some sections)
+                        + <strong>Not started</strong>.
+                      </Typography>
+                    </Box>
+
+                    {adoption ? (
+                      state.participants.length ? (
+                        <Stack spacing={2}>
+                          {adoption.map((row) => {
+                            const total = Math.max(1, row.participantsTotal);
+                            const anyPct = (row.participantsWithAnyDoing / total) * 100;
+                            const completePct = (row.participantsCompleted / total) * 100;
+                            const inProgressPct = Math.max(0, anyPct - completePct);
+                            const notStartedPct = Math.max(0, 100 - anyPct);
+                            return (
+                              <Box key={row.phaseId}>
+                                <Stack direction="row" spacing={1} alignItems="baseline" justifyContent="space-between">
+                                  <Typography sx={{ fontWeight: 900 }}>{row.stepTitle}</Typography>
+                                  <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                                    Any doing: {row.participantsWithAnyDoing}/{row.participantsTotal} · Completed:{" "}
+                                    {row.participantsCompleted}/{row.participantsTotal}
+                                  </Typography>
+                                </Stack>
+
+                                <Box
+                                  role="img"
+                                  aria-label={`${row.stepTitle}: ${Math.round(completePct)}% completed, ${Math.round(
+                                    anyPct,
+                                  )}% started`}
+                                  sx={{
+                                    mt: 1,
+                                    height: 14,
+                                    borderRadius: 999,
+                                    overflow: "hidden",
+                                    bgcolor: "rgba(0,0,0,0.08)",
+                                    display: "flex",
+                                  }}
+                                >
+                                  <Box sx={{ width: `${completePct}%`, bgcolor: "success.main" }} />
+                                  <Box sx={{ width: `${inProgressPct}%`, bgcolor: "primary.main" }} />
+                                  <Box sx={{ width: `${notStartedPct}%`, bgcolor: "transparent" }} />
+                                </Box>
+
+                                <Stack direction="row" spacing={1.5} useFlexGap flexWrap="wrap" sx={{ mt: 0.75 }}>
+                                  <Stack direction="row" spacing={0.5} alignItems="center">
+                                    <Box sx={{ width: 10, height: 10, borderRadius: 0.5, bgcolor: "success.main" }} />
+                                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                                      Completed
+                                    </Typography>
+                                  </Stack>
+                                  <Stack direction="row" spacing={0.5} alignItems="center">
+                                    <Box sx={{ width: 10, height: 10, borderRadius: 0.5, bgcolor: "primary.main" }} />
+                                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                                      In progress
+                                    </Typography>
+                                  </Stack>
+                                  <Stack direction="row" spacing={0.5} alignItems="center">
+                                    <Box sx={{ width: 10, height: 10, borderRadius: 0.5, bgcolor: "rgba(0,0,0,0.10)" }} />
+                                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                                      Not started
+                                    </Typography>
+                                  </Stack>
+                                </Stack>
+                              </Box>
+                            );
+                          })}
+                        </Stack>
+                      ) : (
+                        <Typography sx={{ color: "text.secondary" }}>No participants yet.</Typography>
+                      )
+                    ) : (
+                      <Typography sx={{ color: "text.secondary" }}>
+                        Chart unavailable (journey content failed to load).
+                      </Typography>
+                    )}
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Stack>
           ) : null}
         </Stack>
       </Container>

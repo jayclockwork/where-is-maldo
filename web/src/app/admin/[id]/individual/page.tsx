@@ -305,13 +305,10 @@ export default function IndividualProgressPage() {
                               {visibleSections.map((loc) => {
                                 const m = participantMappingsByItem.get(loc.itemId);
                                 const doing = m?.isDoing ?? false;
-                                const when = m?.updatedAt
-                                  ? formatRelativeTimeShort(nowMs - Date.parse(m.updatedAt))
-                                  : undefined;
                                 return (
                                   <Chip
                                     key={loc.itemId}
-                                    label={doing ? `${loc.label}${when ? ` · ${when}` : ""}` : loc.label}
+                                    label={loc.label}
                                     color={doing ? "success" : "default"}
                                     variant={doing ? "filled" : "outlined"}
                                   />
