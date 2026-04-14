@@ -107,13 +107,18 @@ export function JourneyView({ journey }: { journey: JourneyDoc }) {
               <AccordionDetails>
                 <Stack spacing={2}>
                   {phase.focus ? (
-                    <Box>
+                    <Box sx={{ display: "flex", alignItems: "flex-start", columnGap: 1 }}>
                       <Chip
-                        label="Focus"
+                        label="Who Drives"
                         size="small"
-                        sx={{ mr: 1, bgcolor: "rgba(245,196,0,0.25)", color: "text.primary" }}
+                        sx={{
+                          flexShrink: 0,
+                          mt: 0.25,
+                          bgcolor: "rgba(245,196,0,0.25)",
+                          color: "text.primary",
+                        }}
                       />
-                      <Typography variant="body1" component="span">
+                      <Typography variant="body1" component="div" sx={{ flex: "1 1 auto", minWidth: 0 }}>
                         {phase.focus}
                       </Typography>
                     </Box>

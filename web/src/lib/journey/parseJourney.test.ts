@@ -11,9 +11,10 @@ describe("parseJourneyMarkdown", () => {
 
     const doc = parseJourneyMarkdown(markdown);
 
-    expect(doc.phases.length).toBeGreaterThanOrEqual(4);
+    expect(doc.phases.length).toBe(6);
     expect(doc.phases[0]?.phaseId).toMatch(/^phase-/);
-    expect(doc.phases.some((p) => p.title.toLowerCase().includes("research"))).toBe(true);
+    expect(doc.phases[0]?.title).toContain("Reference");
+    expect(doc.phases.some((p) => p.title.toLowerCase().includes("systems architect"))).toBe(true);
   });
 
   it("generates stable itemIds that include the phaseId", () => {

@@ -35,9 +35,6 @@ export default function Home() {
             <Typography variant="h2" component="h1" sx={{ lineHeight: 1.05 }}>
               Map your engineering team’s LLM journey.
             </Typography>
-            <Typography variant="h5" sx={{ color: "rgba(0,0,0,0.75)", maxWidth: 720 }}>
-              The levels of LLM addoption software engineers go through when learning to use LLMs effectively.
-            </Typography>
             <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
               <Button component={Link} href="/journey" variant="contained" color="primary" size="large">
                 View Journey

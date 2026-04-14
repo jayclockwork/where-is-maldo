@@ -1,109 +1,125 @@
 # Software Engineering LLM Levels
 
-### Level 1: Research
-_Focus: learning fast and answering questions. The “better Google/Stack Overflow.”_
+### Level 1: Reference
+
+_Focus: You drive entirely. The LLM is a smarter search — it answers questions and does not touch your code._
 
 - **Basic research**
-  - How to code a statement/function
+  - How to code a statement or function
   - How a technology works
   - How technologies compare and contrast
 - **Coding research**
   - Find better ways to implement small sections of code
   - Compare libraries and approaches
 - **Document research**
-  - Summarize docs and concepts
+  - Summarize docs and long specs
   - Parse and analyze CSV/JSON/etc for quick answers
 - **Debugging research**
-  - Interpret logs/traces/stack traces
-  - Propose 2–3 hypotheses
+  - Interpret logs, traces, and stack traces
+  - Propose 2–3 hypotheses for what's going wrong
 - **Risk research**
-  - Understand security/privacy pitfalls, licensing concerns, “what could go wrong”
+  - Understand security and privacy pitfalls
+  - Identify licensing concerns
+  - Ask "what could go wrong?" before you build
 
 
-### Level 2: Code Completion
-_Focus: speeding up implementation of small-to-medium scoped changes._
+### Level 2: Inline Assist
 
-- **Basic code completion**
-  - Autocomplete single-lines / small-blocks
-- **Advanced completion**
-  - Autocomplete multi-file edits that follow existing patterns and conventions
-- **Automated test writing (assisted)**
-  - Generate scaffolds, fixtures, mocks, and edge cases
-- **Refactoring assistance**
-  - Perform small code and document refactors
+_Focus: You still write the code; the LLM extends your keystrokes (completions, small edits, tedious parts)._
 
-
-### Level 3: Collaborative Coding
-_Focus: working *with* the codebase as a pair (repo-aware, iterative)._
-
-- **Chatting with code**
-  - Repo-aware Q&A (Cursor/Cody-style): “Where is X?” “What calls this?” “How does Y work here?”
-- **Pair programming on tests**
-  - Fill coverage gaps; add regression tests for bugs
-- **Pair programming on bug resolution**
-  - Triage, isolate repro, propose fixes + verification steps
-- **Pair programming on features**
-  - Draft implementation + iterate based on review feedback
-- **Code reviews**
-  - Summarize diffs, spot risks, suggest improvements, call out missing tests
+- **Inline completion**
+  - Autocomplete single lines and small blocks as you type
+  - Accept, reject, or modify suggestions without leaving your editor
+- **Multi-file edits**
+  - Autocomplete changes that span files, following your existing patterns and conventions
+- **Test scaffolding**
+  - Generate test scaffolds, fixtures, mocks, and edge cases from your own specs
+- **Small refactors**
+  - Rename, extract, reorganize — well-defined, low-risk changes
+  - Tidy up docs and comments
 
 
-### Level 4: Delegation
-_Focus: the LLM becomes the primary implementer; you stay owner/reviewer._
+### Level 3: Pair Programmer
 
-- **Requirements collaborator**
-  - Generate outlines, user stories, non-goals, open questions
-  - Turn fuzzy asks into constraints, acceptance criteria, and phased rollout plans
-  - Generate Classic Requirements documents
-  - Generate feature-based Product Requirements Documents (PRDs)
-- **Automated Testing**
-  - Generate significant number of unit tests
-  - Generate effective end-to-end (e2e) tests (such as Playwright tests)
-- **Primary coder for new features**
-  - LLM drafts implementation + tests + docs; human validates/accepts
+_Focus: Shared authorship — real-time, repo-aware collaboration. You decide; the LLM is your thought partner._
 
-### Level 5: Agentic Thinking
-_Focus: the aha moment — you learn to direct an agent effectively._
+- **Chatting with your codebase**
+  - "Where is X implemented?" "What calls this function?" "How does Y work in this repo?"
+  - Understand unfamiliar code quickly without spelunking manually
+- **Debugging together**
+  - Triage a bug, isolate a repro case, and propose fixes with verification steps
+  - Walk through a failing test together to understand root cause
+- **Test coverage partnership**
+  - Fill gaps in existing coverage
+  - Add regression tests for newly discovered bugs
+- **Code review assistance**
+  - Summarize what a diff actually does in plain language
+  - Spot risks, edge cases, and missing tests before human reviewers see it
+- **Feature development**
+  - Draft an implementation together and iterate based on your feedback
+  - You're still the one deciding what goes in — LLM is your thought partner
 
-- **Intent and constraints as a spec**
-  - State goal, non-goals, constraints, and definition of done
-  - Provide “what good looks like” examples (inputs/outputs, acceptance checks)
-  - Name what must not change (APIs, behavior, performance budgets, accessibility expectations)
 
-- **Decomposition and sequencing**
-  - Break work into small, verifiable steps
-  - Ask for a plan first (milestones, risks, unknowns, test plan)
-  - Choose a safe order: scaffolding → tests → implementation → cleanup
+### Level 4: Delegator
 
-- **Grounding and context management**
-  - Give repo-specific context: conventions, file locations, patterns to follow
-  - Teach it your working agreements (style, naming, commit hygiene, review expectations)
+_Focus: The LLM is the primary implementer; you steer, review, and accept or reject._
 
-- **Evidence-driven trust**
-  - Require tests for behavior changes and a clear verification checklist
-  - Ask for edge cases, failure modes, and rollback considerations
+- **Requirements authoring**
+  - Turn fuzzy asks into user stories, non-goals, and open questions
+  - Generate acceptance criteria and phased rollout plans
+  - Produce classic requirements docs or feature-based PRDs
+- **Full feature implementation**
+  - LLM drafts code, tests, and docs together
+  - You review the output and validate against acceptance criteria
+  - You're measuring outcomes, not writing lines
+- **Substantial test generation**
+  - LLM owns building out a meaningful unit test suite
+  - LLM generates effective end-to-end tests (e.g. Playwright)
+- **Spec writing for handoff**
+  - State goal, non-goals, constraints, and definition of done clearly enough that the LLM can execute without constant clarification
+  - Provide "what good looks like" with concrete examples (inputs/outputs, acceptance checks)
+  - Name what must not change: APIs, behaviors, performance budgets, accessibility expectations
 
-### Level 6: Constrained Autonomy
-_Focus: agentic tool use under guardrails (LLM iterates; you approve)._
 
-- **LLM Configuration**
-  - Building and tweaking AGENTS.md files
+### Level 5: Agent Director
+
+_Focus: The LLM uses tools and loops — running tests, reading files, making changes. You define guardrails and approve._
+
+- **Writing agent-readable specs**
+  - Break work into small, independently verifiable steps
+  - Ask for a plan first: milestones, risks, unknowns, and a test plan — before a single line is written
+  - Choose a safe execution order: scaffolding → tests → implementation → cleanup
+- **Grounding the agent in your context**
+  - Give it repo-specific conventions: file locations, patterns to follow, naming rules
+  - Teach it your working agreements: style, commit hygiene, review expectations
+  - Define scope explicitly: "only touch these files," "non-interactive commands only"
 - **Agentic loops**
-  - LLM runs linters/automated tests, interpret failures, propose focused patches
-  - LLM stops on uncertainty; ask for clarification instead of guessing
-- **Enhanced Guardrails**
-  - Explicit scope (“only touch X files”), deterministic formatting, non-interactive commands
-  - Require evidence for risky changes (tests, benchmarks, logs, diffs)
+  - LLM runs linters and automated tests, interprets failures, and proposes focused patches — without you in the loop for each step
+  - LLM stops and asks when uncertain instead of guessing its way forward
+- **Evidence-driven trust**
+  - Require tests for any behavior changes
+  - Ask for a verification checklist, edge cases, failure modes, and rollback considerations
+  - Require evidence for risky changes: diffs, benchmarks, logs
+- **Configuring your agents**
+  - Build and tune AGENTS.md files that encode your guardrails and expectations
+  - Adjust scope, tool permissions, and stop conditions as you learn what works
 
-### Level 7: Multi-Agent Autonomy
-_Focus: multiple agents coordinate on a larger goal with defined roles; humans supervise outcomes._
+
+### Level 6: Systems Architect
+
+_Focus: Agent systems coordinate autonomously. You design roles, boundaries, and governance — approving at milestones._
 
 - **Role-based agent teams**
-  - Define agents such as Planner, Implementer, Reviewer, Verifier
-- **Parallelization with boundaries**
-  - Agents work on independent slices (tests, refactors, docs) in parallel
-  - Strict ownership of files/modules to avoid conflicts
+  - Define and assign distinct agent roles: Planner, Implementer, Reviewer, Verifier
+  - Each agent has a clear responsibility and clear handoff point
+- **Parallel execution with hard boundaries**
+  - Agents work simultaneously on independent slices: tests, refactors, docs, migrations
+  - Strict file/module ownership prevents agents from stepping on each other
 - **Orchestration and governance**
-  - Shared definition of done, shared guardrails, shared tool permissions
-  - Central change log: what changed, why, evidence, and remaining risks
-  - Human approval gates at milestones (design, pre-merge, release)
+  - Shared definition of done, shared guardrails, and shared tool permissions across all agents
+  - Central change log: what changed, why, what evidence supports it, what risks remain
+  - Human approval gates at key milestones: design review, pre-merge, pre-release
+- **System-level thinking**
+  - You're not debugging a line of code — you're debugging a workflow
+  - Evaluate whether agent coordination is actually working or just creating new complexity
+  - Know when to simplify back to a single agent

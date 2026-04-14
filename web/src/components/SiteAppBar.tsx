@@ -25,7 +25,7 @@ export function SiteAppBar({
         >
           <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
             <Typography component={Link} href="/" variant="h6" sx={{ fontWeight: 900 }}>
-              Journey Mapping
+              Clockwork
             </Typography>
             <Typography variant="body2" sx={{ color: "text.secondary", display: { xs: "none", sm: "block" } }}>
               LLM Adoption Levels

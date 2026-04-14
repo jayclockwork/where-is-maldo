@@ -117,9 +117,18 @@ export function SessionJourneyView({
           <AccordionDetails sx={{ py: 1.25 }}>
             <Stack spacing={1.25}>
               {phase.focus ? (
-                <Box>
-                  <Chip label="Focus" size="small" sx={{ mr: 1, bgcolor: "rgba(245,196,0,0.25)", color: "text.primary" }} />
-                  <Typography variant="body1" component="span">
+                <Box sx={{ display: "flex", alignItems: "flex-start", columnGap: 1 }}>
+                  <Chip
+                    label="Who Drives"
+                    size="small"
+                    sx={{
+                      flexShrink: 0,
+                      mt: 0.25,
+                      bgcolor: "rgba(245,196,0,0.25)",
+                      color: "text.primary",
+                    }}
+                  />
+                  <Typography variant="body1" component="div" sx={{ flex: "1 1 auto", minWidth: 0 }}>
                     {phase.focus}
                   </Typography>
                 </Box>
