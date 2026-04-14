@@ -105,7 +105,7 @@ _Focus: The LLM uses tools and loops — running tests, reading files, making ch
   - Adjust scope, tool permissions, and stop conditions as you learn what works
 
 
-### Level 6: Systems Architect
+### Level 6: Conductor
 
 _Focus: Agent systems coordinate autonomously. You design roles, boundaries, and governance — approving at milestones._
 
