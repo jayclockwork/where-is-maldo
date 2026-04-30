@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import CloseIcon from "@mui/icons-material/Close";
+import MenuIcon from "@mui/icons-material/Menu";
 import {
   Alert,
   Box,
@@ -15,7 +17,10 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
+  Drawer,
   FormControlLabel,
+  IconButton,
   Stack,
   Switch,
   Typography,
@@ -59,6 +64,7 @@ export default function WallboardGhostsPage() {
   const [clearOpen, setClearOpen] = useState(false);
   const [clearing, setClearing] = useState(false);
   const [clearError, setClearError] = useState<string | null>(null);
+  const [wallboardMenuOpen, setWallboardMenuOpen] = useState(false);
   const motionArmedRef = useRef(false);
   useEffect(() => {
     const storageKey = `session:${sessionId}:adminToken`;
@@ -293,20 +299,65 @@ export default function WallboardGhostsPage() {
       {kiosk ? null : <SiteAppBar />}
       <Container maxWidth={false} sx={{ py: kiosk ? 2 : { xs: 4, md: 6 } }}>
         <Stack spacing={2.5}>
-          <Box sx={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 2, flexWrap: "wrap" }}>
-            <Box sx={{ minWidth: 0 }}>
-              <Stack direction="row" spacing={1} alignItems="center" useFlexGap flexWrap="wrap">
-                {joinCode ? <Chip label={`Code: ${joinCode}`} /> : null}
-                <Chip label={`Participants: ${participants.length}`} />
-                <Chip
-                  color={conn === "connected" ? "success" : conn === "reconnecting" ? "warning" : "default"}
-                  label={conn === "connected" ? "Live" : conn === "reconnecting" ? "Reconnecting…" : "Connecting…"}
-                />
-                {lastUpdateAtMs ? <Chip label={`Updated: ${formatRelativeTimeShort(nowMs - lastUpdateAtMs)}`} /> : null}
-              </Stack>
+          <Box
+            sx={{
+              display: { xs: "flex", sm: "none" },
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 2,
+            }}
+          >
+            <Chip label={`Participants: ${participants.length}`} />
+            <IconButton
+              color="inherit"
+              aria-label="Open wallboard menu"
+              aria-expanded={wallboardMenuOpen}
+              aria-haspopup="dialog"
+              onClick={() => setWallboardMenuOpen(true)}
+              edge="end"
+              size="medium"
+            >
+              <MenuIcon />
+            </IconButton>
+          </Box>
+
+          <Stack spacing={1.5} sx={{ display: { xs: "none", sm: "flex" } }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 2,
+                flexWrap: "wrap",
+              }}
+            >
+              <Box sx={{ minWidth: 0, flex: "1 1 auto" }}>
+                <Stack direction="row" spacing={1} alignItems="center" useFlexGap flexWrap="wrap">
+                  {joinCode ? <Chip label={`Code: ${joinCode}`} /> : null}
+                  <Chip label={`Participants: ${participants.length}`} />
+                  <Chip
+                    color={conn === "connected" ? "success" : conn === "reconnecting" ? "warning" : "default"}
+                    label={conn === "connected" ? "Live" : conn === "reconnecting" ? "Reconnecting…" : "Connecting…"}
+                  />
+                  {lastUpdateAtMs ? (
+                    <Chip label={`Updated: ${formatRelativeTimeShort(nowMs - lastUpdateAtMs)}`} />
+                  ) : null}
+                </Stack>
+              </Box>
+              {hasParticipantIdentity ? (
+                <Button
+                  component={Link}
+                  href={`/session/${sessionId}${joinCode ? `?code=${encodeURIComponent(joinCode)}` : ""}`}
+                  variant="contained"
+                  color="primary"
+                  sx={{ flexShrink: 0 }}
+                >
+                  View Your Page
+                </Button>
+              ) : null}
             </Box>
 
-            <Stack direction="row" spacing={5} alignItems="center">
+            <Stack direction="row" spacing={5} alignItems="center" useFlexGap flexWrap="wrap">
               <FormControlLabel
                 control={
                   <Switch
@@ -334,18 +385,125 @@ export default function WallboardGhostsPage() {
               <Button component={Link} href="/" variant="text">
                 Home
               </Button>
-              {hasParticipantIdentity ? (
+            </Stack>
+          </Stack>
+
+          <Drawer
+            anchor="bottom"
+            open={wallboardMenuOpen}
+            onClose={() => setWallboardMenuOpen(false)}
+            slotProps={{
+              paper: {
+                sx: {
+                  borderTopLeftRadius: 12,
+                  borderTopRightRadius: 12,
+                  pb: "calc(16px + env(safe-area-inset-bottom, 0px))",
+                  pt: 1,
+                },
+              },
+            }}
+          >
+            <Box sx={{ px: 2, pb: 1, maxWidth: 560, mx: "auto", width: "100%" }}>
+              <Box
+                sx={{
+                  width: 40,
+                  height: 4,
+                  borderRadius: 2,
+                  bgcolor: "action.disabledBackground",
+                  mx: "auto",
+                  mb: 1.5,
+                }}
+                aria-hidden
+              />
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 1,
+                  mb: 2,
+                }}
+              >
+                <Typography variant="subtitle1" component="h2" sx={{ fontWeight: 700 }}>
+                  Wallboard
+                </Typography>
+                <IconButton
+                  type="button"
+                  aria-label="Close menu"
+                  onClick={() => setWallboardMenuOpen(false)}
+                  edge="end"
+                  size="small"
+                >
+                  <CloseIcon />
+                </IconButton>
+              </Box>
+              <Stack spacing={2}>
+                <Stack direction="row" spacing={1} alignItems="center" useFlexGap flexWrap="wrap">
+                  {joinCode ? <Chip label={`Code: ${joinCode}`} /> : null}
+                  <Chip
+                    color={conn === "connected" ? "success" : conn === "reconnecting" ? "warning" : "default"}
+                    label={conn === "connected" ? "Live" : conn === "reconnecting" ? "Reconnecting…" : "Connecting…"}
+                  />
+                  {lastUpdateAtMs ? (
+                    <Chip label={`Updated: ${formatRelativeTimeShort(nowMs - lastUpdateAtMs)}`} />
+                  ) : null}
+                </Stack>
+                <Divider />
+                <FormControlLabel
+                  sx={{
+                    alignSelf: "flex-start",
+                    "& .MuiFormControlLabel-label": { fontSize: "1rem" },
+                  }}
+                  control={
+                    <Switch
+                      checked={showNames}
+                      onChange={(_, checked) => {
+                        setShowNames(checked);
+                        setNamesInUrl(checked);
+                      }}
+                    />
+                  }
+                  label="Show names"
+                />
+                {adminToken ? (
+                  <Button
+                    variant="text"
+                    color="error"
+                    sx={{ alignSelf: "flex-start" }}
+                    onClick={() => {
+                      setClearError(null);
+                      setWallboardMenuOpen(false);
+                      setClearOpen(true);
+                    }}
+                  >
+                    Clear results
+                  </Button>
+                ) : null}
                 <Button
                   component={Link}
-                  href={`/session/${sessionId}${joinCode ? `?code=${encodeURIComponent(joinCode)}` : ""}`}
-                  variant="contained"
-                  color="primary"
+                  href="/"
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => setWallboardMenuOpen(false)}
                 >
-                  View Your Page
+                  Home
                 </Button>
-              ) : null}
-            </Stack>
-          </Box>
+                {hasParticipantIdentity ? (
+                  <Button
+                    component={Link}
+                    href={`/session/${sessionId}${joinCode ? `?code=${encodeURIComponent(joinCode)}` : ""}`}
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    size="large"
+                    onClick={() => setWallboardMenuOpen(false)}
+                  >
+                    View Your Page
+                  </Button>
+                ) : null}
+              </Stack>
+            </Box>
+          </Drawer>
 
           {loading ? (
             <Stack direction="row" spacing={2} alignItems="center">
