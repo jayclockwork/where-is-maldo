@@ -1,10 +1,14 @@
-import type { SvgIconComponent } from "@mui/material";
+import type { OverridableComponent } from "@mui/material/OverridableComponent";
+import type { SvgIconTypeMap } from "@mui/material/SvgIcon";
 import Assignment from "@mui/icons-material/Assignment";
 import Groups from "@mui/icons-material/Groups";
 import Hub from "@mui/icons-material/Hub";
 import Keyboard from "@mui/icons-material/Keyboard";
 import MenuBook from "@mui/icons-material/MenuBook";
 import SmartToy from "@mui/icons-material/SmartToy";
+
+/** Shape of default exports from `@mui/icons-material`. */
+export type SvgIconComponent = OverridableComponent<SvgIconTypeMap> & { muiName: string };
 
 /**
  * Keys must match `icon` on each phase in `docs/journey.yaml`.
