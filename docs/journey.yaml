@@ -37,13 +37,13 @@ phases:
         items:
           - label: Autocomplete single lines and small blocks as you type
           - label: Accept, reject, or modify suggestions without leaving your editor
-      - title: Multi-file edits
+      - title: Multi-file Edits
         items:
           - label: Autocomplete changes that span files, following your existing patterns and conventions
-      - title: Test scaffolding
+      - title: Test Scaffolding
         items:
           - label: Generate test scaffolds, fixtures, mocks, and edge cases from your own specs
-      - title: Small refactors
+      - title: Small Refactors
         items:
           - label: Rename, extract, reorganize — well-defined, low-risk changes
           - label: Tidy up docs and comments

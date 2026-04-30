@@ -36,7 +36,7 @@ export default function JoinCodePage() {
         <Stack spacing={3}>
           <Box>
             <Typography variant="h4" component="h1" sx={{ fontWeight: 900 }}>
-              Join a session
+              Join a Maldo Session
             </Typography>
             <Typography sx={{ color: "text.secondary", mt: 1 }}>
               Enter the code your host shared.

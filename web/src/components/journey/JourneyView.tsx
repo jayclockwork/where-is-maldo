@@ -72,7 +72,7 @@ export function JourneyView({ journey }: { journey: JourneyDoc }) {
             Maldo's Levels of Adoption
           </Typography>
           <Typography variant="body1" sx={{ color: "text.secondary" }}>
-            Use this as a loose guide for evaluating your own software engineering team’s LLM adoption journey.
+            This is one path towards adopting LLMs, it may provide a useful framework for your own journey.
           </Typography>
         </Stack>
 

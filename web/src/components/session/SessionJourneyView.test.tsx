@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import { screen, waitFor } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 
 import { renderWithTheme } from "@/test/renderWithTheme";
-import { SessionJourneyView } from "@/components/session/SessionJourneyView";
+import { buildPhaseRenderNodes, SessionJourneyView } from "@/components/session/SessionJourneyView";
 import type { JourneyDoc } from "@/lib/journey/types";
 import type { Mapping } from "@/domain/sessions/types";
 
@@ -31,7 +31,46 @@ const journey: JourneyDoc = {
   ],
 };
 
+describe("buildPhaseRenderNodes", () => {
+  it("groups section headings with the bullet rows that follow until the next section", () => {
+    const rows = [
+      { type: "section" as const, itemId: "s1", label: "A" },
+      { type: "item" as const, itemId: "i1", label: "x", depth: 1 },
+      { type: "section" as const, itemId: "s2", label: "B" },
+      { type: "item" as const, itemId: "i2", label: "y", depth: 1 },
+    ];
+    expect(buildPhaseRenderNodes(rows)).toEqual([
+      { type: "section", row: rows[0], nextIsSection: false },
+      { type: "items", rows: [rows[1]], followedBySection: true },
+      { type: "section", row: rows[2], nextIsSection: false },
+      { type: "items", rows: [rows[3]], followedBySection: false },
+    ]);
+  });
+
+  it("marks a section as followed by another section when there are no bullets in between", () => {
+    const rows = [
+      { type: "section" as const, itemId: "s1", label: "A" },
+      { type: "section" as const, itemId: "s2", label: "B" },
+    ];
+    expect(buildPhaseRenderNodes(rows)).toEqual([
+      { type: "section", row: rows[0], nextIsSection: true },
+      { type: "section", row: rows[1], nextIsSection: false },
+    ]);
+  });
+});
+
 describe("<SessionJourneyView />", () => {
+  it("renders bullet rows under each section as list items", () => {
+    renderWithTheme(
+      <SessionJourneyView journey={journey} mappings={[]} myParticipantId="p1" onToggle={() => {}} />,
+    );
+
+    const lists = screen.getAllByRole("list");
+    expect(lists).toHaveLength(2);
+    expect(within(lists[0]).getByText("Syntax").closest("li")).toBeInTheDocument();
+    expect(within(lists[1]).getByText("Compare approaches").closest("li")).toBeInTheDocument();
+  });
+
   it("defaults phases to expanded in session mode", () => {
     const mappings: Mapping[] = [
       {

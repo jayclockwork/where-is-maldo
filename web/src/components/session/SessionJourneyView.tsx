@@ -16,9 +16,43 @@ import { visuallyHidden } from "@mui/utils";
 
 import type { JourneyDoc } from "@/lib/journey/types";
 import type { Mapping } from "@/domain/sessions/types";
-import { buildSessionJourneyModel } from "@/lib/session/sessionContentModel";
+import { buildSessionJourneyModel, type SessionRow } from "@/lib/session/sessionContentModel";
 import { launchConfetti } from "@/ui/effects/confetti";
 import { PhaseLevelTitle } from "@/components/journey/PhaseLevelTitle";
+
+type PhaseRenderNode =
+  | { type: "section"; row: Extract<SessionRow, { type: "section" }>; nextIsSection: boolean }
+  | { type: "items"; rows: Extract<SessionRow, { type: "item" }>[]; followedBySection: boolean };
+
+/** Groups flat phase rows into section headers and bullet lists for layout. */
+export function buildPhaseRenderNodes(rows: SessionRow[]): PhaseRenderNode[] {
+  const nodes: PhaseRenderNode[] = [];
+  let i = 0;
+  while (i < rows.length) {
+    const row = rows[i];
+    if (row.type !== "section") {
+      i += 1;
+      continue;
+    }
+    const next = rows[i + 1];
+    nodes.push({ type: "section", row, nextIsSection: next?.type === "section" });
+    i += 1;
+    const itemRows: Extract<SessionRow, { type: "item" }>[] = [];
+    while (i < rows.length && rows[i].type === "item") {
+      itemRows.push(rows[i] as Extract<SessionRow, { type: "item" }>);
+      i += 1;
+    }
+    if (itemRows.length) {
+      const nextAfter = rows[i];
+      nodes.push({
+        type: "items",
+        rows: itemRows,
+        followedBySection: nextAfter?.type === "section",
+      });
+    }
+  }
+  return nodes;
+}
 
 export function SessionJourneyView({
   journey,
@@ -167,85 +201,84 @@ export function SessionJourneyView({
               ) : null}
 
               <Stack spacing={0.25}>
-                {(() => {
-                  return phase.rows.map((row, idx) => {
-                    const nextRow = phase.rows[idx + 1];
-                    // Add breathing room AFTER the last item in a section group
-                    // (i.e., the row immediately before the next section heading).
-                    const isEndOfSectionGroup = nextRow?.type === "section";
+                {buildPhaseRenderNodes(phase.rows).map((node) => {
+                  if (node.type === "section") {
+                    const row = node.row;
+                    const count = counts.get(row.itemId) ?? 0;
+                    const mine = myDoing.has(row.itemId);
 
-                    if (row.type === "section") {
-                      const count = counts.get(row.itemId) ?? 0;
-                      const mine = myDoing.has(row.itemId);
-
-                      return (
-                        <Box
-                          key={row.itemId}
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            gap: 2,
-                            py: 0.5,
-                            mb: isEndOfSectionGroup ? SECTION_GROUP_GAP_Y : 0,
-                          }}
-                        >
-                          <Typography sx={{ fontWeight: 800 }}>
-                            {row.label}
-                            {mine ? (
-                              <Box component="span" aria-hidden sx={{ ml: 1 }}>
-                                ✅
-                              </Box>
-                            ) : null}
-                          </Typography>
-                          <Stack direction="row" spacing={1} alignItems="center">
-                            {count ? <Chip size="small" label={count} /> : null}
-                            <Box component="label" sx={{ display: "inline-flex", alignItems: "center" }}>
-                              <Switch
-                                checked={mine}
-                                disabled={togglesDisabled}
-                                onChange={(_, checked) => onToggle(row.itemId, checked)}
-                              />
-                              <Box component="span" sx={visuallyHidden}>
-                                Toggle doing for {row.label}
-                              </Box>
-                            </Box>
-                          </Stack>
-                        </Box>
-                      );
-                    }
-
-                    // Bullet rows are informational in session mode; toggles live on the section headings.
                     return (
-                      <Fragment key={row.itemId}>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            gap: 2,
-                            pl: row.depth * 2,
-                            py: 0.25,
-                          }}
-                        >
-                          <Box sx={{ minWidth: 0 }}>
-                            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                      <Box
+                        key={row.itemId}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: 2,
+                          py: 0.5,
+                          mb: node.nextIsSection ? SECTION_GROUP_GAP_Y : 0,
+                        }}
+                      >
+                        <Typography sx={{ fontWeight: 800 }}>
+                          {row.label}
+                          {mine ? (
+                            <Box component="span" aria-hidden sx={{ ml: 1 }}>
+                              ✅
+                            </Box>
+                          ) : null}
+                        </Typography>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                          {count ? <Chip size="small" label={count} /> : null}
+                          <Box component="label" sx={{ display: "inline-flex", alignItems: "center" }}>
+                            <Switch
+                              checked={mine}
+                              disabled={togglesDisabled}
+                              onChange={(_, checked) => onToggle(row.itemId, checked)}
+                            />
+                            <Box component="span" sx={visuallyHidden}>
+                              Toggle doing for {row.label}
+                            </Box>
+                          </Box>
+                        </Stack>
+                      </Box>
+                    );
+                  }
+
+                  // Bullet rows: informational list under each section heading (toggles stay on headings).
+                  return (
+                    <Fragment key={`items-${node.rows[0].itemId}`}>
+                      <Stack
+                        component="ul"
+                        spacing={0.75}
+                        sx={{ pl: 4, mb: 0, mt: 0, listStylePosition: "outside" }}
+                      >
+                        {node.rows.map((row) => (
+                          <Box
+                            component="li"
+                            key={row.itemId}
+                            sx={{
+                              listStyle: "disc",
+                              py: 0.25,
+                              ml: row.depth > 1 ? (row.depth - 1) * 2 : 0,
+                            }}
+                          >
+                            <Typography variant="body2" component="span" sx={{ color: "text.secondary" }}>
                               {row.label}
                             </Typography>
                           </Box>
-                        </Box>
-                        {isEndOfSectionGroup ? (
-                          <Box
-                            aria-hidden
-                            sx={{
-                              height: (theme) => theme.spacing(SECTION_GROUP_GAP_Y),
-                            }}
-                          />
-                        ) : null}
-                      </Fragment>
-                    );
-                  });
-                })()}
+                        ))}
+                      </Stack>
+                      {node.followedBySection ? (
+                        <Box
+                          aria-hidden
+                          sx={{
+                            height: (theme) => theme.spacing(SECTION_GROUP_GAP_Y),
+                          }}
+                        />
+                      ) : null}
+                    </Fragment>
+                  );
+                })}
               </Stack>
 
               {/* Intentionally hiding "What to watch for" in session mode as well. */}
