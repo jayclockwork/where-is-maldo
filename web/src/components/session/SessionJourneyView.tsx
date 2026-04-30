@@ -19,6 +19,7 @@ import type { Mapping } from "@/domain/sessions/types";
 import { buildSessionJourneyModel } from "@/lib/session/sessionContentModel";
 import { launchConfetti } from "@/ui/effects/confetti";
 import { phaseTitleToStepTitle } from "@/lib/text/phaseToStep";
+import { JourneyPhaseIcon } from "@/components/journey/JourneyPhaseIcon";
 
 export function SessionJourneyView({
   journey,
@@ -103,8 +104,12 @@ export function SessionJourneyView({
               "&.Mui-expanded": { minHeight: "unset" },
             }}
           >
-            <Box sx={{ width: "100%" }}>
-              <Typography sx={{ fontWeight: 900 }}>
+            <Box sx={{ width: "100%", display: "flex", alignItems: "center", gap: 1, minWidth: 0 }}>
+              <JourneyPhaseIcon
+                phaseId={phase.phaseId}
+                sx={{ flexShrink: 0, color: "text.primary", opacity: 0.92 }}
+              />
+              <Typography sx={{ fontWeight: 900, minWidth: 0 }}>
                 {phaseTitleToStepTitle(phase.title)}
                 {completedPhaseIds.has(phase.phaseId) ? (
                   <Box component="span" aria-hidden sx={{ ml: 1 }}>
