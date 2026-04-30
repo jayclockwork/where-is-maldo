@@ -23,7 +23,6 @@ type CreateSessionResponse = {
 };
 
 export default function HostPage() {
-  const [title, setTitle] = useState("");
   const [joinCode, setJoinCode] = useState("");
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,6 +54,12 @@ export default function HostPage() {
   }
 
   async function onCreate() {
+    const code = joinCode.trim().toUpperCase();
+    if (!code) {
+      setError("Join code is required.");
+      return;
+    }
+
     setCreating(true);
     setError(null);
     setCreated(null);
@@ -62,10 +67,7 @@ export default function HostPage() {
     const res = await fetch("/api/sessions/create", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        title: title.trim() || undefined,
-        joinCode: joinCode.trim() || undefined,
-      }),
+      body: JSON.stringify({ joinCode: code }),
     });
 
     if (!res.ok) {
@@ -101,22 +103,16 @@ export default function HostPage() {
                 {error ? <Alert severity="error">{error}</Alert> : null}
 
                 <TextField
-                  label="Session title (optional)"
-                  placeholder="e.g., Clockwork LLM Workshop"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  fullWidth
-                />
-                <TextField
-                  label="Join code (optional)"
-                  placeholder="Leave blank to generate"
+                  required
+                  label="Join code"
+                  placeholder="e.g. WORKSHOP1"
                   value={joinCode}
                   onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                   inputProps={{ autoCapitalize: "characters" }}
                   fullWidth
                 />
 
-                <Button variant="contained" color="primary" onClick={onCreate} disabled={creating}>
+                <Button variant="contained" color="primary" onClick={onCreate} disabled={creating || !joinCode.trim()}>
                   {creating ? "Creating…" : "Create session"}
                 </Button>
 

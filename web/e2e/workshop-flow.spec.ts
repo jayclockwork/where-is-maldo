@@ -1,15 +1,16 @@
 import { test, expect } from "@playwright/test";
 
 test("workshop flow: create → join → toggle propagates → wallboard clear → export", async ({ browser, request }) => {
+  const joinCode = `E2E${Date.now().toString(36).toUpperCase()}`;
   // Create session (host)
-  const createRes = await request.post("/api/sessions/create", { data: { title: "E2E Workshop" } });
+  const createRes = await request.post("/api/sessions/create", { data: { title: "E2E Workshop", joinCode } });
   expect(createRes.ok()).toBeTruthy();
   const created = (await createRes.json()) as {
     session: { id: string; joinCode: string };
     adminToken: string;
   };
   const sessionId = created.session.id;
-  const joinCode = created.session.joinCode;
+  expect(created.session.joinCode).toBe(joinCode);
   const adminToken = created.adminToken;
 
   // Participant A joins (separate context so localStorage doesn't collide with other participants)

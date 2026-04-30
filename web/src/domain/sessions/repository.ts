@@ -1,6 +1,6 @@
 import type { Mapping, Participant, Session } from "@/domain/sessions/types";
 
-export type CreateSessionInput = { title?: string; joinCode?: string };
+export type CreateSessionInput = { title?: string; joinCode: string };
 export type JoinSessionInput = { joinCode: string; displayName: string; avatarColor?: string };
 export type ToggleDoingInput = { sessionId: string; participantId: string; itemId: string; isDoing: boolean };
 export type AdminActionInput = { sessionId: string; adminToken: string };

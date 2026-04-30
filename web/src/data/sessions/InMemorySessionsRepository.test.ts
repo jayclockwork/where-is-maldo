@@ -3,9 +3,14 @@ import { describe, expect, it } from "vitest";
 import { InMemorySessionsRepository } from "@/data/sessions/InMemorySessionsRepository";
 
 describe("InMemorySessionsRepository", () => {
+  it("rejects empty join code", async () => {
+    const repo = new InMemorySessionsRepository();
+    await expect(repo.createSession({ joinCode: "   " })).rejects.toThrow(/join code is required/i);
+  });
+
   it("creates a session and allows joining by joinCode", async () => {
     const repo = new InMemorySessionsRepository();
-    const { session } = await repo.createSession({ title: "Test" });
+    const { session } = await repo.createSession({ joinCode: "TEST01", title: "Test" });
 
     const lookedUp = await repo.getSessionByJoinCode(session.joinCode);
     expect(lookedUp?.id).toBe(session.id);
@@ -26,7 +31,7 @@ describe("InMemorySessionsRepository", () => {
 
   it("emits realtime events for participant join and mapping updates", async () => {
     const repo = new InMemorySessionsRepository();
-    const { session } = await repo.createSession({});
+    const { session } = await repo.createSession({ joinCode: "EVT001" });
 
     const events: string[] = [];
     const unsub = repo.subscribe(session.id, (e) => events.push(e.type));

@@ -9,7 +9,7 @@ import type {
   Unsubscribe,
 } from "@/domain/sessions/repository";
 import type { Mapping, Participant, Session } from "@/domain/sessions/types";
-import { makeId, makeJoinCode, nowIso } from "@/domain/sessions/id";
+import { makeId, nowIso } from "@/domain/sessions/id";
 import { getSupabaseServerClient } from "@/data/supabase/serverClient";
 
 type DbSessionRow = {
@@ -72,7 +72,8 @@ export class SupabaseSessionsRepository implements SessionsRepository {
   async createSession(input: CreateSessionInput): Promise<{ session: Session; adminToken: string }> {
     const supabase = getSupabaseServerClient();
     const id = makeId("sess");
-    const joinCode = (input.joinCode ?? makeJoinCode(6)).toUpperCase();
+    const joinCode = input.joinCode.trim().toUpperCase();
+    if (!joinCode) throw new Error("Join code is required");
     const adminToken = makeId("admin");
 
     const { data, error } = await supabase

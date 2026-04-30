@@ -9,7 +9,7 @@ import type {
   Unsubscribe,
 } from "@/domain/sessions/repository";
 import type { Mapping, Participant, Session } from "@/domain/sessions/types";
-import { makeId, makeJoinCode, nowIso } from "@/domain/sessions/id";
+import { makeId, nowIso } from "@/domain/sessions/id";
 
 type Listener = (event: SessionEvent) => void;
 
@@ -26,7 +26,8 @@ export class InMemorySessionsRepository implements SessionsRepository {
 
   async createSession(input: CreateSessionInput): Promise<{ session: Session; adminToken: string }> {
     const id = makeId("sess");
-    const joinCode = (input.joinCode ?? makeJoinCode(6)).toUpperCase();
+    const joinCode = input.joinCode.trim().toUpperCase();
+    if (!joinCode) throw new Error("Join code is required");
     if (this.sessionsByJoinCode.has(joinCode)) throw new Error("Join code already exists");
     const session: Session = {
       id,
