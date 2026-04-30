@@ -17,13 +17,14 @@ function readLastJoinCode(): string | null {
 }
 
 export default function Home() {
-  const [lastJoinCode, setLastJoinCode] = useState<string | null>(() => readLastJoinCode());
+  // Null on server + first client paint so SSR HTML matches hydration; sync from localStorage after mount.
+  const [lastJoinCode, setLastJoinCode] = useState<string | null>(null);
 
-  // Keep in sync across tabs/windows; avoids setState directly in the effect body (lint rule).
   useEffect(() => {
-    const handler = () => setLastJoinCode(readLastJoinCode());
-    window.addEventListener("storage", handler);
-    return () => window.removeEventListener("storage", handler);
+    const sync = () => setLastJoinCode(readLastJoinCode());
+    sync();
+    window.addEventListener("storage", sync);
+    return () => window.removeEventListener("storage", sync);
   }, []);
 
   return (
