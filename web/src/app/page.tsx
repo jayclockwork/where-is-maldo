@@ -33,7 +33,7 @@ export default function Home() {
         <Container maxWidth="lg">
           <Stack spacing={3} sx={{ maxWidth: 860 }}>
             <Typography variant="h2" component="h1" sx={{ lineHeight: 1.05 }}>
-              Map your engineering team’s LLM journey.
+              Map your engineering team’s LLM adoption.
             </Typography>
             <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
               <Button component={Link} href="/journey" variant="contained" color="primary" size="large">

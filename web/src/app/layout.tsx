@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
+import { SiteFooter } from "@/components/SiteFooter";
 import { ThemeRegistry } from "@/theme/ThemeRegistry";
 
 const geistSans = Geist({
@@ -27,7 +28,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ThemeRegistry>{children}</ThemeRegistry>
+        <ThemeRegistry>
+          <div className="app-shell">
+            <main className="app-shell-main">{children}</main>
+            <SiteFooter />
+          </div>
+        </ThemeRegistry>
         <Analytics />
       </body>
     </html>
