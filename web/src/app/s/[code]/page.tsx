@@ -212,7 +212,7 @@ export default function JoinSessionPage() {
         <Stack spacing={3}>
           <Box>
             <Typography variant="h4" component="h1" sx={{ fontWeight: 900 }}>
-              Join a Session
+              Join a session
             </Typography>
             <Typography sx={{ color: "text.secondary", mt: 1 }}>
               Session: <strong>{joinCode}</strong>

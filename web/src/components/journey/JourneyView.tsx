@@ -69,7 +69,7 @@ export function JourneyView({ journey }: { journey: JourneyDoc }) {
       >
         <Stack spacing={1} sx={{ mb: 3 }}>
           <Typography variant="h3" component="h1">
-            Levels of LLM Adoption
+            Maldo's Levels of Adoption
           </Typography>
           <Typography variant="body1" sx={{ color: "text.secondary" }}>
             Use this as a loose guide for evaluating your own software engineering team’s LLM adoption journey.

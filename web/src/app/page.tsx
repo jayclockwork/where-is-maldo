@@ -1,9 +1,84 @@
 "use client";
 
+import type { ReactNode } from "react";
+import GroupsIcon from "@mui/icons-material/Groups";
+import LoginIcon from "@mui/icons-material/Login";
+import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import Image from "next/image";
 import Link from "next/link";
 import { Box, Button, Card, CardActionArea, CardContent, Container, Stack, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { SiteAppBar } from "@/components/SiteAppBar";
+
+function HomeLinkCard({
+  href,
+  icon,
+  title,
+  description,
+}: {
+  href: string;
+  icon: ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <Card
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minWidth: 0,
+        height: "100%",
+      }}
+    >
+      <CardActionArea
+        component={Link}
+        href={href}
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "stretch",
+          alignSelf: "stretch",
+          textAlign: "left",
+          p: 0,
+        }}
+      >
+        <Box
+          aria-hidden
+          sx={{
+            flexShrink: 0,
+            width: { xs: 72, sm: 80 },
+            alignSelf: "stretch",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.12),
+            color: "primary.main",
+          }}
+        >
+          {icon}
+        </Box>
+        <CardContent
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: 1,
+            py: 2,
+            px: 2,
+            "&:last-child": { pb: 2 },
+          }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: 800 }}>
+            {title}
+          </Typography>
+          <Typography sx={{ color: "text.secondary", flex: 1 }}>{description}</Typography>
+        </CardContent>
+      </CardActionArea>
+    </Card>
+  );
+}
 
 export default function Home() {
   return (
@@ -51,7 +126,7 @@ export default function Home() {
             </Stack>
             <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
               <Button component={Link} href="/journey" variant="contained" color="primary" size="large">
-                View the Journey
+                Start exploring
               </Button>
             </Stack>
           </Stack>
@@ -103,97 +178,24 @@ export default function Home() {
                 alignItems: "stretch",
               }}
             >
-              <Card
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  minWidth: 0,
-                  height: "100%",
-                }}
-              >
-                <CardActionArea
-                  component={Link}
-                  href="/journey"
-                  sx={{
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "stretch",
-                    textAlign: "left",
-                  }}
-                >
-                  <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
-                    <Typography variant="h6" sx={{ fontWeight: 800 }}>
-                      Explore the journey
-                    </Typography>
-                    <Typography sx={{ color: "text.secondary", mt: 1, flex: 1 }}>
-                      Read through the LLM adoption levels and see the behaviors, habits, and examples that define each
-                      stage.
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-            </Card>
-
-            <Card
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                minWidth: 0,
-                height: "100%",
-              }}
-            >
-              <CardActionArea
-                component={Link}
+              <HomeLinkCard
+                href="/journey"
+                icon={<TravelExploreIcon sx={{ fontSize: 40 }} />}
+                title="Explore the journey"
+                description="Read about the levels and their behaviors, habits, and examples."
+              />
+              <HomeLinkCard
                 href="/host"
-                sx={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "stretch",
-                  textAlign: "left",
-                }}
-              >
-                <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
-                  <Typography variant="h6" sx={{ fontWeight: 800 }}>
-                    Create a team session
-                  </Typography>
-                  <Typography sx={{ color: "text.secondary", mt: 1, flex: 1 }}>
-                    Start a live session so your team can join, reflect on what they’re doing, and see where adoption is
-                    landing across the group.
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-
-            <Card
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                minWidth: 0,
-                height: "100%",
-              }}
-            >
-              <CardActionArea
-                component={Link}
+                icon={<GroupsIcon sx={{ fontSize: 40 }} />}
+                title="Create a team session"
+                description="Start a live session so your team can reflect, respond, and see where adoption is landing across the group."
+              />
+              <HomeLinkCard
                 href="/join"
-                sx={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "stretch",
-                  textAlign: "left",
-                }}
-              >
-                <CardContent sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
-                  <Typography variant="h6" sx={{ fontWeight: 800 }}>
-                    Join a session
-                  </Typography>
-                  <Typography sx={{ color: "text.secondary", mt: 1, flex: 1 }}>
-                    Enter a session code to add your responses to a live team session already in progress.
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
+                icon={<LoginIcon sx={{ fontSize: 40 }} />}
+                title="Join a session"
+                description="Enter a session code to add your responses to a live team session already in progress."
+              />
             </Box>
           </Stack>
         </Box>

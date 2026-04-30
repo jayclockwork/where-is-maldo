@@ -41,7 +41,7 @@ export function SiteAppBar({
                 component={Link}
                 href="/join"
               >
-                Join a Session
+                Join a session
               </Button>
             ) : null}
           </Box>
