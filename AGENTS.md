@@ -5,7 +5,7 @@ _This file defines how we build this project: architecture principles, quality s
 We are building a **high-quality**, **well-architected** system (not quick patches). Changes should be easy to review, well-tested, and consistent with modern best practices.
 
 ### Source documents (product + architecture)
-- `docs/requirements-journey-site.md`
+- `docs/requirements.md`
 - `docs/architecture.md`
 - `docs/prds/` (implementation slices)
 
@@ -84,7 +84,7 @@ The architecture doc recommends: **Next.js + TypeScript + MUI + Supabase**.
 ---
 
 ## What to do when requirements change
-- Update the relevant PRD(s) and/or `docs/requirements-journey-site.md`.
+- Update the relevant PRD(s) and/or `docs/requirements.md`.
 - Add a new entry to `docs/our-process-log.md` capturing the decision and impact.
 - Adjust tests to reflect the new behavior and prevent regressions.
 

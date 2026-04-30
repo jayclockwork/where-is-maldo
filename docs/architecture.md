@@ -1,5 +1,5 @@
 # Architecture Recommendation: Journey Mapping Website
-_This document recommends a full technical stack (repo, hosting, framework, realtime, tooling) to implement `docs/requirements-journey-site.md`._
+_This document recommends a full technical stack (repo, hosting, framework, realtime, tooling) to implement `docs/requirements.md`._
 
 ### Architecture summary (recommended)
 - **Git service**: GitHub (private repo, GitHub Actions CI)
