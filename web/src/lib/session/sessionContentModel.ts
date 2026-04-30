@@ -7,7 +7,8 @@ export type SessionRow =
 export type SessionPhaseModel = {
   phaseId: string;
   title: string;
-  focus?: string;
+  humanRole?: string;
+  llmRole?: string;
   rows: SessionRow[];
 };
 
@@ -41,7 +42,8 @@ export function buildSessionJourneyModel(journey: JourneyDoc): SessionJourneyMod
     phases: journey.phases.map((p) => ({
       phaseId: p.phaseId,
       title: p.title,
-      focus: p.focus,
+      humanRole: p.humanRole,
+      llmRole: p.llmRole,
       rows: phaseRows(p),
     })),
   };

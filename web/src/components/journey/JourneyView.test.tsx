@@ -11,7 +11,8 @@ const sample: JourneyDoc = {
     {
       phaseId: "phase-research",
       title: "Phase 1: Research",
-      focus: "learning fast",
+      humanRole: "You write the journey.",
+      llmRole: "Suggests copy.",
       sections: [
         {
           title: "Basic research",
@@ -22,7 +23,8 @@ const sample: JourneyDoc = {
     {
       phaseId: "phase-collaboration",
       title: "Phase 3: Collaboration",
-      focus: "working with the repo",
+      humanRole: "You own decisions.",
+      llmRole: "Pair-programs.",
       sections: [
         {
           title: "Chatting with code",

@@ -3,7 +3,8 @@
 
 phases:
   - title: "Level 1: Reference"
-    focus: "You drive entirely. The LLM is a smarter search — it answers questions and does not touch your code."
+    human_role: "You perform all actual code edits."
+    llm_role: "Provide answers, act as a smarter search."
     sections:
       - title: Basic research
         items:
@@ -29,7 +30,8 @@ phases:
           - label: Ask "what could go wrong?" before you build
 
   - title: "Level 2: Inline Assist"
-    focus: "You still write the code; the LLM extends your keystrokes (completions, small edits, tedious parts)."
+    human_role: "You write most of the code."
+    llm_role: "Extend your keystrokes through tab completions, small edits, perform tedious refactors."
     sections:
       - title: Inline completion
         items:
@@ -47,7 +49,8 @@ phases:
           - label: Tidy up docs and comments
 
   - title: "Level 3: Pair Programmer"
-    focus: "Shared authorship — real-time, repo-aware collaboration. You decide; the LLM is your thought partner."
+    human_role: "You make the coding decisions through collaboration with the LLM."
+    llm_role: "Thought partner in real-time repo-aware collaboration."
     sections:
       - title: Chatting with your codebase
         items:
@@ -71,7 +74,8 @@ phases:
           - label: You're still the one deciding what goes in — LLM is your thought partner
 
   - title: "Level 4: Delegator"
-    focus: "The LLM is the primary implementer; you steer, review, and accept or reject."
+    human_role: "You steer, review, and accept or reject."
+    llm_role: "Acts as the primary coder for scoped tasks."
     sections:
       - title: Requirements authoring
         items:
@@ -91,7 +95,8 @@ phases:
           - label: LLM generates effective end-to-end tests (e.g. Playwright)
 
   - title: "Level 5: Agent Director"
-    focus: "The LLM uses tools and loops — running tests, reading files, making changes. You define guardrails and approve."
+    human_role: "You define guardrails and approve."
+    llm_role: "Use tools and agentic loops: running tests, reading files, making changes."
     sections:
       - title: Writing agent-readable specs
         items:
@@ -118,7 +123,8 @@ phases:
           - label: Adjust scope, tool permissions, and stop conditions as you learn what works
 
   - title: "Level 6: Conductor"
-    focus: "Agent systems coordinate autonomously. You design roles, boundaries, and governance — approving at milestones."
+    human_role: "You design roles, boundaries, and governance; approving at milestones."
+    llm_role: "Coordinated agents operate within defined roles and boundaries."
     sections:
       - title: Role-based agent teams
         items:

@@ -10,7 +10,8 @@ describe("buildSessionJourneyModel", () => {
         {
           phaseId: "phase-research",
           title: "Phase 1: Research",
-          focus: "learning fast",
+          humanRole: "You write the journey.",
+          llmRole: "Suggests copy.",
           sections: [
             {
               title: "Basic research",

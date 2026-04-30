@@ -28,6 +28,8 @@ describe("parseJourneyYaml", () => {
     const doc = parseJourneyYaml(yamlText);
 
     expect(doc.phases.length).toBe(6);
+    expect(doc.phases[0]?.humanRole).toContain("actual code edits");
+    expect(doc.phases[0]?.llmRole).toContain("smarter search");
     expect(doc.phases[0]?.phaseId).toMatch(/^phase-/);
     expect(doc.phases[0]?.title).toContain("Reference");
     expect(doc.phases.some((p) => p.title.toLowerCase().includes("conductor"))).toBe(true);
@@ -77,6 +79,22 @@ phases:
     expect(doc.phases.map((p) => p.title)).toEqual(
       expect.arrayContaining(["Step 1: Research", "Phase 2: Code Completion"]),
     );
+  });
+
+  it("parses human_role and llm_role on a phase", () => {
+    const yamlText = `
+phases:
+  - title: "Level 1: Research"
+    human_role: "Human does the work."
+    llm_role: "LLM assists."
+    sections:
+      - title: Section A
+        items:
+          - label: Item one
+`;
+    const doc = parseJourneyYaml(yamlText);
+    expect(doc.phases[0]!.humanRole).toBe("Human does the work.");
+    expect(doc.phases[0]!.llmRole).toBe("LLM assists.");
   });
 
   it("supports nested item children for itemId paths", () => {

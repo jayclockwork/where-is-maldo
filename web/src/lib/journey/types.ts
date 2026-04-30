@@ -12,7 +12,8 @@ export type JourneySection = {
 export type JourneyPhase = {
   phaseId: string;
   title: string;
-  focus?: string;
+  humanRole?: string;
+  llmRole?: string;
   sections: JourneySection[];
 };
 

@@ -116,21 +116,50 @@ export function SessionJourneyView({
           </AccordionSummary>
           <AccordionDetails sx={{ py: 1.25 }}>
             <Stack spacing={1.25}>
-              {phase.focus ? (
-                <Box sx={{ display: "flex", alignItems: "flex-start", columnGap: 1 }}>
-                  <Chip
-                    label="Who Drives"
-                    size="small"
-                    sx={{
-                      flexShrink: 0,
-                      mt: 0.25,
-                      bgcolor: "rgba(245,196,0,0.25)",
-                      color: "text.primary",
-                    }}
-                  />
-                  <Typography variant="body1" component="div" sx={{ flex: "1 1 auto", minWidth: 0 }}>
-                    {phase.focus}
-                  </Typography>
+              {phase.humanRole || phase.llmRole ? (
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: "auto 1fr",
+                    columnGap: 1,
+                    rowGap: 1,
+                    alignItems: "start",
+                  }}
+                >
+                  {phase.humanRole ? (
+                    <>
+                      <Chip
+                        label="Human role"
+                        size="small"
+                        sx={{
+                          justifySelf: "center",
+                          mt: 0.25,
+                          bgcolor: "rgba(245,196,0,0.25)",
+                          color: "text.primary",
+                        }}
+                      />
+                      <Typography variant="body1" component="div" sx={{ minWidth: 0, mt: 0.25 }}>
+                        {phase.humanRole}
+                      </Typography>
+                    </>
+                  ) : null}
+                  {phase.llmRole ? (
+                    <>
+                      <Chip
+                        label="LLM role"
+                        size="small"
+                        sx={{
+                          justifySelf: "center",
+                          mt: 0.25,
+                          bgcolor: "rgba(245,196,0,0.25)",
+                          color: "text.primary",
+                        }}
+                      />
+                      <Typography variant="body1" component="div" sx={{ minWidth: 0, mt: 0.25 }}>
+                        {phase.llmRole}
+                      </Typography>
+                    </>
+                  ) : null}
                 </Box>
               ) : null}
 

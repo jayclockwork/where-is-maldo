@@ -93,13 +93,17 @@ export function parseJourneyYaml(yamlText: string): JourneyDoc {
     }
 
     const phaseId = `phase-${slugify(parsed.name)}`;
-    let focus: string | undefined;
-    if (obj.focus !== undefined && obj.focus !== null) {
-      focus = assertString(obj.focus, `${phaseCtx}.focus`);
+    let humanRole: string | undefined;
+    if (obj.human_role !== undefined && obj.human_role !== null) {
+      humanRole = assertString(obj.human_role, `${phaseCtx}.human_role`);
+    }
+    let llmRole: string | undefined;
+    if (obj.llm_role !== undefined && obj.llm_role !== null) {
+      llmRole = assertString(obj.llm_role, `${phaseCtx}.llm_role`);
     }
 
     const sections = parseSections(phaseId, obj.sections, `${phaseCtx}.sections`);
-    return { phaseId, title: parsed.title, focus, sections };
+    return { phaseId, title: parsed.title, humanRole, llmRole, sections };
   });
 
   if (phases.length === 0) {
