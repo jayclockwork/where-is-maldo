@@ -5,7 +5,7 @@ _This document recommends a full technical stack (repo, hosting, framework, real
 - **Git service**: GitHub (private repo, GitHub Actions CI)
 - **Frontend hosting**: Vercel (Preview Deployments per PR)
 - **Frontend framework**: Next.js (React + TypeScript)
-- **Content format**: MDX (render `docs/journey-better.md` as structured content)
+- **Content format**: MDX (render `docs/journey.md` as structured content)
 - **UI system**: MUI (Material UI) with a custom theme matching `clockwork.com`
 - **Realtime backend**: Supabase (Postgres + Realtime + Edge Functions)
 - **Auth**: none for participants (session code + per-participant secret stored client-side); host/admin actions via Supabase Edge Function token
@@ -70,7 +70,7 @@ Aligns with the requirements doc (simplified “Doing” boolean):
 - **mappings**
   - `session_id`, `participant_id`, `item_id`, `is_doing`, `updated_at`
 - **journey_items**
-  - `item_id`, `phase_id`, `label`, `sort_order` (seeded from `docs/journey-better.md`)
+  - `item_id`, `phase_id`, `label`, `sort_order` (seeded from `docs/journey.md`)
 
 Notes:
 - `participant_secret_hash` supports “no auth” while preventing arbitrary edits.

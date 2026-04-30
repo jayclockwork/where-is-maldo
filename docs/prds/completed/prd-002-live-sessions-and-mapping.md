@@ -101,7 +101,7 @@ Enable **live sessions** where participants can join via a code/link and toggle 
 ---
 
 ## Dependencies
-- A stable set of `itemId`s for each journey bullet (derived from `docs/journey-better.md`).
+- A stable set of `itemId`s for each journey bullet (derived from `docs/journey.md`).
 - Realtime backend capability (per `docs/architecture.md` recommendation).
 
 ---

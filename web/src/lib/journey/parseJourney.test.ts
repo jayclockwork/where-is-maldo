@@ -6,7 +6,7 @@ import { parseJourneyMarkdown } from "@/lib/journey/parseJourney";
 
 describe("parseJourneyMarkdown", () => {
   it("parses phases from the journey markdown", () => {
-    const filePath = path.join(process.cwd(), "..", "docs", "journey-better.md");
+    const filePath = path.join(process.cwd(), "..", "docs", "journey.md");
     const markdown = readFileSync(filePath, "utf8");
 
     const doc = parseJourneyMarkdown(markdown);
@@ -14,7 +14,7 @@ describe("parseJourneyMarkdown", () => {
     expect(doc.phases.length).toBe(6);
     expect(doc.phases[0]?.phaseId).toMatch(/^phase-/);
     expect(doc.phases[0]?.title).toContain("Reference");
-    expect(doc.phases.some((p) => p.title.toLowerCase().includes("systems architect"))).toBe(true);
+    expect(doc.phases.some((p) => p.title.toLowerCase().includes("conductor"))).toBe(true);
   });
 
   it("generates stable itemIds that include the phaseId", () => {

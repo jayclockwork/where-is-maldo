@@ -1,7 +1,7 @@
 # PRD 001 — Journey Content Site (Static + Clockwork-aligned)
 
 ### Problem
-The journey content exists as a Markdown document (`docs/journey-better.md`), but it is not optimized for:
+The journey content exists as a Markdown document (`docs/journey.md`), but it is not optimized for:
 - fast scanning during a presentation,
 - easy navigation via links, and
 - a branded, polished reading experience.
@@ -32,7 +32,7 @@ Deliver a **static-first** website experience that renders the journey in a **cl
 ## Requirements
 
 ### Content rendering
-- Render journey content from `docs/journey-better.md` (or a build-time generated JSON derived from it).
+- Render journey content from `docs/journey.md` (or a build-time generated JSON derived from it).
 - Preserve structure:
   - Phase title
   - Focus line (italic)
@@ -77,7 +77,7 @@ Deliver a **static-first** website experience that renders the journey in a **cl
 ---
 
 ## Acceptance criteria
-- Journey page renders all phases from `docs/journey-better.md`.
+- Journey page renders all phases from `docs/journey.md`.
 - Each phase has a working anchor link.
 - Collapsing/expanding works without layout jank.
 - Styling clearly reflects Clockwork’s brand cues (contrast, typography, accent usage).

@@ -66,8 +66,10 @@ _Focus: The LLM is the primary implementer; you steer, review, and accept or rej
 
 - **Requirements authoring**
   - Turn fuzzy asks into user stories, non-goals, and open questions
+  - Provide "what good looks like" with concrete examples (inputs/outputs, acceptance checks)
   - Generate acceptance criteria and phased rollout plans
   - Produce classic requirements docs or feature-based PRDs
+  - Name what must not change: APIs, behaviors, performance budgets, accessibility expectations
 - **Full feature implementation**
   - LLM drafts code, tests, and docs together
   - You review the output and validate against acceptance criteria
@@ -75,10 +77,6 @@ _Focus: The LLM is the primary implementer; you steer, review, and accept or rej
 - **Substantial test generation**
   - LLM owns building out a meaningful unit test suite
   - LLM generates effective end-to-end tests (e.g. Playwright)
-- **Spec writing for handoff**
-  - State goal, non-goals, constraints, and definition of done clearly enough that the LLM can execute without constant clarification
-  - Provide "what good looks like" with concrete examples (inputs/outputs, acceptance checks)
-  - Name what must not change: APIs, behaviors, performance budgets, accessibility expectations
 
 
 ### Level 5: Agent Director
