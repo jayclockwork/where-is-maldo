@@ -14,6 +14,7 @@ const journey: JourneyDoc = {
     {
       phaseId: "phase-research",
       title: "Phase 1: Research",
+      icon: "menu_book",
       humanRole: "You write the journey.",
       llmRole: "Suggests copy.",
       sections: [
@@ -46,7 +47,7 @@ describe("<SessionJourneyView />", () => {
     );
 
     // MUI AccordionSummary renders as a button with aria-expanded.
-    expect(screen.getByRole("button", { name: /level 1: research/i })).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("button", { name: /level\s*1\s*:\s*research/i })).toHaveAttribute("aria-expanded", "true");
 
     // Toggles should live on the section heading (not the bullet).
     expect(screen.getByRole("switch", { name: /toggle doing for basic research/i })).toBeInTheDocument();
@@ -77,7 +78,7 @@ describe("<SessionJourneyView />", () => {
       <SessionJourneyView journey={journey} mappings={mappings} myParticipantId="p1" onToggle={() => {}} />,
     );
 
-    expect(screen.getByRole("button", { name: /level 1: research/i })).toHaveTextContent("✅");
+    expect(screen.getByRole("button", { name: /level\s*1\s*:\s*research/i })).toHaveTextContent("✅");
   });
 
   it("fires confetti when a phase transitions into complete", async () => {

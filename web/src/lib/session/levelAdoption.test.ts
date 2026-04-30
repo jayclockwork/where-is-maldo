@@ -9,6 +9,7 @@ const journey: JourneyDoc = {
     {
       phaseId: "phase-1",
       title: "Phase 1: Research",
+      icon: "menu_book",
       sections: [
         { title: "A", items: [] },
         { title: "B", items: [] },
@@ -17,6 +18,7 @@ const journey: JourneyDoc = {
     {
       phaseId: "phase-2",
       title: "Phase 2: Build",
+      icon: "keyboard",
       sections: [{ title: "C", items: [] }],
     },
   ],

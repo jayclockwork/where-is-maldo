@@ -1,39 +1,39 @@
 # Software Engineering LLM Levels — source content for the journey site.
 # Phase titles must stay in the form "Level N: Name" (or Phase/Step) so phaseId and itemIds remain stable.
+# Each phase needs `icon`: a key from web/src/lib/journey/journeyPhaseIcons.ts (maps to the UI icon).
 
 phases:
   - title: "Level 1: Reference"
+    icon: menu_book
     human_role: "You perform all actual code edits."
     llm_role: "Provide answers, act as a smarter search."
     sections:
-      - title: Basic research
+      - title: Coding & Tech Research
         items:
           - label: How to code a statement or function
           - label: How a technology works
-          - label: How technologies compare and contrast
-      - title: Coding research
-        items:
-          - label: Find better ways to implement small sections of code
           - label: Compare libraries and approaches
-      - title: Document research
+      - title: Document Research
         items:
           - label: Summarize docs and long specs
-          - label: Parse and analyze CSV/JSON/etc for quick answers
-      - title: Debugging research
+          - label: Parse and analyze CSV/JSON for quick answers
+          - label: Learn about complex APIs
+      - title: Debugging Research
         items:
           - label: Interpret logs, traces, and stack traces
           - label: Propose 2–3 hypotheses for what's going wrong
-      - title: Risk research
+      - title: Risk Research
         items:
           - label: Understand security and privacy pitfalls
           - label: Identify licensing concerns
           - label: Ask "what could go wrong?" before you build
 
   - title: "Level 2: Inline Assist"
+    icon: keyboard
     human_role: "You write most of the code."
     llm_role: "Extend your keystrokes through tab completions, small edits, perform tedious refactors."
     sections:
-      - title: Inline completion
+      - title: Inline Completion
         items:
           - label: Autocomplete single lines and small blocks as you type
           - label: Accept, reject, or modify suggestions without leaving your editor
@@ -49,97 +49,104 @@ phases:
           - label: Tidy up docs and comments
 
   - title: "Level 3: Pair Programmer"
+    icon: groups
     human_role: "You make the coding decisions through collaboration with the LLM."
     llm_role: "Thought partner in real-time repo-aware collaboration."
     sections:
-      - title: Chatting with your codebase
+      - title: Chatting with your Codebase
         items:
           - label: '"Where is X implemented?" "What calls this function?" "How does Y work in this repo?"'
           - label: Understand unfamiliar code quickly without spelunking manually
-      - title: Debugging together
+      - title: Debugging Together
         items:
-          - label: Triage a bug, isolate a repro case, and propose fixes with verification steps
+          - label: Triage a bug and propose fixes with verification steps
           - label: Walk through a failing test together to understand root cause
-      - title: Test coverage partnership
+      - title: Test Coverage Partnership
         items:
           - label: Fill gaps in existing coverage
           - label: Add regression tests for newly discovered bugs
-      - title: Code review assistance
+      - title: Code Review Assistance
         items:
           - label: Summarize what a diff actually does in plain language
-          - label: Spot risks, edge cases, and missing tests before human reviewers see it
-      - title: Feature development
+          - label: Spot risks, edge cases, and missing tests
+      - title: Feature Development
         items:
           - label: Draft an implementation together and iterate based on your feedback
-          - label: You're still the one deciding what goes in — LLM is your thought partner
+          - label: You're still the one deciding what goes in; the LLM is your thought partner
 
   - title: "Level 4: Delegator"
+    icon: assignment
     human_role: "You steer, review, and accept or reject."
     llm_role: "Acts as the primary coder for scoped tasks."
     sections:
       - title: Requirements authoring
         items:
-          - label: Turn fuzzy asks into user stories, non-goals, and open questions
-          - label: Provide "what good looks like" with concrete examples (inputs/outputs, acceptance checks)
-          - label: Generate acceptance criteria and phased rollout plans
-          - label: Produce classic requirements docs or feature-based PRDs
-          - label: "Name what must not change: APIs, behaviors, performance budgets, accessibility expectations"
-      - title: Full feature implementation
+          - label: LLM turns fuzzy asks into user stories, non-goals, and open questions
+          - label: Interate on classic requirements docs
+          - label: You are starting to explore the use of PRDs
+      - title: Full Feature Implementation
         items:
           - label: LLM drafts code, tests, and docs together
           - label: You review the output and validate against acceptance criteria
           - label: You're measuring outcomes, not writing lines
-      - title: Substantial test generation
+      - title: Substantial Test Generation
         items:
+          - label: You document test strategies and approaches
           - label: LLM owns building out a meaningful unit test suite
           - label: LLM generates effective end-to-end tests (e.g. Playwright)
+      - title: Oooh…AGENTS.md??
+        items:
+          - label: "You start using and tweaking AGENTS.md and realted files"
+          - label: "You start exploring agent skills"
 
   - title: "Level 5: Agent Director"
+    icon: smart_toy
     human_role: "You define guardrails and approve."
     llm_role: "Use tools and agentic loops: running tests, reading files, making changes."
     sections:
-      - title: Writing agent-readable specs
+      - title: Writing Agent-Tuned Specs
         items:
-          - label: Break work into small, independently verifiable steps
+          - label: "You break work into small, independently verifiable steps with detailed PRDs"
           - label: "Ask for a plan first: milestones, risks, unknowns, and a test plan — before a single line is written"
           - label: "Choose a safe execution order: scaffolding → tests → implementation → cleanup"
-      - title: Grounding the agent in your context
+      - title: Grounding the Agent in Your Context
         items:
           - label: "Give it repo-specific conventions: file locations, patterns to follow, naming rules"
           - label: "Teach it your working agreements: style, commit hygiene, review expectations"
           - label: "Define scope explicitly: \"only touch these files,\" \"non-interactive commands only\""
-      - title: Agentic loops
+      - title: Agentic Loops
         items:
           - label: LLM runs linters and automated tests, interprets failures, and proposes focused patches — without you in the loop for each step
           - label: LLM stops and asks when uncertain instead of guessing its way forward
-      - title: Evidence-driven trust
+      - title: Evidence-Driven Trust
         items:
-          - label: Require tests for any behavior changes
-          - label: Ask for a verification checklist, edge cases, failure modes, and rollback considerations
-          - label: "Require evidence for risky changes: diffs, benchmarks, logs"
-      - title: Configuring your agents
+          - label: "You require tests for any behavior changes"
+          - label: "You ask for a verification checklist, edge cases, failure modes, and rollback considerations"
+          - label: "You require evidence for risky changes: diffs, benchmarks, logs"
+      - title: Configuring Your Agents
         items:
-          - label: Build and tune AGENTS.md files that encode your guardrails and expectations
-          - label: Adjust scope, tool permissions, and stop conditions as you learn what works
+          - label: "Build and tune AGENTS.md files that encode your guardrails and expectations"
+          - label: "Adjust scope, tool permissions, and stop conditions as you learn what works"
 
   - title: "Level 6: Conductor"
+    icon: hub
     human_role: "You design roles, boundaries, and governance; approving at milestones."
     llm_role: "Coordinated agents operate within defined roles and boundaries."
     sections:
-      - title: Role-based agent teams
+      - title: Role-Based Agent Teams
         items:
           - label: "Define and assign distinct agent roles: Planner, Implementer, Reviewer, Verifier"
           - label: Each agent has a clear responsibility and clear handoff point
-      - title: Parallel execution with hard boundaries
+      - title: Parallel Execution with Hard Boundaries
         items:
           - label: "Agents work simultaneously on independent slices: tests, refactors, docs, migrations"
           - label: Strict file/module ownership prevents agents from stepping on each other
-      - title: Orchestration and governance
+      - title: Orchestration and Governance
         items:
           - label: Shared definition of done, shared guardrails, and shared tool permissions across all agents
           - label: "Central change log: what changed, why, what evidence supports it, what risks remain"
           - label: "Human approval gates at key milestones: design review, pre-merge, pre-release"
-      - title: System-level thinking
+      - title: System-Level Thinking
         items:
           - label: You're not debugging a line of code — you're debugging a workflow
           - label: Evaluate whether agent coordination is actually working or just creating new complexity

@@ -29,7 +29,7 @@ import { buildSessionJourneyModel } from "@/lib/session/sessionContentModel";
 import { computeGhostsByPhase } from "@/lib/wallboard/ghosts";
 import { buildGhostLoopPath, buildMazeSvgPaths, generateMaze } from "@/lib/wallboard/maze";
 import { PacmanGhostSvg } from "@/components/wallboard/PacmanGhostSvg";
-import { phaseTitleToStepTitle } from "@/lib/text/phaseToStep";
+import { PhaseLevelTitle } from "@/components/journey/PhaseLevelTitle";
 import { formatRelativeTimeShort } from "@/lib/text/relativeTime";
 
 type ConnectionState = "connecting" | "connected" | "reconnecting";
@@ -399,7 +399,7 @@ export default function WallboardGhostsPage() {
                     }}
                   >
                     <Box sx={{ mb: 1.5 }}>
-                      <Typography sx={{ fontWeight: 900 }}>{phaseTitleToStepTitle(phase.title)}</Typography>
+                      <PhaseLevelTitle rawTitle={phase.title} sx={{ fontWeight: 900 }} />
                       <Stack direction="row" justifyContent="space-between" alignItems="baseline">
                         <Typography variant="body2" sx={{ color: "text.secondary" }}>
                           {ghostElements.length} {ghostElements.length === 1 ? "ghost" : "ghosts"}

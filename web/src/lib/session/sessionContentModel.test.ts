@@ -10,6 +10,7 @@ describe("buildSessionJourneyModel", () => {
         {
           phaseId: "phase-research",
           title: "Phase 1: Research",
+          icon: "menu_book",
           humanRole: "You write the journey.",
           llmRole: "Suggests copy.",
           sections: [
@@ -26,6 +27,7 @@ describe("buildSessionJourneyModel", () => {
 
     const model = buildSessionJourneyModel(journey);
     expect(model.phases).toHaveLength(1);
+    expect(model.phases[0]!.icon).toBe("menu_book");
     expect(model.phases[0]!.rows[0]).toEqual({ type: "section", itemId: "phase-research__section__Basic research", label: "Basic research" });
     expect(model.phases[0]!.rows[1]).toMatchObject({ type: "item", itemId: "i1", depth: 1 });
     expect(model.phases[0]!.rows[2]).toMatchObject({ type: "item", itemId: "i2", depth: 2 });

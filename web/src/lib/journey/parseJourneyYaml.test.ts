@@ -30,6 +30,7 @@ describe("parseJourneyYaml", () => {
     expect(doc.phases.length).toBe(6);
     expect(doc.phases[0]?.humanRole).toContain("actual code edits");
     expect(doc.phases[0]?.llmRole).toContain("smarter search");
+    expect(doc.phases[0]?.icon).toBe("menu_book");
     expect(doc.phases[0]?.phaseId).toMatch(/^phase-/);
     expect(doc.phases[0]?.title).toContain("Reference");
     expect(doc.phases.some((p) => p.title.toLowerCase().includes("conductor"))).toBe(true);
@@ -46,6 +47,7 @@ describe("parseJourneyYaml", () => {
     const yamlText = `
 phases:
   - title: "Level 1: Research"
+    icon: menu_book
     sections:
       - title: Basic research
         items:
@@ -64,11 +66,13 @@ phases:
     const yamlText = `
 phases:
   - title: "Step 1: Research"
+    icon: menu_book
     sections:
       - title: Section A
         items:
           - label: Item one
   - title: "Phase 2: Code Completion"
+    icon: keyboard
     sections:
       - title: Section B
         items:
@@ -85,6 +89,7 @@ phases:
     const yamlText = `
 phases:
   - title: "Level 1: Research"
+    icon: menu_book
     human_role: "Human does the work."
     llm_role: "LLM assists."
     sections:
@@ -101,6 +106,7 @@ phases:
     const yamlText = `
 phases:
   - title: "Level 1: Research"
+    icon: menu_book
     sections:
       - title: Parent section
         items:
@@ -114,5 +120,30 @@ phases:
     const inner = outer.children![0]!;
     expect(inner.itemId).toContain("outer");
     expect(inner.itemId).toContain("inner");
+  });
+
+  it("requires icon on each phase", () => {
+    const yamlText = `
+phases:
+  - title: "Level 1: Research"
+    sections:
+      - title: Section A
+        items:
+          - label: Item one
+`;
+    expect(() => parseJourneyYaml(yamlText)).toThrow(/icon is required/);
+  });
+
+  it("rejects unknown icon keys", () => {
+    const yamlText = `
+phases:
+  - title: "Level 1: Research"
+    icon: not_a_registered_icon
+    sections:
+      - title: Section A
+        items:
+          - label: Item one
+`;
+    expect(() => parseJourneyYaml(yamlText)).toThrow(/unknown icon/);
   });
 });

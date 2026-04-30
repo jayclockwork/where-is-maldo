@@ -17,8 +17,7 @@ import { useEffect, useState } from "react";
 
 import type { JourneyDoc, JourneyItem } from "@/lib/journey/types";
 import { CopyLinkButton } from "@/components/journey/CopyLinkButton";
-import { JourneyPhaseIcon } from "@/components/journey/JourneyPhaseIcon";
-import { phaseTitleToStepTitle } from "@/lib/text/phaseToStep";
+import { PhaseLevelTitle } from "@/components/journey/PhaseLevelTitle";
 
 function ItemsList({ items, depth = 0 }: { items: JourneyItem[]; depth?: number }) {
   return (
@@ -98,13 +97,7 @@ export function JourneyView({ journey }: { journey: JourneyDoc }) {
                 <Box sx={{ width: "100%", minWidth: 0 }}>
                   <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1 }}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 0, flex: 1 }}>
-                      <JourneyPhaseIcon
-                        phaseId={phase.phaseId}
-                        sx={{ flexShrink: 0, color: "text.primary", opacity: 0.92 }}
-                      />
-                      <Typography variant="h6" sx={{ fontWeight: 900, minWidth: 0 }}>
-                        {phaseTitleToStepTitle(phase.title)}
-                      </Typography>
+                      <PhaseLevelTitle variant="h6" rawTitle={phase.title} sx={{ fontWeight: 900, minWidth: 0 }} />
                     </Box>
                     <CopyLinkButton anchorId={phase.phaseId} />
                   </Box>

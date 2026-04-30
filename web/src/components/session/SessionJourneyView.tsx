@@ -18,8 +18,7 @@ import type { JourneyDoc } from "@/lib/journey/types";
 import type { Mapping } from "@/domain/sessions/types";
 import { buildSessionJourneyModel } from "@/lib/session/sessionContentModel";
 import { launchConfetti } from "@/ui/effects/confetti";
-import { phaseTitleToStepTitle } from "@/lib/text/phaseToStep";
-import { JourneyPhaseIcon } from "@/components/journey/JourneyPhaseIcon";
+import { PhaseLevelTitle } from "@/components/journey/PhaseLevelTitle";
 
 export function SessionJourneyView({
   journey,
@@ -105,18 +104,17 @@ export function SessionJourneyView({
             }}
           >
             <Box sx={{ width: "100%", display: "flex", alignItems: "center", gap: 1, minWidth: 0 }}>
-              <JourneyPhaseIcon
-                phaseId={phase.phaseId}
-                sx={{ flexShrink: 0, color: "text.primary", opacity: 0.92 }}
+              <PhaseLevelTitle
+                rawTitle={phase.title}
+                sx={{ fontWeight: 900, minWidth: 0 }}
+                suffix={
+                  completedPhaseIds.has(phase.phaseId) ? (
+                    <Box component="span" aria-hidden sx={{ ml: 1 }}>
+                      ✅
+                    </Box>
+                  ) : null
+                }
               />
-              <Typography sx={{ fontWeight: 900, minWidth: 0 }}>
-                {phaseTitleToStepTitle(phase.title)}
-                {completedPhaseIds.has(phase.phaseId) ? (
-                  <Box component="span" aria-hidden sx={{ ml: 1 }}>
-                    ✅
-                  </Box>
-                ) : null}
-              </Typography>
             </Box>
           </AccordionSummary>
           <AccordionDetails sx={{ py: 1.25 }}>

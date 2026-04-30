@@ -9,6 +9,7 @@ const journey: JourneyDoc = {
     {
       phaseId: "phase-research",
       title: "Phase 1: Research",
+      icon: "menu_book",
       sections: [
         { title: "Basic research", items: [{ itemId: "phase-research__basic__syntax", label: "Syntax" }] },
         { title: "Coding research", items: [{ itemId: "phase-research__coding__compare", label: "Compare approaches" }] },

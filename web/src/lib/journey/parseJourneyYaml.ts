@@ -1,5 +1,6 @@
 import { parse as parseYaml } from "yaml";
 
+import { assertJourneyPhaseIconKey } from "@/lib/journey/journeyPhaseIcons";
 import { slugify } from "@/lib/text/slugify";
 import type { JourneyDoc, JourneyItem, JourneyPhase, JourneySection } from "@/lib/journey/types";
 
@@ -93,6 +94,10 @@ export function parseJourneyYaml(yamlText: string): JourneyDoc {
     }
 
     const phaseId = `phase-${slugify(parsed.name)}`;
+    if (obj.icon === undefined || obj.icon === null) {
+      throw new Error(`${phaseCtx}.icon is required (a key from the journey icon registry, e.g. "menu_book")`);
+    }
+    const icon = assertJourneyPhaseIconKey(assertString(obj.icon, `${phaseCtx}.icon`), `${phaseCtx}.icon`);
     let humanRole: string | undefined;
     if (obj.human_role !== undefined && obj.human_role !== null) {
       humanRole = assertString(obj.human_role, `${phaseCtx}.human_role`);
@@ -103,7 +108,7 @@ export function parseJourneyYaml(yamlText: string): JourneyDoc {
     }
 
     const sections = parseSections(phaseId, obj.sections, `${phaseCtx}.sections`);
-    return { phaseId, title: parsed.title, humanRole, llmRole, sections };
+    return { phaseId, title: parsed.title, icon, humanRole, llmRole, sections };
   });
 
   if (phases.length === 0) {

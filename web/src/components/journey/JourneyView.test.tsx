@@ -11,6 +11,7 @@ const sample: JourneyDoc = {
     {
       phaseId: "phase-research",
       title: "Phase 1: Research",
+      icon: "menu_book",
       humanRole: "You write the journey.",
       llmRole: "Suggests copy.",
       sections: [
@@ -23,6 +24,7 @@ const sample: JourneyDoc = {
     {
       phaseId: "phase-collaboration",
       title: "Phase 3: Collaboration",
+      icon: "groups",
       humanRole: "You own decisions.",
       llmRole: "Pair-programs.",
       sections: [
@@ -41,10 +43,11 @@ describe("<JourneyView />", () => {
     renderWithTheme(<JourneyView journey={sample} />);
 
     // MUI AccordionSummary is a button; when collapsed, aria-expanded should be false.
-    expect(screen.getByRole("button", { name: /level 1: research/i })).toHaveAttribute("aria-expanded", "false");
+    // AccordionSummary accessible name may join segments without a space after the colon.
+    expect(screen.getByRole("button", { name: /level\s*1\s*:\s*research/i })).toHaveAttribute("aria-expanded", "false");
 
-    await user.click(screen.getByRole("button", { name: /level 1: research/i }));
-    expect(screen.getByRole("button", { name: /level 1: research/i })).toHaveAttribute("aria-expanded", "true");
+    await user.click(screen.getByRole("button", { name: /level\s*1\s*:\s*research/i }));
+    expect(screen.getByRole("button", { name: /level\s*1\s*:\s*research/i })).toHaveAttribute("aria-expanded", "true");
   });
 });
 
