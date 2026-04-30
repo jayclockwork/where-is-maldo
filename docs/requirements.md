@@ -27,11 +27,11 @@ Build a **static website** that displays the “Common Software Engineer LLM Jou
 ## Information architecture (pages)
 - **Landing page**
   - Brief explanation of the journey and the live session concept.
-  - Primary CTAs: “View Journey” and “Join Session”.
+  - Primary CTAs: “View the Journey” and “Join a Session”.
 - **Journey page**
   - Displays the phases and their items (from the journey doc).
   - Supports per-item “Doing” toggles (when in a session).
-- **Join session page**
+- **Join a session page**
   - Enter session code/link, choose display name, choose a color/avatar.
 - **Presentation view (wallboard)**
   - Optimized for big screens; shows **aggregate** session activity live.
@@ -88,7 +88,7 @@ Build a **static website** that displays the “Common Software Engineer LLM Jou
 ## Session management
 - **Create session**
   - Host creates a session and receives a link + short code.
-- **Join session**
+- **Join a session**
   - Participants join via link or code.
 - **Session states**
   - Open / closed.

@@ -84,7 +84,7 @@ export default function WallboardByCodePage() {
               Home
             </Button>
             <Button component={Link} href={`/s/${encodeURIComponent(code)}`} variant="text">
-              Join session →
+              Join a session →
             </Button>
           </Stack>
         </Stack>

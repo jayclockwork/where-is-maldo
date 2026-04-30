@@ -37,7 +37,7 @@ export default function Home() {
             </Typography>
             <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
               <Button component={Link} href="/journey" variant="contained" color="primary" size="large">
-                View Journey
+                View the Journey
               </Button>
             </Stack>
           </Stack>
@@ -78,7 +78,7 @@ export default function Home() {
                     Create session →
                   </Button>
                   <Button variant="text" component={Link} href="/join">
-                    Join Session →
+                    Join a Session →
                   </Button>
                   {lastJoinCode ? (
                     <Button variant="text" component={Link} href={`/w/${encodeURIComponent(lastJoinCode)}`}>

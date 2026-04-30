@@ -10,7 +10,7 @@ vi.mock("next/navigation", () => ({
 }));
 
 describe("/s/[code] join flow app bar", () => {
-  it('does not show the app bar "Join Session" button', () => {
+  it('does not show the app bar "Join a Session" button', () => {
     // Minimal EventSource + fetch stubs (component uses both)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (globalThis as any).EventSource = class {
@@ -34,8 +34,8 @@ describe("/s/[code] join flow app bar", () => {
     );
 
     renderWithTheme(<JoinSessionPage />);
-    expect(screen.queryByRole("link", { name: /join session/i })).toBeNull();
-    expect(screen.queryByRole("button", { name: /join session/i })).toBeNull();
+    expect(screen.queryByRole("link", { name: /join a session/i })).toBeNull();
+    expect(screen.queryByRole("button", { name: /join a session/i })).toBeNull();
   });
 });
 

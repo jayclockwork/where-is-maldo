@@ -25,10 +25,10 @@ describe("/join page", () => {
     expect((input as HTMLInputElement).value).toBe("CWTEST");
   });
 
-  it('does not show the app bar "Join Session" button', () => {
+  it('does not show the app bar "Join a Session" button', () => {
     renderWithTheme(<JoinCodePage />);
-    expect(screen.queryByRole("link", { name: /join session/i })).toBeNull();
-    expect(screen.queryByRole("button", { name: /join session/i })).toBeNull();
+    expect(screen.queryByRole("link", { name: /join a session/i })).toBeNull();
+    expect(screen.queryByRole("button", { name: /join a session/i })).toBeNull();
   });
 
   it("navigates using an uppercased code on submit", () => {

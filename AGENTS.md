@@ -37,7 +37,7 @@ Automated tests are a **core deliverable** for every feature.
 
 ### E2E tests (where applicable; required for critical flows)
 Use Playwright for key user journeys:
-- **Join session** (enter code, set display name)
+- **Join a session** (enter code, set display name)
 - **Toggle Doing** (change propagates)
 - **Wallboard updates** (second browser sees live change)
 - **Host reset** (clears mappings; all clients update)
