@@ -28,7 +28,7 @@ export function SiteAppBar({
               Clockwork
             </Typography>
             <Typography variant="body2" sx={{ color: "text.secondary", display: { xs: "none", sm: "block" } }}>
-              LLM Adoption Levels
+              LLM Adoption Journey
             </Typography>
           </Box>
 

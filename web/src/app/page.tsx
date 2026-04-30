@@ -34,14 +34,29 @@ export default function Home() {
       <Box sx={{ bgcolor: "secondary.main", color: "secondary.contrastText", py: { xs: 6, md: 10 } }}>
         <Container maxWidth="lg">
           <Stack
-            direction={{ xs: "column", md: "row" }}
+            direction={{ xs: "column-reverse", md: "row" }}
             spacing={{ xs: 4, md: 6 }}
             alignItems="center"
           >
             <Stack spacing={3} sx={{ flex: 1, minWidth: 0, maxWidth: { md: 560 }, pl: { md: 4 } }}>
-              <Typography variant="h2" component="h1" sx={{ lineHeight: 1.05 }}>
-                Map your engineering team’s LLM adoption.
-              </Typography>
+              <Stack spacing={1.5}>
+                <Typography variant="h2" component="h1" sx={{ lineHeight: 1.05 }}>
+                  Where’s Maldo?
+                </Typography>
+                <Typography
+                  variant="h6"
+                  component="p"
+                  sx={{
+                    color: "inherit",
+                    opacity: 0.92,
+                    lineHeight: 1.4,
+                    maxWidth: 520,
+                    fontWeight: 400,
+                  }}
+                >
+                  Find your team’s place on an LLM adoption journey
+                </Typography>
+              </Stack>
               <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
                 <Button component={Link} href="/journey" variant="contained" color="primary" size="large">
                   View the Journey
