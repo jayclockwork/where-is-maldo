@@ -1,14 +1,12 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-import { parseJourneyMarkdown } from "@/lib/journey/parseJourney";
+import { parseJourneyYaml } from "@/lib/journey/parseJourneyYaml";
 import type { JourneyDoc } from "@/lib/journey/types";
 
 export async function loadJourney(): Promise<JourneyDoc> {
-  // repo root: ../docs/journey.md
-  const filePath = path.join(process.cwd(), "..", "docs", "journey.md");
-  const markdown = await readFile(filePath, "utf8");
-  return parseJourneyMarkdown(markdown);
+  // repo root: ../docs/journey.yaml
+  const filePath = path.join(process.cwd(), "..", "docs", "journey.yaml");
+  const yamlText = await readFile(filePath, "utf8");
+  return parseJourneyYaml(yamlText);
 }
-
-

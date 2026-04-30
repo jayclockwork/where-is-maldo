@@ -23,9 +23,7 @@
     "next": "^16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "remark": "^15.0.1",
-    "remark-parse": "^11.0.0",
-    "unist-util-visit": "^5.0.0"
+    "yaml": "^2.8.2"
   },
   "overrides": {
     "next": {

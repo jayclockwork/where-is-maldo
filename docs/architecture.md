@@ -5,7 +5,7 @@ _This document recommends a full technical stack (repo, hosting, framework, real
 - **Git service**: GitHub (private repo, GitHub Actions CI)
 - **Frontend hosting**: Vercel (Preview Deployments per PR)
 - **Frontend framework**: Next.js (React + TypeScript)
-- **Content format**: MDX (render `docs/journey.md` as structured content)
+- **Content format**: YAML source (`docs/journey.yaml`) parsed into structured phases, sections, and items for rendering
 - **UI system**: MUI (Material UI) with a custom theme matching `clockwork.com`
 - **Realtime backend**: Supabase (Postgres + Realtime + Edge Functions)
 - **Auth**: none for participants (session code + per-participant secret stored client-side); host/admin actions via Supabase Edge Function token
@@ -27,7 +27,7 @@ This satisfies “static to deploy” while still enabling “everyone sees chan
 - **Pros**
   - Great ergonomics for content + app screens (routing, layouts).
   - Excellent deployment story on Vercel.
-  - MDX support for turning the journey into structured sections.
+  - Straightforward path to load structured journey content (YAML → typed model) and render it in React.
 - **Cons**
   - More framework than a pure static generator; requires discipline to keep the site “static-first”.
 
@@ -70,7 +70,7 @@ Aligns with the requirements doc (simplified “Doing” boolean):
 - **mappings**
   - `session_id`, `participant_id`, `item_id`, `is_doing`, `updated_at`
 - **journey_items**
-  - `item_id`, `phase_id`, `label`, `sort_order` (seeded from `docs/journey.md`)
+  - `item_id`, `phase_id`, `label`, `sort_order` (seeded from `docs/journey.yaml`)
 
 Notes:
 - `participant_secret_hash` supports “no auth” while preventing arbitrary edits.
@@ -155,7 +155,7 @@ For v1 simplicity, prefer **Edge Functions for writes** and keep realtime subscr
 ## Alternatives (acceptable swaps)
 - **Frontend framework**
   - Astro + React islands (excellent static-first content) instead of Next.js
-  - Vite + React Router (simpler, fully static SPA) if MDX needs are minimal
+  - Vite + React Router (simpler, fully static SPA) if framework needs are minimal
 - **Realtime backend**
   - Firebase (Firestore + realtime listeners)
   - Ably/Pusher (realtime transport) + a separate datastore

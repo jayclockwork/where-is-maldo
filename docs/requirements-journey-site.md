@@ -5,7 +5,7 @@ _Purpose: define requirements for a website that presents the LLM journey clearl
 Build a **static website** that displays the “Common Software Engineer LLM Journey” content in a clear, scannable format and adds **real-time collaborative features** so multiple people can self-identify where they are on the journey during a live presentation, with everyone seeing updates immediately.
 
 ### Goals
-- **Readable journey**: Make `docs/journey.md` easy to read, scan, and reference on any device.
+- **Readable journey**: Make `docs/journey.yaml` easy to read, scan, and reference on any device.
 - **Live self-mapping**: Allow multiple participants to indicate what they’re doing across the journey.
 - **Audience visibility**: Provide a “presentation view” that shows the group’s live state (who is where) at a glance.
 - **Clockwork brand alignment**: Match the look/feel of `clockwork.com` (typography, contrast, color usage, spacing, tone).
@@ -43,7 +43,7 @@ Build a **static website** that displays the “Common Software Engineer LLM Jou
 ## Core functionality
 
 ### 1) Journey content display
-- **Source of truth**: The journey content comes from `docs/journey.md` (or an extracted JSON derived from it).
+- **Source of truth**: The journey content comes from `docs/journey.yaml` (or an extracted JSON derived from it).
 - **Readable layout**
   - Clear per-phase headings with per-phase expand/collapse.
   - Each phase shows: title, focus line, bullets.
