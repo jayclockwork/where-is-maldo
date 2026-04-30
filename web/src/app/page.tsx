@@ -92,7 +92,7 @@ export default function Home() {
           display: "flex",
           flexDirection: { xs: "column-reverse", md: "row" },
           alignItems: "stretch",
-          gap: { xs: 4, md: 6 },
+          gap: { xs: 2, md: 6 },
         }}
       >
         <Container
@@ -102,7 +102,8 @@ export default function Home() {
             minWidth: 0,
             display: "flex",
             alignItems: "flex-start",
-            py: { xs: 6, md: 10 },
+            pt: { xs: 2, md: 10 },
+            pb: { xs: 6, md: 10 },
           }}
         >
           <Stack spacing={3} sx={{ width: "100%", maxWidth: { md: 560 }, pl: { md: 4 } }}>
@@ -134,25 +135,35 @@ export default function Home() {
 
         <Box
           sx={{
-            position: "relative",
             flex: { md: "0 0 min(44vw, 560px)" },
             width: { xs: "100%", md: "auto" },
             alignSelf: "stretch",
-            minHeight: { xs: 260 },
-            overflow: "hidden",
-            borderRadius: 0,
-            maxWidth: { xs: 560, md: "none" },
-            mx: { xs: "auto", md: 0 },
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            pt: { xs: 3, md: 6 },
+            pb: { xs: 1, md: 6 },
+            px: { xs: 2, md: 3 },
           }}
         >
-          <Image
-            src="/maldo.png"
-            alt="A friendly robot character walks a cobblestone path through a bright green hedge maze, with a gazebo, fountain, and butterflies in the distance."
-            priority
-            fill
-            sizes="(max-width: 900px) min(100vw - 48px, 560px), 44vw"
-            style={{ objectFit: "cover", objectPosition: "right center" }}
-          />
+          <Box
+            sx={{
+              width: "100%",
+              maxWidth: { xs: 420, sm: 460, md: 400 },
+              borderRadius: 3,
+              overflow: "hidden",
+            }}
+          >
+            <Image
+              src="/maldo.png"
+              alt="A friendly robot character walks a cobblestone path through a bright green hedge maze, with a gazebo, fountain, and butterflies in the distance."
+              width={1440}
+              height={1072}
+              priority
+              sizes="(max-width: 900px) min(100vw - 64px, 460px), min(44vw, 400px)"
+              style={{ width: "100%", height: "auto", display: "block" }}
+            />
+          </Box>
         </Box>
       </Box>
 
@@ -167,7 +178,7 @@ export default function Home() {
         >
           <Stack spacing={3}>
             <Typography variant="h4" component="h2">
-              Explore, host, or join
+              What would you like to do?
             </Typography>
 
             <Box
@@ -182,7 +193,7 @@ export default function Home() {
                 href="/journey"
                 icon={<TravelExploreIcon sx={{ fontSize: 40 }} />}
                 title="Explore the journey"
-                description="Read about the levels and their behaviors, habits, and examples."
+                description="Review the levels, behaviors, habits, and examples that define each stage."
               />
               <HomeLinkCard
                 href="/host"
