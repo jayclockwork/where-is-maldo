@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Box, Button, Card, CardContent, Container, Stack, Typography } from "@mui/material";
@@ -31,15 +32,43 @@ export default function Home() {
 
       <Box sx={{ bgcolor: "secondary.main", color: "secondary.contrastText", py: { xs: 6, md: 10 } }}>
         <Container maxWidth="lg">
-          <Stack spacing={3} sx={{ maxWidth: 860 }}>
-            <Typography variant="h2" component="h1" sx={{ lineHeight: 1.05 }}>
-              Map your engineering team’s LLM adoption.
-            </Typography>
-            <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
-              <Button component={Link} href="/journey" variant="contained" color="primary" size="large">
-                View the Journey
-              </Button>
+          <Stack
+            direction={{ xs: "column", md: "row" }}
+            spacing={{ xs: 4, md: 6 }}
+            alignItems="center"
+          >
+            <Stack spacing={3} sx={{ flex: 1, minWidth: 0, maxWidth: { md: 560 }, pl: { md: 4 } }}>
+              <Typography variant="h2" component="h1" sx={{ lineHeight: 1.05 }}>
+                Map your engineering team’s LLM adoption.
+              </Typography>
+              <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
+                <Button component={Link} href="/journey" variant="contained" color="primary" size="large">
+                  View the Journey
+                </Button>
+              </Stack>
             </Stack>
+
+            <Box
+              sx={{
+                flex: { md: "0 1 50%" },
+                width: "100%",
+                maxWidth: { xs: 560, md: "none" },
+                mx: { xs: "auto", md: 0 },
+                borderRadius: 2,
+                overflow: "hidden",
+                lineHeight: 0,
+              }}
+            >
+              <Image
+                src="/maldo.png"
+                alt="A friendly robot character walks a cobblestone path through a bright green hedge maze, with a gazebo, fountain, and butterflies in the distance."
+                width={1440}
+                height={1072}
+                priority
+                sizes="(max-width: 900px) min(100vw - 48px, 560px), 50vw"
+                style={{ width: "100%", height: "auto", display: "block" }}
+              />
+            </Box>
           </Stack>
         </Container>
       </Box>
