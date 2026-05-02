@@ -85,86 +85,85 @@ export default function Home() {
     <>
       <SiteAppBar />
 
-      <Box
-        sx={{
-          bgcolor: "secondary.main",
-          color: "secondary.contrastText",
-          display: "flex",
-          flexDirection: { xs: "column-reverse", md: "row" },
-          alignItems: "stretch",
-          gap: { xs: 2, md: 6 },
-        }}
-      >
+      <Box sx={{ bgcolor: "secondary.main", color: "secondary.contrastText" }}>
         <Container
           maxWidth="lg"
           sx={{
-            flex: { md: "1 1 0" },
-            minWidth: 0,
             display: "flex",
-            alignItems: "flex-start",
-            pt: { xs: 2, md: 10 },
-            pb: { xs: 6, md: 10 },
-          }}
-        >
-          <Stack spacing={3} sx={{ width: "100%", maxWidth: { md: 560 }, pl: { md: 4 } }}>
-            <Stack spacing={1.5}>
-              <Typography variant="h2" component="h1" sx={{ lineHeight: 1.05 }}>
-                Where’s Maldo?
-              </Typography>
-              <Typography
-                variant="h6"
-                component="p"
-                sx={{
-                  color: "inherit",
-                  opacity: 0.92,
-                  lineHeight: 1.4,
-                  maxWidth: 520,
-                  fontWeight: 400,
-                }}
-              >
-                Find your team’s place on an LLM adoption journey
-              </Typography>
-            </Stack>
-            <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
-              <Button component={Link} href="/journey" variant="contained" color="primary" size="large">
-                Start exploring
-              </Button>
-            </Stack>
-          </Stack>
-        </Container>
-
-        <Box
-          sx={{
-            flex: { md: "0 0 min(44vw, 560px)" },
-            width: { xs: "100%", md: "auto" },
-            alignSelf: "stretch",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            pt: { xs: 3, md: 6 },
-            pb: { xs: 1, md: 6 },
-            px: { xs: 2, md: 3 },
+            flexDirection: { xs: "column-reverse", md: "row" },
+            alignItems: "stretch",
+            gap: { xs: 2, md: 6 },
           }}
         >
           <Box
             sx={{
-              width: "100%",
-              maxWidth: { xs: 420, sm: 460, md: 400 },
-              borderRadius: 3,
-              overflow: "hidden",
+              flex: { md: "1 1 0" },
+              minWidth: 0,
+              display: "flex",
+              alignItems: "flex-start",
+              pt: { xs: 2, md: 10 },
+              pb: { xs: 6, md: 10 },
             }}
           >
-            <Image
-              src="/maldo.png"
-              alt="A friendly robot character walks a cobblestone path through a bright green hedge maze, with a gazebo, fountain, and butterflies in the distance."
-              width={1440}
-              height={1072}
-              priority
-              sizes="(max-width: 900px) min(100vw - 64px, 460px), min(44vw, 400px)"
-              style={{ width: "100%", height: "auto", display: "block" }}
-            />
+            <Stack spacing={3} sx={{ width: "100%", maxWidth: { md: 560 } }}>
+              <Stack spacing={1.5}>
+                <Typography variant="h2" component="h1" sx={{ lineHeight: 1.05 }}>
+                  Where’s Maldo?
+                </Typography>
+                <Typography
+                  variant="h6"
+                  component="p"
+                  sx={{
+                    color: "inherit",
+                    opacity: 0.92,
+                    lineHeight: 1.4,
+                    maxWidth: 520,
+                    fontWeight: 400,
+                  }}
+                >
+                  Find your team’s place on an LLM adoption journey
+                </Typography>
+              </Stack>
+              <Stack direction="row" spacing={2} sx={{ flexWrap: "wrap" }}>
+                <Button component={Link} href="/journey" variant="contained" color="primary" size="large">
+                  Start exploring
+                </Button>
+              </Stack>
+            </Stack>
           </Box>
-        </Box>
+
+          <Box
+            sx={{
+              flex: { md: "0 0 min(40%, 400px)" },
+              width: { xs: "100%", md: "auto" },
+              alignSelf: "stretch",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              pt: { xs: 3, md: 6 },
+              pb: { xs: 1, md: 6 },
+            }}
+          >
+            <Box
+              sx={{
+                width: "100%",
+                maxWidth: { xs: 420, sm: 460, md: 400 },
+                borderRadius: 3,
+                overflow: "hidden",
+              }}
+            >
+              <Image
+                src="/maldo.png"
+                alt="A friendly robot character walks a cobblestone path through a bright green hedge maze, with a gazebo, fountain, and butterflies in the distance."
+                width={1440}
+                height={1072}
+                priority
+                sizes="(max-width: 900px) min(100vw - 64px, 460px), (max-width: 1200px) 40vw, 400px"
+                style={{ width: "100%", height: "auto", display: "block" }}
+              />
+            </Box>
+          </Box>
+        </Container>
       </Box>
 
       <Container maxWidth="lg" sx={{ py: { xs: 5, md: 8 } }}>
@@ -172,7 +171,7 @@ export default function Home() {
           sx={{
             mx: "auto",
             width: "100%",
-            maxWidth: { md: 720, lg: 1000 },
+            maxWidth: { md: 680 },
             px: { xs: 0, md: 3, lg: 5 },
           }}
         >
@@ -185,7 +184,7 @@ export default function Home() {
               sx={{
                 display: "grid",
                 gap: 2,
-                gridTemplateColumns: { xs: "1fr", lg: "repeat(3, minmax(0, 1fr))" },
+                gridTemplateColumns: "1fr",
                 alignItems: "stretch",
               }}
             >
